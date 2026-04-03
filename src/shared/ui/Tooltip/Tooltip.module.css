@@ -1,0 +1,84 @@
+.wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.bubble {
+  position: absolute;
+  z-index: 1000;
+  padding: 6px 10px;
+  background: var(--color-text-primary);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.4;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.wrapper:hover .bubble {
+  opacity: 1;
+}
+
+.arrow {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: var(--color-text-primary);
+  transform: rotate(45deg);
+}
+
+/* Top */
+.top {
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.top .arrow {
+  bottom: -4px;
+  left: 50%;
+  margin-left: -4px;
+}
+
+/* Bottom */
+.bottom {
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.bottom .arrow {
+  top: -4px;
+  left: 50%;
+  margin-left: -4px;
+}
+
+/* Left */
+.left {
+  right: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.left .arrow {
+  right: -4px;
+  top: 50%;
+  margin-top: -4px;
+}
+
+/* Right */
+.right {
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.right .arrow {
+  left: -4px;
+  top: 50%;
+  margin-top: -4px;
+}

@@ -1,0 +1,127 @@
+.wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+.exportBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-teal);
+  background: transparent;
+  border: 1px solid var(--color-teal);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.exportBtn:hover {
+  background: var(--color-teal);
+  color: #fff;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+
+.table th {
+  text-align: left;
+  padding: 10px 12px;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-secondary);
+  border-bottom: 2px solid var(--color-border);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.sortable {
+  cursor: pointer;
+}
+
+.sortable:hover {
+  color: var(--color-text-primary);
+}
+
+.sortIcon {
+  display: inline-flex;
+  margin-left: 4px;
+  opacity: 0.5;
+}
+
+.sortActive {
+  opacity: 1;
+  color: var(--color-teal);
+}
+
+.table td {
+  padding: 10px 12px;
+  color: var(--color-text-primary);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table tbody tr:nth-child(even) {
+  background: var(--color-bg);
+}
+
+.table tbody tr:hover {
+  background: var(--color-teal-light);
+  transition: background 0.15s ease;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.pageBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-card-bg);
+  cursor: pointer;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  transition: border-color 0.15s ease;
+}
+
+.pageBtn:hover:not(:disabled) {
+  border-color: var(--color-teal);
+  color: var(--color-teal);
+}
+
+.pageBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pageBtnActive {
+  background: var(--color-teal);
+  color: #fff;
+  border-color: var(--color-teal);
+}

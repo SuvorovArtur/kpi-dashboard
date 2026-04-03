@@ -1,0 +1,42 @@
+[
+  {
+    "date": "2025-12-31",
+    "totalStaff": 180,
+    "aup": 55,
+    "workers": 125,
+    "vacancies": 20,
+    "vacanciesOver30d": 15,
+    "turnoverPercent": 8,
+    "avgWorkerSalary": 45000
+  },
+  {
+    "date": "2026-03-31",
+    "totalStaff": 190,
+    "aup": 58,
+    "workers": 132,
+    "vacancies": 12,
+    "vacanciesOver30d": 8,
+    "turnoverPercent": 5,
+    "avgWorkerSalary": 48000
+  },
+  {
+    "date": "2026-06-30",
+    "totalStaff": 195,
+    "aup": 60,
+    "workers": 135,
+    "vacancies": 8,
+    "vacanciesOver30d": 5,
+    "turnoverPercent": 4,
+    "avgWorkerSalary": 52000
+  },
+  {
+    "date": "2026-09-30",
+    "totalStaff": 200,
+    "aup": 65,
+    "workers": 135,
+    "vacancies": 5,
+    "vacanciesOver30d": 3,
+    "turnoverPercent": 3,
+    "avgWorkerSalary": 55000
+  }
+]

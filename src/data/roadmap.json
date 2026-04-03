@@ -1,0 +1,102 @@
+[
+  {
+    "id": "tu-1",
+    "track": "tu",
+    "title": "Аудит текущего состояния ТУ",
+    "startDate": "2025-09-01",
+    "endDate": "2025-10-15",
+    "status": "done",
+    "linkedKpis": []
+  },
+  {
+    "id": "tu-2",
+    "track": "tu",
+    "title": "Формирование штатного расписания",
+    "startDate": "2025-10-15",
+    "endDate": "2025-11-30",
+    "status": "done",
+    "linkedKpis": [
+      "turnover",
+      "vacancies_30d"
+    ]
+  },
+  {
+    "id": "tu-3",
+    "track": "tu",
+    "title": "Запуск мониторинга обращений",
+    "startDate": "2025-12-01",
+    "endDate": "2026-01-15",
+    "status": "in_progress",
+    "linkedKpis": [
+      "delayed_appeals",
+      "response_time"
+    ]
+  },
+  {
+    "id": "tu-4",
+    "track": "tu",
+    "title": "Внедрение фотофиксации",
+    "startDate": "2026-01-15",
+    "endDate": "2026-03-01",
+    "status": "planned",
+    "linkedKpis": [
+      "photo_fixation"
+    ]
+  },
+  {
+    "id": "mbu-1",
+    "track": "mbu",
+    "title": "Реорганизация МБУ МТХ",
+    "startDate": "2025-08-01",
+    "endDate": "2025-10-01",
+    "status": "done",
+    "linkedKpis": []
+  },
+  {
+    "id": "mbu-2",
+    "track": "mbu",
+    "title": "Сокращение аутсорса (этап 1)",
+    "startDate": "2025-10-01",
+    "endDate": "2026-01-01",
+    "status": "done",
+    "linkedKpis": [
+      "outsource_share"
+    ]
+  },
+  {
+    "id": "mbu-3",
+    "track": "mbu",
+    "title": "Набор собственных бригад",
+    "startDate": "2026-01-01",
+    "endDate": "2026-04-01",
+    "status": "in_progress",
+    "linkedKpis": [
+      "outsource_share",
+      "turnover"
+    ]
+  },
+  {
+    "id": "mbu-4",
+    "track": "mbu",
+    "title": "Сокращение аутсорса (этап 2)",
+    "startDate": "2026-04-01",
+    "endDate": "2026-07-01",
+    "status": "planned",
+    "linkedKpis": [
+      "outsource_share"
+    ]
+  },
+  {
+    "id": "mbu-5",
+    "track": "mbu",
+    "title": "Выход на целевые показатели",
+    "startDate": "2026-07-01",
+    "endDate": "2026-09-30",
+    "status": "planned",
+    "linkedKpis": [
+      "outsource_share",
+      "nps",
+      "appeals_per_1k"
+    ]
+  }
+]

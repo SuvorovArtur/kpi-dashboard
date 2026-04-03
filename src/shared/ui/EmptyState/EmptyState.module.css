@@ -1,0 +1,33 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  gap: 12px;
+}
+
+.icon {
+  color: var(--color-text-secondary);
+  opacity: 0.5;
+  margin-bottom: 4px;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  color: var(--color-text-primary);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.description {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  max-width: 360px;
+  margin: 0;
+  line-height: 1.5;
+}

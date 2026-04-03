@@ -1,0 +1,8426 @@
+[
+  {
+    "date": "2025-10-01",
+    "kpiId": "outsource_share",
+    "value": 69.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "outsource_share",
+    "value": 69.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "outsource_share",
+    "value": 63.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "outsource_share",
+    "value": 79.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "outsource_share",
+    "value": 77.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "outsource_share",
+    "value": 69.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "outsource_share",
+    "value": 64.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "outsource_share",
+    "value": 61,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "outsource_share",
+    "value": 54.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "outsource_share",
+    "value": 60.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "outsource_share",
+    "value": 55,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "outsource_share",
+    "value": 51.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "outsource_share",
+    "value": 44.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "outsource_share",
+    "value": 42.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "outsource_share",
+    "value": 41.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "outsource_share",
+    "value": 46.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "outsource_share",
+    "value": 40.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "outsource_share",
+    "value": 45.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "outsource_share",
+    "value": 36.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "outsource_share",
+    "value": 33.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "outsource_share",
+    "value": 30,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "outsource_share",
+    "value": 37.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "outsource_share",
+    "value": 27.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "outsource_share",
+    "value": 28.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "outsource_share",
+    "value": 28.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "outsource_share",
+    "value": 19.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "outsource_share",
+    "value": 21,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "outsource_share",
+    "value": 22.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "outsource_share",
+    "value": 21.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "outsource_share",
+    "value": 15.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "outsource_share",
+    "value": 16.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "outsource_share",
+    "value": 19.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "outsource_share",
+    "value": 16.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "outsource_share",
+    "value": 25.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "outsource_share",
+    "value": 19,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "outsource_share",
+    "value": 22.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "outsource_share",
+    "value": 13.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "outsource_share",
+    "value": 22.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "outsource_share",
+    "value": 18.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "outsource_share",
+    "value": 20.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "outsource_share",
+    "value": 18.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "outsource_share",
+    "value": 8.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "outsource_share",
+    "value": 9.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "outsource_share",
+    "value": 9.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "outsource_share",
+    "value": 14.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "outsource_share",
+    "value": 18.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "outsource_share",
+    "value": 9.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "outsource_share",
+    "value": 17.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "outsource_share",
+    "value": 5.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "outsource_share",
+    "value": 12.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "outsource_share",
+    "value": 14.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "outsource_share",
+    "value": 12.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "outsource_share",
+    "value": 70.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "outsource_share",
+    "value": 72.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "outsource_share",
+    "value": 78.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "outsource_share",
+    "value": 76.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "outsource_share",
+    "value": 86.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "outsource_share",
+    "value": 72.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "outsource_share",
+    "value": 69,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "outsource_share",
+    "value": 64.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "outsource_share",
+    "value": 55.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "outsource_share",
+    "value": 60.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "outsource_share",
+    "value": 63.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "outsource_share",
+    "value": 57.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "outsource_share",
+    "value": 55.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "outsource_share",
+    "value": 56.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "outsource_share",
+    "value": 49,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "outsource_share",
+    "value": 44.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "outsource_share",
+    "value": 49.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "outsource_share",
+    "value": 40.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "outsource_share",
+    "value": 48.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "outsource_share",
+    "value": 45.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "outsource_share",
+    "value": 35.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "outsource_share",
+    "value": 41.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "outsource_share",
+    "value": 36.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "outsource_share",
+    "value": 34.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "outsource_share",
+    "value": 25.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "outsource_share",
+    "value": 31.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "outsource_share",
+    "value": 31.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "outsource_share",
+    "value": 21.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "outsource_share",
+    "value": 18.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "outsource_share",
+    "value": 23.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "outsource_share",
+    "value": 24.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "outsource_share",
+    "value": 22.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "outsource_share",
+    "value": 28.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "outsource_share",
+    "value": 23.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "outsource_share",
+    "value": 22.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "outsource_share",
+    "value": 20.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "outsource_share",
+    "value": 22.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "outsource_share",
+    "value": 24.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "outsource_share",
+    "value": 24,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "outsource_share",
+    "value": 21.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "outsource_share",
+    "value": 17.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "outsource_share",
+    "value": 24.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "outsource_share",
+    "value": 15.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "outsource_share",
+    "value": 18.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "outsource_share",
+    "value": 16.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "outsource_share",
+    "value": 16,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "outsource_share",
+    "value": 9.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "outsource_share",
+    "value": 18.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "outsource_share",
+    "value": 13.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "outsource_share",
+    "value": 13.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "outsource_share",
+    "value": 14.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "outsource_share",
+    "value": 15.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "outsource_share",
+    "value": 68.8,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "outsource_share",
+    "value": 73.8,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "outsource_share",
+    "value": 77.1,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "outsource_share",
+    "value": 81.5,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "outsource_share",
+    "value": 76.1,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "outsource_share",
+    "value": 69.1,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "outsource_share",
+    "value": 63.6,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "outsource_share",
+    "value": 58.7,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "outsource_share",
+    "value": 55.9,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "outsource_share",
+    "value": 58.8,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "outsource_share",
+    "value": 55.8,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "outsource_share",
+    "value": 55,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "outsource_share",
+    "value": 53.8,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "outsource_share",
+    "value": 51.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "outsource_share",
+    "value": 52.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "outsource_share",
+    "value": 43.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "outsource_share",
+    "value": 45.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "outsource_share",
+    "value": 43.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "outsource_share",
+    "value": 39,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "outsource_share",
+    "value": 33.9,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "outsource_share",
+    "value": 33.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "outsource_share",
+    "value": 28.4,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "outsource_share",
+    "value": 37,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "outsource_share",
+    "value": 27.9,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "outsource_share",
+    "value": 25.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "outsource_share",
+    "value": 31.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "outsource_share",
+    "value": 22.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "outsource_share",
+    "value": 19.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "outsource_share",
+    "value": 22.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "outsource_share",
+    "value": 29,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "outsource_share",
+    "value": 19.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "outsource_share",
+    "value": 27.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "outsource_share",
+    "value": 27.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "outsource_share",
+    "value": 25.9,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "outsource_share",
+    "value": 23.9,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "outsource_share",
+    "value": 25.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "outsource_share",
+    "value": 22.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "outsource_share",
+    "value": 16.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "outsource_share",
+    "value": 23.9,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "outsource_share",
+    "value": 21.4,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "outsource_share",
+    "value": 12.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "outsource_share",
+    "value": 11.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "outsource_share",
+    "value": 10.4,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "outsource_share",
+    "value": 13.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "outsource_share",
+    "value": 20.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "outsource_share",
+    "value": 17.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "outsource_share",
+    "value": 18.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "outsource_share",
+    "value": 9.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "outsource_share",
+    "value": 13.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "outsource_share",
+    "value": 11.9,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "outsource_share",
+    "value": 5.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "outsource_share",
+    "value": 6.7,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "delayed_appeals",
+    "value": 11.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "delayed_appeals",
+    "value": 11.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "delayed_appeals",
+    "value": 11.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "delayed_appeals",
+    "value": 14.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "delayed_appeals",
+    "value": 19.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "delayed_appeals",
+    "value": 14.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "delayed_appeals",
+    "value": 10.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "delayed_appeals",
+    "value": 9.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "delayed_appeals",
+    "value": 10.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "delayed_appeals",
+    "value": 10,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "delayed_appeals",
+    "value": 8.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "delayed_appeals",
+    "value": 9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "delayed_appeals",
+    "value": 8.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "delayed_appeals",
+    "value": 8.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "delayed_appeals",
+    "value": 7.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "delayed_appeals",
+    "value": 8.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "delayed_appeals",
+    "value": 7.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "delayed_appeals",
+    "value": 7.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "delayed_appeals",
+    "value": 7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "delayed_appeals",
+    "value": 7.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "delayed_appeals",
+    "value": 7.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "delayed_appeals",
+    "value": 6.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "delayed_appeals",
+    "value": 6.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "delayed_appeals",
+    "value": 6.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "delayed_appeals",
+    "value": 6.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "delayed_appeals",
+    "value": 5.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "delayed_appeals",
+    "value": 4.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "delayed_appeals",
+    "value": 5.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "delayed_appeals",
+    "value": 4.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "delayed_appeals",
+    "value": 4.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "delayed_appeals",
+    "value": 4.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "delayed_appeals",
+    "value": 5.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "delayed_appeals",
+    "value": 5.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "delayed_appeals",
+    "value": 4.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "delayed_appeals",
+    "value": 4.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "delayed_appeals",
+    "value": 5.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "delayed_appeals",
+    "value": 4.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "delayed_appeals",
+    "value": 4.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "delayed_appeals",
+    "value": 4.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "delayed_appeals",
+    "value": 3.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "delayed_appeals",
+    "value": 4.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "delayed_appeals",
+    "value": 5.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "delayed_appeals",
+    "value": 4.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "delayed_appeals",
+    "value": 4.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "delayed_appeals",
+    "value": 3.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "delayed_appeals",
+    "value": 3.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "delayed_appeals",
+    "value": 4.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "delayed_appeals",
+    "value": 4.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "delayed_appeals",
+    "value": 3.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "delayed_appeals",
+    "value": 4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "delayed_appeals",
+    "value": 3.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "delayed_appeals",
+    "value": 4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "delayed_appeals",
+    "value": 14.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "delayed_appeals",
+    "value": 13.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "delayed_appeals",
+    "value": 13.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "delayed_appeals",
+    "value": 17,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "delayed_appeals",
+    "value": 22.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "delayed_appeals",
+    "value": 17.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "delayed_appeals",
+    "value": 12.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "delayed_appeals",
+    "value": 12.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "delayed_appeals",
+    "value": 12,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "delayed_appeals",
+    "value": 12.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "delayed_appeals",
+    "value": 11.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "delayed_appeals",
+    "value": 12.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "delayed_appeals",
+    "value": 11.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "delayed_appeals",
+    "value": 11.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "delayed_appeals",
+    "value": 11.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "delayed_appeals",
+    "value": 11.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "delayed_appeals",
+    "value": 11.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "delayed_appeals",
+    "value": 10.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "delayed_appeals",
+    "value": 10.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "delayed_appeals",
+    "value": 9.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "delayed_appeals",
+    "value": 10.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "delayed_appeals",
+    "value": 9.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "delayed_appeals",
+    "value": 9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "delayed_appeals",
+    "value": 8.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "delayed_appeals",
+    "value": 9.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "delayed_appeals",
+    "value": 9.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "delayed_appeals",
+    "value": 8.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "delayed_appeals",
+    "value": 8.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "delayed_appeals",
+    "value": 8.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "delayed_appeals",
+    "value": 8.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "delayed_appeals",
+    "value": 8.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "delayed_appeals",
+    "value": 8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "delayed_appeals",
+    "value": 8.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "delayed_appeals",
+    "value": 7.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "delayed_appeals",
+    "value": 8.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "delayed_appeals",
+    "value": 7.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "delayed_appeals",
+    "value": 7.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "delayed_appeals",
+    "value": 7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "delayed_appeals",
+    "value": 7.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "delayed_appeals",
+    "value": 7.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "delayed_appeals",
+    "value": 8.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "delayed_appeals",
+    "value": 7.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "delayed_appeals",
+    "value": 7.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "delayed_appeals",
+    "value": 7.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "delayed_appeals",
+    "value": 7.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "delayed_appeals",
+    "value": 7.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "delayed_appeals",
+    "value": 6.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "delayed_appeals",
+    "value": 7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "delayed_appeals",
+    "value": 6.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "delayed_appeals",
+    "value": 7.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "delayed_appeals",
+    "value": 6.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "delayed_appeals",
+    "value": 6.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "delayed_appeals",
+    "value": 12.4,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "delayed_appeals",
+    "value": 12.4,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "delayed_appeals",
+    "value": 12.8,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "delayed_appeals",
+    "value": 16.2,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "delayed_appeals",
+    "value": 19.6,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "delayed_appeals",
+    "value": 16.2,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "delayed_appeals",
+    "value": 11.7,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "delayed_appeals",
+    "value": 11.1,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "delayed_appeals",
+    "value": 11.1,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "delayed_appeals",
+    "value": 11.3,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "delayed_appeals",
+    "value": 10.5,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "delayed_appeals",
+    "value": 10.3,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "delayed_appeals",
+    "value": 9.5,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "delayed_appeals",
+    "value": 9.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "delayed_appeals",
+    "value": 9.4,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "delayed_appeals",
+    "value": 10.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "delayed_appeals",
+    "value": 9.9,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "delayed_appeals",
+    "value": 8.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "delayed_appeals",
+    "value": 8.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "delayed_appeals",
+    "value": 7.9,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "delayed_appeals",
+    "value": 8.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "delayed_appeals",
+    "value": 8.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "delayed_appeals",
+    "value": 7.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "delayed_appeals",
+    "value": 6.9,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "delayed_appeals",
+    "value": 7.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "delayed_appeals",
+    "value": 7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "delayed_appeals",
+    "value": 7.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "delayed_appeals",
+    "value": 6.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "delayed_appeals",
+    "value": 7.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "delayed_appeals",
+    "value": 6.9,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "delayed_appeals",
+    "value": 6.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "delayed_appeals",
+    "value": 7.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "delayed_appeals",
+    "value": 7.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "delayed_appeals",
+    "value": 6.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "delayed_appeals",
+    "value": 6.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "delayed_appeals",
+    "value": 7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "delayed_appeals",
+    "value": 6.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "delayed_appeals",
+    "value": 6.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "delayed_appeals",
+    "value": 6.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "delayed_appeals",
+    "value": 5.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "delayed_appeals",
+    "value": 6.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "delayed_appeals",
+    "value": 6.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "delayed_appeals",
+    "value": 6.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "delayed_appeals",
+    "value": 5.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "delayed_appeals",
+    "value": 5.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "delayed_appeals",
+    "value": 4.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "delayed_appeals",
+    "value": 4.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "delayed_appeals",
+    "value": 5.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "delayed_appeals",
+    "value": 4.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "delayed_appeals",
+    "value": 5.9,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "delayed_appeals",
+    "value": 5.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "delayed_appeals",
+    "value": 4.5,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "repeated_appeals",
+    "value": 4.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "repeated_appeals",
+    "value": 4.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "repeated_appeals",
+    "value": 4.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "repeated_appeals",
+    "value": 3.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "repeated_appeals",
+    "value": 4.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "repeated_appeals",
+    "value": 3.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "repeated_appeals",
+    "value": 4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "repeated_appeals",
+    "value": 3.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "repeated_appeals",
+    "value": 3.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "repeated_appeals",
+    "value": 3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "repeated_appeals",
+    "value": 3.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "repeated_appeals",
+    "value": 2.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "repeated_appeals",
+    "value": 2.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "repeated_appeals",
+    "value": 2.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "repeated_appeals",
+    "value": 2.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "repeated_appeals",
+    "value": 2.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "repeated_appeals",
+    "value": 2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "repeated_appeals",
+    "value": 2.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "repeated_appeals",
+    "value": 1.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "repeated_appeals",
+    "value": 2.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "repeated_appeals",
+    "value": 2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "repeated_appeals",
+    "value": 2.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "repeated_appeals",
+    "value": 2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "repeated_appeals",
+    "value": 2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "repeated_appeals",
+    "value": 1.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "repeated_appeals",
+    "value": 1.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "repeated_appeals",
+    "value": 1.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "repeated_appeals",
+    "value": 1.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "repeated_appeals",
+    "value": 1.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "repeated_appeals",
+    "value": 1.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "repeated_appeals",
+    "value": 1.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "repeated_appeals",
+    "value": 1.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "repeated_appeals",
+    "value": 1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "repeated_appeals",
+    "value": 1.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "repeated_appeals",
+    "value": 1.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "repeated_appeals",
+    "value": 1.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "repeated_appeals",
+    "value": 1.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "repeated_appeals",
+    "value": 1.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "repeated_appeals",
+    "value": 1.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "repeated_appeals",
+    "value": 1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "repeated_appeals",
+    "value": 0.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "repeated_appeals",
+    "value": 1.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "repeated_appeals",
+    "value": 1.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "repeated_appeals",
+    "value": 1.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "repeated_appeals",
+    "value": 0.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "repeated_appeals",
+    "value": 0.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "repeated_appeals",
+    "value": 0.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "repeated_appeals",
+    "value": 1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "repeated_appeals",
+    "value": 0.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "repeated_appeals",
+    "value": 0.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "repeated_appeals",
+    "value": 0.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "repeated_appeals",
+    "value": 0.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "repeated_appeals",
+    "value": 7.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "repeated_appeals",
+    "value": 7.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "repeated_appeals",
+    "value": 7.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "repeated_appeals",
+    "value": 7.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "repeated_appeals",
+    "value": 6.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "repeated_appeals",
+    "value": 6.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "repeated_appeals",
+    "value": 6.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "repeated_appeals",
+    "value": 6.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "repeated_appeals",
+    "value": 6.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "repeated_appeals",
+    "value": 5.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "repeated_appeals",
+    "value": 5.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "repeated_appeals",
+    "value": 5.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "repeated_appeals",
+    "value": 5.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "repeated_appeals",
+    "value": 5.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "repeated_appeals",
+    "value": 5.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "repeated_appeals",
+    "value": 5.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "repeated_appeals",
+    "value": 5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "repeated_appeals",
+    "value": 4.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "repeated_appeals",
+    "value": 4.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "repeated_appeals",
+    "value": 5.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "repeated_appeals",
+    "value": 5.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "repeated_appeals",
+    "value": 5.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "repeated_appeals",
+    "value": 4.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "repeated_appeals",
+    "value": 4.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "repeated_appeals",
+    "value": 4.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "repeated_appeals",
+    "value": 4.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "repeated_appeals",
+    "value": 4.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "repeated_appeals",
+    "value": 4.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "repeated_appeals",
+    "value": 4.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "repeated_appeals",
+    "value": 4.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "repeated_appeals",
+    "value": 4.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "repeated_appeals",
+    "value": 4.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "repeated_appeals",
+    "value": 4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "repeated_appeals",
+    "value": 4.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "repeated_appeals",
+    "value": 3.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "repeated_appeals",
+    "value": 3.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "repeated_appeals",
+    "value": 3.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "repeated_appeals",
+    "value": 3.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "repeated_appeals",
+    "value": 4.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "repeated_appeals",
+    "value": 3.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "repeated_appeals",
+    "value": 4.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "repeated_appeals",
+    "value": 3.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "repeated_appeals",
+    "value": 3.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "repeated_appeals",
+    "value": 3.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "repeated_appeals",
+    "value": 3.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "repeated_appeals",
+    "value": 3.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "repeated_appeals",
+    "value": 3.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "repeated_appeals",
+    "value": 3.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "repeated_appeals",
+    "value": 3.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "repeated_appeals",
+    "value": 3.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "repeated_appeals",
+    "value": 3.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "repeated_appeals",
+    "value": 3.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "repeated_appeals",
+    "value": 6.2,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "repeated_appeals",
+    "value": 6.2,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "repeated_appeals",
+    "value": 5.8,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "repeated_appeals",
+    "value": 5.3,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "repeated_appeals",
+    "value": 5,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "repeated_appeals",
+    "value": 5.5,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "repeated_appeals",
+    "value": 5,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "repeated_appeals",
+    "value": 4.6,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "repeated_appeals",
+    "value": 4.5,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "repeated_appeals",
+    "value": 4.6,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "repeated_appeals",
+    "value": 4.2,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "repeated_appeals",
+    "value": 4.5,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "repeated_appeals",
+    "value": 4.1,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "repeated_appeals",
+    "value": 4.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "repeated_appeals",
+    "value": 3.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "repeated_appeals",
+    "value": 4.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "repeated_appeals",
+    "value": 3.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "repeated_appeals",
+    "value": 4,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "repeated_appeals",
+    "value": 3.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "repeated_appeals",
+    "value": 3.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "repeated_appeals",
+    "value": 3.4,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "repeated_appeals",
+    "value": 3.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "repeated_appeals",
+    "value": 3.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "repeated_appeals",
+    "value": 3.4,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "repeated_appeals",
+    "value": 3.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "repeated_appeals",
+    "value": 3.4,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "repeated_appeals",
+    "value": 2.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "repeated_appeals",
+    "value": 2.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "repeated_appeals",
+    "value": 3.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "repeated_appeals",
+    "value": 2.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "repeated_appeals",
+    "value": 3.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "repeated_appeals",
+    "value": 2.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "repeated_appeals",
+    "value": 2.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "repeated_appeals",
+    "value": 2.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "repeated_appeals",
+    "value": 2.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "repeated_appeals",
+    "value": 2.4,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "repeated_appeals",
+    "value": 2.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "repeated_appeals",
+    "value": 3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "repeated_appeals",
+    "value": 2.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "repeated_appeals",
+    "value": 2.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "repeated_appeals",
+    "value": 2.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "repeated_appeals",
+    "value": 2.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "repeated_appeals",
+    "value": 2.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "repeated_appeals",
+    "value": 2.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "repeated_appeals",
+    "value": 2.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "repeated_appeals",
+    "value": 2.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "repeated_appeals",
+    "value": 1.9,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "repeated_appeals",
+    "value": 2.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "repeated_appeals",
+    "value": 2.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "repeated_appeals",
+    "value": 2.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "repeated_appeals",
+    "value": 1.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "repeated_appeals",
+    "value": 2.2,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "appeals_per_1k",
+    "value": 18.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "appeals_per_1k",
+    "value": 18.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "appeals_per_1k",
+    "value": 19.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "appeals_per_1k",
+    "value": 19.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "appeals_per_1k",
+    "value": 20.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "appeals_per_1k",
+    "value": 18.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "appeals_per_1k",
+    "value": 19.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "appeals_per_1k",
+    "value": 18.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "appeals_per_1k",
+    "value": 18.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "appeals_per_1k",
+    "value": 19.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "appeals_per_1k",
+    "value": 18.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "appeals_per_1k",
+    "value": 19.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "appeals_per_1k",
+    "value": 19.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "appeals_per_1k",
+    "value": 19.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "appeals_per_1k",
+    "value": 18,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "appeals_per_1k",
+    "value": 17.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "appeals_per_1k",
+    "value": 18,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "appeals_per_1k",
+    "value": 16.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "appeals_per_1k",
+    "value": 15.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "appeals_per_1k",
+    "value": 16.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "appeals_per_1k",
+    "value": 15.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "appeals_per_1k",
+    "value": 16.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "appeals_per_1k",
+    "value": 14.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "appeals_per_1k",
+    "value": 15.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "appeals_per_1k",
+    "value": 14,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "appeals_per_1k",
+    "value": 13.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "appeals_per_1k",
+    "value": 12.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "appeals_per_1k",
+    "value": 14,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "appeals_per_1k",
+    "value": 12.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "appeals_per_1k",
+    "value": 13.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "appeals_per_1k",
+    "value": 13.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "appeals_per_1k",
+    "value": 11.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "appeals_per_1k",
+    "value": 11.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "appeals_per_1k",
+    "value": 13.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "appeals_per_1k",
+    "value": 12.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "appeals_per_1k",
+    "value": 11,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "appeals_per_1k",
+    "value": 11.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "appeals_per_1k",
+    "value": 12.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "appeals_per_1k",
+    "value": 11.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "appeals_per_1k",
+    "value": 10,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "appeals_per_1k",
+    "value": 10.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "appeals_per_1k",
+    "value": 11,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "appeals_per_1k",
+    "value": 10.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "appeals_per_1k",
+    "value": 10,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "appeals_per_1k",
+    "value": 10.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "appeals_per_1k",
+    "value": 9.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "appeals_per_1k",
+    "value": 9.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "appeals_per_1k",
+    "value": 9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "appeals_per_1k",
+    "value": 8.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "appeals_per_1k",
+    "value": 9.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "appeals_per_1k",
+    "value": 9.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "appeals_per_1k",
+    "value": 9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "appeals_per_1k",
+    "value": 23.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "appeals_per_1k",
+    "value": 22.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "appeals_per_1k",
+    "value": 21.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "appeals_per_1k",
+    "value": 21.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "appeals_per_1k",
+    "value": 21.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "appeals_per_1k",
+    "value": 21.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "appeals_per_1k",
+    "value": 22.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "appeals_per_1k",
+    "value": 22.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "appeals_per_1k",
+    "value": 22.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "appeals_per_1k",
+    "value": 22.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "appeals_per_1k",
+    "value": 21.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "appeals_per_1k",
+    "value": 22,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "appeals_per_1k",
+    "value": 22.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "appeals_per_1k",
+    "value": 21.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "appeals_per_1k",
+    "value": 22,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "appeals_per_1k",
+    "value": 20.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "appeals_per_1k",
+    "value": 19.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "appeals_per_1k",
+    "value": 19.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "appeals_per_1k",
+    "value": 19.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "appeals_per_1k",
+    "value": 19.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "appeals_per_1k",
+    "value": 17.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "appeals_per_1k",
+    "value": 18,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "appeals_per_1k",
+    "value": 17.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "appeals_per_1k",
+    "value": 17.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "appeals_per_1k",
+    "value": 17,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "appeals_per_1k",
+    "value": 17.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "appeals_per_1k",
+    "value": 15.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "appeals_per_1k",
+    "value": 15.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "appeals_per_1k",
+    "value": 15.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "appeals_per_1k",
+    "value": 16,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "appeals_per_1k",
+    "value": 15.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "appeals_per_1k",
+    "value": 15.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "appeals_per_1k",
+    "value": 16.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "appeals_per_1k",
+    "value": 14.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "appeals_per_1k",
+    "value": 14.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "appeals_per_1k",
+    "value": 15.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "appeals_per_1k",
+    "value": 14,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "appeals_per_1k",
+    "value": 13.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "appeals_per_1k",
+    "value": 14.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "appeals_per_1k",
+    "value": 13.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "appeals_per_1k",
+    "value": 13.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "appeals_per_1k",
+    "value": 13.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "appeals_per_1k",
+    "value": 14.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "appeals_per_1k",
+    "value": 12.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "appeals_per_1k",
+    "value": 14,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "appeals_per_1k",
+    "value": 13,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "appeals_per_1k",
+    "value": 13,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "appeals_per_1k",
+    "value": 12.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "appeals_per_1k",
+    "value": 12.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "appeals_per_1k",
+    "value": 13,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "appeals_per_1k",
+    "value": 11.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "appeals_per_1k",
+    "value": 11.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "appeals_per_1k",
+    "value": 21.4,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "appeals_per_1k",
+    "value": 20.9,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "appeals_per_1k",
+    "value": 21.4,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "appeals_per_1k",
+    "value": 20,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "appeals_per_1k",
+    "value": 20.4,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "appeals_per_1k",
+    "value": 19.6,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "appeals_per_1k",
+    "value": 20.1,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "appeals_per_1k",
+    "value": 20.9,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "appeals_per_1k",
+    "value": 19.7,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "appeals_per_1k",
+    "value": 20.7,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "appeals_per_1k",
+    "value": 19.9,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "appeals_per_1k",
+    "value": 20.8,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "appeals_per_1k",
+    "value": 20,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "appeals_per_1k",
+    "value": 19.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "appeals_per_1k",
+    "value": 18.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "appeals_per_1k",
+    "value": 19.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "appeals_per_1k",
+    "value": 19.4,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "appeals_per_1k",
+    "value": 19,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "appeals_per_1k",
+    "value": 18.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "appeals_per_1k",
+    "value": 16.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "appeals_per_1k",
+    "value": 16.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "appeals_per_1k",
+    "value": 17.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "appeals_per_1k",
+    "value": 16.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "appeals_per_1k",
+    "value": 15.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "appeals_per_1k",
+    "value": 15.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "appeals_per_1k",
+    "value": 14.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "appeals_per_1k",
+    "value": 14.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "appeals_per_1k",
+    "value": 13.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "appeals_per_1k",
+    "value": 15.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "appeals_per_1k",
+    "value": 14.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "appeals_per_1k",
+    "value": 15.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "appeals_per_1k",
+    "value": 14.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "appeals_per_1k",
+    "value": 14.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "appeals_per_1k",
+    "value": 14.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "appeals_per_1k",
+    "value": 12.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "appeals_per_1k",
+    "value": 13.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "appeals_per_1k",
+    "value": 13.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "appeals_per_1k",
+    "value": 12.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "appeals_per_1k",
+    "value": 12.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "appeals_per_1k",
+    "value": 12.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "appeals_per_1k",
+    "value": 12.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "appeals_per_1k",
+    "value": 11.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "appeals_per_1k",
+    "value": 13,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "appeals_per_1k",
+    "value": 11,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "appeals_per_1k",
+    "value": 10.9,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "appeals_per_1k",
+    "value": 11.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "appeals_per_1k",
+    "value": 10.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "appeals_per_1k",
+    "value": 10,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "appeals_per_1k",
+    "value": 10.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "appeals_per_1k",
+    "value": 10.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "appeals_per_1k",
+    "value": 10.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "appeals_per_1k",
+    "value": 9.4,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "nps",
+    "value": -32.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "nps",
+    "value": -31.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "nps",
+    "value": -27.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "nps",
+    "value": -24.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "nps",
+    "value": -16,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "nps",
+    "value": -12.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "nps",
+    "value": -18.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "nps",
+    "value": -7.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "nps",
+    "value": -4.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "nps",
+    "value": -9.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "nps",
+    "value": 4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "nps",
+    "value": -1.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "nps",
+    "value": 5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "nps",
+    "value": 5.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "nps",
+    "value": 12.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "nps",
+    "value": 8.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "nps",
+    "value": 16.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "nps",
+    "value": 16.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "nps",
+    "value": 17,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "nps",
+    "value": 11.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "nps",
+    "value": 17,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "nps",
+    "value": 18.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "nps",
+    "value": 14.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "nps",
+    "value": 16.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "nps",
+    "value": 13.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "nps",
+    "value": 14,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "nps",
+    "value": 16.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "nps",
+    "value": 20.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "nps",
+    "value": 21.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "nps",
+    "value": 23.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "nps",
+    "value": 14.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "nps",
+    "value": 18.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "nps",
+    "value": 16.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "nps",
+    "value": 22.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "nps",
+    "value": 20.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "nps",
+    "value": 22,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "nps",
+    "value": 22,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "nps",
+    "value": 22.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "nps",
+    "value": 21.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "nps",
+    "value": 20.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "nps",
+    "value": 18.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "nps",
+    "value": 25.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "nps",
+    "value": 21.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "nps",
+    "value": 26.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "nps",
+    "value": 21.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "nps",
+    "value": 21.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "nps",
+    "value": 26.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "nps",
+    "value": 20.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "nps",
+    "value": 32.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "nps",
+    "value": 32,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "nps",
+    "value": 30.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "nps",
+    "value": 28.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "nps",
+    "value": -37.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "nps",
+    "value": -23.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "nps",
+    "value": -30.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "nps",
+    "value": -21.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "nps",
+    "value": -17.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "nps",
+    "value": -18.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "nps",
+    "value": -14.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "nps",
+    "value": -6.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "nps",
+    "value": 0.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "nps",
+    "value": 2.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "nps",
+    "value": -0.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "nps",
+    "value": 3.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "nps",
+    "value": 13.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "nps",
+    "value": 10.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "nps",
+    "value": 6.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "nps",
+    "value": 11.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "nps",
+    "value": 14.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "nps",
+    "value": 10.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "nps",
+    "value": 18.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "nps",
+    "value": 19,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "nps",
+    "value": 19.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "nps",
+    "value": 13.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "nps",
+    "value": 13.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "nps",
+    "value": 23.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "nps",
+    "value": 15.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "nps",
+    "value": 17.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "nps",
+    "value": 20.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "nps",
+    "value": 26.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "nps",
+    "value": 18.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "nps",
+    "value": 26.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "nps",
+    "value": 22.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "nps",
+    "value": 29,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "nps",
+    "value": 24.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "nps",
+    "value": 25.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "nps",
+    "value": 18.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "nps",
+    "value": 27.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "nps",
+    "value": 27.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "nps",
+    "value": 25.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "nps",
+    "value": 24.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "nps",
+    "value": 30.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "nps",
+    "value": 31.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "nps",
+    "value": 26.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "nps",
+    "value": 31.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "nps",
+    "value": 24.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "nps",
+    "value": 28.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "nps",
+    "value": 28.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "nps",
+    "value": 30.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "nps",
+    "value": 30.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "nps",
+    "value": 30,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "nps",
+    "value": 27.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "nps",
+    "value": 34.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "nps",
+    "value": 35.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "nps",
+    "value": -31.7,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "nps",
+    "value": -35.4,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "nps",
+    "value": -28.1,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "nps",
+    "value": -22.2,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "nps",
+    "value": -17.2,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "nps",
+    "value": -12.6,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "nps",
+    "value": -7,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "nps",
+    "value": -3.8,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "nps",
+    "value": -10.8,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "nps",
+    "value": -1.2,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "nps",
+    "value": 1.3,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "nps",
+    "value": 5.7,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "nps",
+    "value": 11.9,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "nps",
+    "value": 6.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "nps",
+    "value": 7.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "nps",
+    "value": 16.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "nps",
+    "value": 6.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "nps",
+    "value": 17.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "nps",
+    "value": 8.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "nps",
+    "value": 12.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "nps",
+    "value": 14.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "nps",
+    "value": 15.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "nps",
+    "value": 23.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "nps",
+    "value": 15.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "nps",
+    "value": 16.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "nps",
+    "value": 21.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "nps",
+    "value": 15.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "nps",
+    "value": 21,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "nps",
+    "value": 26.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "nps",
+    "value": 18.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "nps",
+    "value": 22.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "nps",
+    "value": 26.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "nps",
+    "value": 26.9,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "nps",
+    "value": 27.9,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "nps",
+    "value": 17.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "nps",
+    "value": 25.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "nps",
+    "value": 24.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "nps",
+    "value": 22.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "nps",
+    "value": 22.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "nps",
+    "value": 22.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "nps",
+    "value": 30.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "nps",
+    "value": 29.4,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "nps",
+    "value": 20.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "nps",
+    "value": 20.4,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "nps",
+    "value": 33.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "nps",
+    "value": 24.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "nps",
+    "value": 32.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "nps",
+    "value": 27.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "nps",
+    "value": 30.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "nps",
+    "value": 32.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "nps",
+    "value": 31.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "nps",
+    "value": 24.1,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "turnover",
+    "value": -1.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "turnover",
+    "value": -1.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "turnover",
+    "value": -0.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "turnover",
+    "value": -0.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "turnover",
+    "value": -0.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "turnover",
+    "value": 0.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "turnover",
+    "value": 0.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "turnover",
+    "value": 1.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "turnover",
+    "value": 1.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "turnover",
+    "value": 2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "turnover",
+    "value": 2.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "turnover",
+    "value": 2.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "turnover",
+    "value": 3.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "turnover",
+    "value": 3.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "turnover",
+    "value": 3.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "turnover",
+    "value": 3.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "turnover",
+    "value": 3.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "turnover",
+    "value": 3.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "turnover",
+    "value": 3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "turnover",
+    "value": 2.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "turnover",
+    "value": 2.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "turnover",
+    "value": 3.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "turnover",
+    "value": 3.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "turnover",
+    "value": 2.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "turnover",
+    "value": 2.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "turnover",
+    "value": 2.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "turnover",
+    "value": 2.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "turnover",
+    "value": 2.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "turnover",
+    "value": 2.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "turnover",
+    "value": 2.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "turnover",
+    "value": 2.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "turnover",
+    "value": 2.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "turnover",
+    "value": 2.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "turnover",
+    "value": 2.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "turnover",
+    "value": 1.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "turnover",
+    "value": 2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "turnover",
+    "value": 2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "turnover",
+    "value": 2.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "turnover",
+    "value": 2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "turnover",
+    "value": 1.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "turnover",
+    "value": 2.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "turnover",
+    "value": 1.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "turnover",
+    "value": 1.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "turnover",
+    "value": 1.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "turnover",
+    "value": 1.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "turnover",
+    "value": 1.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "turnover",
+    "value": 1.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "turnover",
+    "value": 1.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "turnover",
+    "value": 1.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "turnover",
+    "value": 1.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "turnover",
+    "value": 1.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "turnover",
+    "value": 1.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "turnover",
+    "value": 1.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "turnover",
+    "value": 1.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "turnover",
+    "value": 2.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "turnover",
+    "value": 2.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "turnover",
+    "value": 3.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "turnover",
+    "value": 3.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "turnover",
+    "value": 3.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "turnover",
+    "value": 4.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "turnover",
+    "value": 4.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "turnover",
+    "value": 5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "turnover",
+    "value": 5.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "turnover",
+    "value": 5.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "turnover",
+    "value": 6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "turnover",
+    "value": 6.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "turnover",
+    "value": 6.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "turnover",
+    "value": 6.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "turnover",
+    "value": 6.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "turnover",
+    "value": 6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "turnover",
+    "value": 6.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "turnover",
+    "value": 6.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "turnover",
+    "value": 6.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "turnover",
+    "value": 6.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "turnover",
+    "value": 6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "turnover",
+    "value": 5.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "turnover",
+    "value": 5.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "turnover",
+    "value": 5.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "turnover",
+    "value": 5.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "turnover",
+    "value": 5.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "turnover",
+    "value": 5.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "turnover",
+    "value": 5.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "turnover",
+    "value": 5.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "turnover",
+    "value": 5.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "turnover",
+    "value": 5.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "turnover",
+    "value": 5.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "turnover",
+    "value": 5.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "turnover",
+    "value": 5.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "turnover",
+    "value": 4.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "turnover",
+    "value": 5.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "turnover",
+    "value": 4.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "turnover",
+    "value": 5.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "turnover",
+    "value": 4.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "turnover",
+    "value": 5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "turnover",
+    "value": 5.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "turnover",
+    "value": 5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "turnover",
+    "value": 4.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "turnover",
+    "value": 4.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "turnover",
+    "value": 4.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "turnover",
+    "value": 5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "turnover",
+    "value": 4.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "turnover",
+    "value": 4.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "turnover",
+    "value": 4.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "turnover",
+    "value": 4.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "turnover",
+    "value": 0,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "turnover",
+    "value": 0.3,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "turnover",
+    "value": 0.6,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "turnover",
+    "value": 1.4,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "turnover",
+    "value": 1.8,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "turnover",
+    "value": 1.8,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "turnover",
+    "value": 2.1,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "turnover",
+    "value": 2.9,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "turnover",
+    "value": 3.1,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "turnover",
+    "value": 3.3,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "turnover",
+    "value": 3.9,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "turnover",
+    "value": 4.3,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "turnover",
+    "value": 4.7,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "turnover",
+    "value": 4.9,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "turnover",
+    "value": 4.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "turnover",
+    "value": 4.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "turnover",
+    "value": 4.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "turnover",
+    "value": 4.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "turnover",
+    "value": 4.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "turnover",
+    "value": 4.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "turnover",
+    "value": 4.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "turnover",
+    "value": 4.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "turnover",
+    "value": 4.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "turnover",
+    "value": 4.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "turnover",
+    "value": 4,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "turnover",
+    "value": 4.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "turnover",
+    "value": 4.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "turnover",
+    "value": 3.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "turnover",
+    "value": 3.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "turnover",
+    "value": 3.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "turnover",
+    "value": 3.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "turnover",
+    "value": 3.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "turnover",
+    "value": 3.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "turnover",
+    "value": 3.9,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "turnover",
+    "value": 3.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "turnover",
+    "value": 3.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "turnover",
+    "value": 3.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "turnover",
+    "value": 3.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "turnover",
+    "value": 3.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "turnover",
+    "value": 3.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "turnover",
+    "value": 3.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "turnover",
+    "value": 3.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "turnover",
+    "value": 3.4,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "turnover",
+    "value": 3.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "turnover",
+    "value": 3.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "turnover",
+    "value": 3.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "turnover",
+    "value": 3.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "turnover",
+    "value": 3.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "turnover",
+    "value": 3.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "turnover",
+    "value": 3.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "turnover",
+    "value": 3.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "turnover",
+    "value": 2.8,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "vacancies_30d",
+    "value": 0,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "vacancies_30d",
+    "value": 0,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "vacancies_30d",
+    "value": 1.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "vacancies_30d",
+    "value": 2.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "vacancies_30d",
+    "value": 2.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "vacancies_30d",
+    "value": 5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "vacancies_30d",
+    "value": 4.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "vacancies_30d",
+    "value": 5.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "vacancies_30d",
+    "value": 8.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "vacancies_30d",
+    "value": 9.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "vacancies_30d",
+    "value": 9.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "vacancies_30d",
+    "value": 12,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "vacancies_30d",
+    "value": 12.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "vacancies_30d",
+    "value": 14.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "vacancies_30d",
+    "value": 13.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "vacancies_30d",
+    "value": 13.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "vacancies_30d",
+    "value": 12.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "vacancies_30d",
+    "value": 12.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "vacancies_30d",
+    "value": 11.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "vacancies_30d",
+    "value": 11.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "vacancies_30d",
+    "value": 11.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "vacancies_30d",
+    "value": 10.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "vacancies_30d",
+    "value": 10.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "vacancies_30d",
+    "value": 10.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "vacancies_30d",
+    "value": 8.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "vacancies_30d",
+    "value": 8.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "vacancies_30d",
+    "value": 8.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "vacancies_30d",
+    "value": 7.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "vacancies_30d",
+    "value": 8.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "vacancies_30d",
+    "value": 8.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "vacancies_30d",
+    "value": 8.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "vacancies_30d",
+    "value": 8.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "vacancies_30d",
+    "value": 8.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "vacancies_30d",
+    "value": 8.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "vacancies_30d",
+    "value": 9.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "vacancies_30d",
+    "value": 9.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "vacancies_30d",
+    "value": 8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "vacancies_30d",
+    "value": 7.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "vacancies_30d",
+    "value": 8.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "vacancies_30d",
+    "value": 9.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "vacancies_30d",
+    "value": 8.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "vacancies_30d",
+    "value": 9.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "vacancies_30d",
+    "value": 9.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "vacancies_30d",
+    "value": 8.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "vacancies_30d",
+    "value": 8.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "vacancies_30d",
+    "value": 8.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "vacancies_30d",
+    "value": 8.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "vacancies_30d",
+    "value": 9.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "vacancies_30d",
+    "value": 8.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "vacancies_30d",
+    "value": 9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "vacancies_30d",
+    "value": 8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "vacancies_30d",
+    "value": 9.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "vacancies_30d",
+    "value": 0.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "vacancies_30d",
+    "value": 2.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "vacancies_30d",
+    "value": 4.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "vacancies_30d",
+    "value": 4.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "vacancies_30d",
+    "value": 6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "vacancies_30d",
+    "value": 8.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "vacancies_30d",
+    "value": 8.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "vacancies_30d",
+    "value": 9.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "vacancies_30d",
+    "value": 10.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "vacancies_30d",
+    "value": 10.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "vacancies_30d",
+    "value": 13.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "vacancies_30d",
+    "value": 14.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "vacancies_30d",
+    "value": 15.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "vacancies_30d",
+    "value": 17.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "vacancies_30d",
+    "value": 15.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "vacancies_30d",
+    "value": 15,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "vacancies_30d",
+    "value": 16.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "vacancies_30d",
+    "value": 15.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "vacancies_30d",
+    "value": 14.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "vacancies_30d",
+    "value": 14.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "vacancies_30d",
+    "value": 13.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "vacancies_30d",
+    "value": 13.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "vacancies_30d",
+    "value": 13.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "vacancies_30d",
+    "value": 12.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "vacancies_30d",
+    "value": 13.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "vacancies_30d",
+    "value": 11,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "vacancies_30d",
+    "value": 10.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "vacancies_30d",
+    "value": 12.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "vacancies_30d",
+    "value": 10.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "vacancies_30d",
+    "value": 11.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "vacancies_30d",
+    "value": 11.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "vacancies_30d",
+    "value": 12.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "vacancies_30d",
+    "value": 12,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "vacancies_30d",
+    "value": 11.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "vacancies_30d",
+    "value": 11.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "vacancies_30d",
+    "value": 11.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "vacancies_30d",
+    "value": 11.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "vacancies_30d",
+    "value": 11.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "vacancies_30d",
+    "value": 12,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "vacancies_30d",
+    "value": 11.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "vacancies_30d",
+    "value": 11.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "vacancies_30d",
+    "value": 12.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "vacancies_30d",
+    "value": 11.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "vacancies_30d",
+    "value": 12.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "vacancies_30d",
+    "value": 11.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "vacancies_30d",
+    "value": 10.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "vacancies_30d",
+    "value": 10.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "vacancies_30d",
+    "value": 11.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "vacancies_30d",
+    "value": 11.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "vacancies_30d",
+    "value": 11,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "vacancies_30d",
+    "value": 11.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "vacancies_30d",
+    "value": 10.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "vacancies_30d",
+    "value": 0,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "vacancies_30d",
+    "value": 1.4,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "vacancies_30d",
+    "value": 1.6,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "vacancies_30d",
+    "value": 3.1,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "vacancies_30d",
+    "value": 4.4,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "vacancies_30d",
+    "value": 6.1,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "vacancies_30d",
+    "value": 7.8,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "vacancies_30d",
+    "value": 8.1,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "vacancies_30d",
+    "value": 8.5,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "vacancies_30d",
+    "value": 10.7,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "vacancies_30d",
+    "value": 11.7,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "vacancies_30d",
+    "value": 12.4,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "vacancies_30d",
+    "value": 14.6,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "vacancies_30d",
+    "value": 14.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "vacancies_30d",
+    "value": 14.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "vacancies_30d",
+    "value": 14.4,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "vacancies_30d",
+    "value": 14.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "vacancies_30d",
+    "value": 13.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "vacancies_30d",
+    "value": 13,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "vacancies_30d",
+    "value": 11.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "vacancies_30d",
+    "value": 12.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "vacancies_30d",
+    "value": 12.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "vacancies_30d",
+    "value": 10.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "vacancies_30d",
+    "value": 12.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "vacancies_30d",
+    "value": 11.4,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "vacancies_30d",
+    "value": 11.4,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "vacancies_30d",
+    "value": 9.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "vacancies_30d",
+    "value": 10.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "vacancies_30d",
+    "value": 9.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "vacancies_30d",
+    "value": 10.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "vacancies_30d",
+    "value": 10.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "vacancies_30d",
+    "value": 10.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "vacancies_30d",
+    "value": 9.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "vacancies_30d",
+    "value": 9.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "vacancies_30d",
+    "value": 10.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "vacancies_30d",
+    "value": 10.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "vacancies_30d",
+    "value": 10.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "vacancies_30d",
+    "value": 10.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "vacancies_30d",
+    "value": 10.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "vacancies_30d",
+    "value": 10.4,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "vacancies_30d",
+    "value": 10.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "vacancies_30d",
+    "value": 9.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "vacancies_30d",
+    "value": 9.9,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "vacancies_30d",
+    "value": 9.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "vacancies_30d",
+    "value": 10.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "vacancies_30d",
+    "value": 9.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "vacancies_30d",
+    "value": 9.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "vacancies_30d",
+    "value": 9.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "vacancies_30d",
+    "value": 10.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "vacancies_30d",
+    "value": 9.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "vacancies_30d",
+    "value": 9.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "vacancies_30d",
+    "value": 9.3,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "response_time",
+    "value": 0,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "response_time",
+    "value": 2.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "response_time",
+    "value": 5.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "response_time",
+    "value": 9.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "response_time",
+    "value": 14.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "response_time",
+    "value": 16.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "response_time",
+    "value": 20,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "response_time",
+    "value": 23.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "response_time",
+    "value": 28.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "response_time",
+    "value": 31.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "response_time",
+    "value": 34.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "response_time",
+    "value": 39.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "response_time",
+    "value": 42.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "response_time",
+    "value": 47.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "response_time",
+    "value": 45.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "response_time",
+    "value": 43.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "response_time",
+    "value": 40.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "response_time",
+    "value": 39.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "response_time",
+    "value": 37.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "response_time",
+    "value": 34.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "response_time",
+    "value": 33.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "response_time",
+    "value": 32.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "response_time",
+    "value": 29.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "response_time",
+    "value": 28.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "response_time",
+    "value": 26.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "response_time",
+    "value": 23.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "response_time",
+    "value": 23,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "response_time",
+    "value": 23,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "response_time",
+    "value": 21.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "response_time",
+    "value": 21.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "response_time",
+    "value": 20.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "response_time",
+    "value": 21.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "response_time",
+    "value": 18.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "response_time",
+    "value": 20.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "response_time",
+    "value": 19.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "response_time",
+    "value": 17.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "response_time",
+    "value": 17.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "response_time",
+    "value": 16.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "response_time",
+    "value": 17.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "response_time",
+    "value": 17.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "response_time",
+    "value": 15.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "response_time",
+    "value": 15.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "response_time",
+    "value": 15,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "response_time",
+    "value": 15.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "response_time",
+    "value": 14.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "response_time",
+    "value": 13.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "response_time",
+    "value": 14.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "response_time",
+    "value": 12.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "response_time",
+    "value": 11.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "response_time",
+    "value": 11.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "response_time",
+    "value": 12,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "response_time",
+    "value": 11.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "response_time",
+    "value": 1.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "response_time",
+    "value": 5.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "response_time",
+    "value": 9.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "response_time",
+    "value": 11.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "response_time",
+    "value": 16.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "response_time",
+    "value": 19.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "response_time",
+    "value": 24.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "response_time",
+    "value": 27.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "response_time",
+    "value": 30.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "response_time",
+    "value": 35.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "response_time",
+    "value": 38.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "response_time",
+    "value": 43.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "response_time",
+    "value": 45.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "response_time",
+    "value": 49.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "response_time",
+    "value": 46.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "response_time",
+    "value": 46.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "response_time",
+    "value": 43,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "response_time",
+    "value": 43.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "response_time",
+    "value": 40.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "response_time",
+    "value": 39.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "response_time",
+    "value": 37.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "response_time",
+    "value": 35.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "response_time",
+    "value": 33.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "response_time",
+    "value": 31.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "response_time",
+    "value": 29,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "response_time",
+    "value": 27.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "response_time",
+    "value": 25.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "response_time",
+    "value": 25.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "response_time",
+    "value": 25.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "response_time",
+    "value": 23.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "response_time",
+    "value": 24.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "response_time",
+    "value": 23.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "response_time",
+    "value": 22,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "response_time",
+    "value": 21.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "response_time",
+    "value": 21.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "response_time",
+    "value": 22.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "response_time",
+    "value": 22.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "response_time",
+    "value": 21,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "response_time",
+    "value": 18.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "response_time",
+    "value": 19,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "response_time",
+    "value": 18.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "response_time",
+    "value": 19.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "response_time",
+    "value": 17.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "response_time",
+    "value": 17.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "response_time",
+    "value": 16.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "response_time",
+    "value": 17.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "response_time",
+    "value": 15.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "response_time",
+    "value": 15.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "response_time",
+    "value": 14.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "response_time",
+    "value": 14.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "response_time",
+    "value": 14.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "response_time",
+    "value": 14,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "response_time",
+    "value": 0,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "response_time",
+    "value": 4.7,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "response_time",
+    "value": 6.4,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "response_time",
+    "value": 11.1,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "response_time",
+    "value": 15.2,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "response_time",
+    "value": 17.5,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "response_time",
+    "value": 23.2,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "response_time",
+    "value": 26.5,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "response_time",
+    "value": 29,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "response_time",
+    "value": 33.9,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "response_time",
+    "value": 37.6,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "response_time",
+    "value": 40.6,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "response_time",
+    "value": 43.8,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "response_time",
+    "value": 47.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "response_time",
+    "value": 45.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "response_time",
+    "value": 44.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "response_time",
+    "value": 41.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "response_time",
+    "value": 41.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "response_time",
+    "value": 39,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "response_time",
+    "value": 37.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "response_time",
+    "value": 35.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "response_time",
+    "value": 32.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "response_time",
+    "value": 31,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "response_time",
+    "value": 30.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "response_time",
+    "value": 27,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "response_time",
+    "value": 26.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "response_time",
+    "value": 23.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "response_time",
+    "value": 23.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "response_time",
+    "value": 23,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "response_time",
+    "value": 21.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "response_time",
+    "value": 21.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "response_time",
+    "value": 22.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "response_time",
+    "value": 21.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "response_time",
+    "value": 19.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "response_time",
+    "value": 20.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "response_time",
+    "value": 20.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "response_time",
+    "value": 20.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "response_time",
+    "value": 20,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "response_time",
+    "value": 19.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "response_time",
+    "value": 19,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "response_time",
+    "value": 16.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "response_time",
+    "value": 16.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "response_time",
+    "value": 16.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "response_time",
+    "value": 17,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "response_time",
+    "value": 14.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "response_time",
+    "value": 14.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "response_time",
+    "value": 15.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "response_time",
+    "value": 14.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "response_time",
+    "value": 13.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "response_time",
+    "value": 12.9,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "response_time",
+    "value": 13.4,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "response_time",
+    "value": 11.7,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "photo_fixation",
+    "value": 0,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "photo_fixation",
+    "value": 8.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "photo_fixation",
+    "value": 8.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "photo_fixation",
+    "value": 14.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "photo_fixation",
+    "value": 14.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "photo_fixation",
+    "value": 15.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "photo_fixation",
+    "value": 19,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "photo_fixation",
+    "value": 19.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "photo_fixation",
+    "value": 23,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "photo_fixation",
+    "value": 23.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "photo_fixation",
+    "value": 28.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "photo_fixation",
+    "value": 47.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "photo_fixation",
+    "value": 43.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "photo_fixation",
+    "value": 57.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "photo_fixation",
+    "value": 41.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "photo_fixation",
+    "value": 54.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "photo_fixation",
+    "value": 56.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "photo_fixation",
+    "value": 54.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "photo_fixation",
+    "value": 66,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "photo_fixation",
+    "value": 54.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "photo_fixation",
+    "value": 61.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "photo_fixation",
+    "value": 72.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "photo_fixation",
+    "value": 65,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "photo_fixation",
+    "value": 72.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "photo_fixation",
+    "value": 74.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "photo_fixation",
+    "value": 80.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "photo_fixation",
+    "value": 72.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "photo_fixation",
+    "value": 71.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "photo_fixation",
+    "value": 82.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "photo_fixation",
+    "value": 86.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "photo_fixation",
+    "value": 79.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "photo_fixation",
+    "value": 85.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "photo_fixation",
+    "value": 89.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "photo_fixation",
+    "value": 83.4,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "photo_fixation",
+    "value": 88,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "photo_fixation",
+    "value": 79.7,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "photo_fixation",
+    "value": 84.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "photo_fixation",
+    "value": 84.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "photo_fixation",
+    "value": 88.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "photo_fixation",
+    "value": 92.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "photo_fixation",
+    "value": 96,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "photo_fixation",
+    "value": 88,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "photo_fixation",
+    "value": 92.3,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "photo_fixation",
+    "value": 82.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "photo_fixation",
+    "value": 87.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "photo_fixation",
+    "value": 93.1,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "photo_fixation",
+    "value": 91.6,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "photo_fixation",
+    "value": 86.8,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "photo_fixation",
+    "value": 85.9,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "photo_fixation",
+    "value": 96.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "photo_fixation",
+    "value": 98.5,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "photo_fixation",
+    "value": 85.2,
+    "territory": "pirogovsky"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "photo_fixation",
+    "value": 5.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "photo_fixation",
+    "value": 0,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "photo_fixation",
+    "value": 8.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "photo_fixation",
+    "value": 15.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "photo_fixation",
+    "value": 12.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "photo_fixation",
+    "value": 16,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "photo_fixation",
+    "value": 28.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "photo_fixation",
+    "value": 34.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "photo_fixation",
+    "value": 37.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "photo_fixation",
+    "value": 28.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "photo_fixation",
+    "value": 38,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "photo_fixation",
+    "value": 52,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "photo_fixation",
+    "value": 51.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "photo_fixation",
+    "value": 46.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "photo_fixation",
+    "value": 53.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "photo_fixation",
+    "value": 63.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "photo_fixation",
+    "value": 54.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "photo_fixation",
+    "value": 61.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "photo_fixation",
+    "value": 58.4,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "photo_fixation",
+    "value": 59.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "photo_fixation",
+    "value": 64.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "photo_fixation",
+    "value": 76.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "photo_fixation",
+    "value": 74.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "photo_fixation",
+    "value": 84,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "photo_fixation",
+    "value": 68.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "photo_fixation",
+    "value": 85.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "photo_fixation",
+    "value": 73.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "photo_fixation",
+    "value": 77.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "photo_fixation",
+    "value": 84.5,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "photo_fixation",
+    "value": 73.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "photo_fixation",
+    "value": 74.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "photo_fixation",
+    "value": 93.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "photo_fixation",
+    "value": 84.8,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "photo_fixation",
+    "value": 84.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "photo_fixation",
+    "value": 86.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "photo_fixation",
+    "value": 94.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "photo_fixation",
+    "value": 94,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "photo_fixation",
+    "value": 87.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "photo_fixation",
+    "value": 85.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "photo_fixation",
+    "value": 87.7,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "photo_fixation",
+    "value": 81.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "photo_fixation",
+    "value": 86.1,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "photo_fixation",
+    "value": 93.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "photo_fixation",
+    "value": 87.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "photo_fixation",
+    "value": 94.3,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "photo_fixation",
+    "value": 99.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "photo_fixation",
+    "value": 99.6,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "photo_fixation",
+    "value": 91.9,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "photo_fixation",
+    "value": 100,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "photo_fixation",
+    "value": 97,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "photo_fixation",
+    "value": 94.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "photo_fixation",
+    "value": 94.2,
+    "territory": "fedoskino"
+  },
+  {
+    "date": "2025-10-01",
+    "kpiId": "photo_fixation",
+    "value": 1.9,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-08",
+    "kpiId": "photo_fixation",
+    "value": 2.6,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-15",
+    "kpiId": "photo_fixation",
+    "value": 7.3,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-22",
+    "kpiId": "photo_fixation",
+    "value": 3,
+    "territory": "total"
+  },
+  {
+    "date": "2025-10-29",
+    "kpiId": "photo_fixation",
+    "value": 9.1,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-05",
+    "kpiId": "photo_fixation",
+    "value": 28.1,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-12",
+    "kpiId": "photo_fixation",
+    "value": 25.6,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-19",
+    "kpiId": "photo_fixation",
+    "value": 35.6,
+    "territory": "total"
+  },
+  {
+    "date": "2025-11-26",
+    "kpiId": "photo_fixation",
+    "value": 35.2,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-03",
+    "kpiId": "photo_fixation",
+    "value": 28.1,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-10",
+    "kpiId": "photo_fixation",
+    "value": 30.7,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-17",
+    "kpiId": "photo_fixation",
+    "value": 44.6,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-24",
+    "kpiId": "photo_fixation",
+    "value": 40.6,
+    "territory": "total"
+  },
+  {
+    "date": "2025-12-31",
+    "kpiId": "photo_fixation",
+    "value": 45.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-07",
+    "kpiId": "photo_fixation",
+    "value": 42.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-14",
+    "kpiId": "photo_fixation",
+    "value": 54,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-21",
+    "kpiId": "photo_fixation",
+    "value": 60.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-01-28",
+    "kpiId": "photo_fixation",
+    "value": 50.9,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-04",
+    "kpiId": "photo_fixation",
+    "value": 61.9,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-11",
+    "kpiId": "photo_fixation",
+    "value": 55.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-18",
+    "kpiId": "photo_fixation",
+    "value": 61.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-02-25",
+    "kpiId": "photo_fixation",
+    "value": 61.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-04",
+    "kpiId": "photo_fixation",
+    "value": 64.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-11",
+    "kpiId": "photo_fixation",
+    "value": 65.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-18",
+    "kpiId": "photo_fixation",
+    "value": 75,
+    "territory": "total"
+  },
+  {
+    "date": "2026-03-25",
+    "kpiId": "photo_fixation",
+    "value": 85.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-01",
+    "kpiId": "photo_fixation",
+    "value": 78.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-08",
+    "kpiId": "photo_fixation",
+    "value": 76.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-15",
+    "kpiId": "photo_fixation",
+    "value": 89.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-22",
+    "kpiId": "photo_fixation",
+    "value": 77.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-04-29",
+    "kpiId": "photo_fixation",
+    "value": 85.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-06",
+    "kpiId": "photo_fixation",
+    "value": 74.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-13",
+    "kpiId": "photo_fixation",
+    "value": 76.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-20",
+    "kpiId": "photo_fixation",
+    "value": 79.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-05-27",
+    "kpiId": "photo_fixation",
+    "value": 78.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-03",
+    "kpiId": "photo_fixation",
+    "value": 90.2,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-10",
+    "kpiId": "photo_fixation",
+    "value": 78.9,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-17",
+    "kpiId": "photo_fixation",
+    "value": 89.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-06-24",
+    "kpiId": "photo_fixation",
+    "value": 79,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-01",
+    "kpiId": "photo_fixation",
+    "value": 84.1,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-08",
+    "kpiId": "photo_fixation",
+    "value": 79.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-15",
+    "kpiId": "photo_fixation",
+    "value": 90,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-22",
+    "kpiId": "photo_fixation",
+    "value": 90.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-07-29",
+    "kpiId": "photo_fixation",
+    "value": 92.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-05",
+    "kpiId": "photo_fixation",
+    "value": 91.7,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-12",
+    "kpiId": "photo_fixation",
+    "value": 100,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-19",
+    "kpiId": "photo_fixation",
+    "value": 90.6,
+    "territory": "total"
+  },
+  {
+    "date": "2026-08-26",
+    "kpiId": "photo_fixation",
+    "value": 84.3,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-02",
+    "kpiId": "photo_fixation",
+    "value": 83.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-09",
+    "kpiId": "photo_fixation",
+    "value": 93.8,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-16",
+    "kpiId": "photo_fixation",
+    "value": 88.5,
+    "territory": "total"
+  },
+  {
+    "date": "2026-09-23",
+    "kpiId": "photo_fixation",
+    "value": 99.4,
+    "territory": "total"
+  }
+]

@@ -1,0 +1,185 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 0 0 48px;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary, #1a1a2e);
+  margin: 0 0 16px;
+}
+
+/* Comparison Table */
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.comparisonTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.comparisonTable thead th {
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--color-text-secondary, #6b7280);
+  border-bottom: 2px solid var(--color-border, #e5e7eb);
+  white-space: nowrap;
+}
+
+.comparisonTable tbody td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--color-border, #e5e7eb);
+}
+
+.comparisonTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.comparisonTable tbody tr:hover {
+  background: var(--color-hover, #f9fafb);
+}
+
+.kpiNameCol {
+  min-width: 200px;
+}
+
+.kpiName {
+  display: block;
+  font-weight: 500;
+  color: var(--color-text-primary, #1a1a2e);
+}
+
+.kpiUnit {
+  display: block;
+  font-size: 12px;
+  color: var(--color-text-tertiary, #9ca3af);
+  margin-top: 2px;
+}
+
+.valueCell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cellValue {
+  font-weight: 500;
+  color: var(--color-text-primary, #1a1a2e);
+}
+
+/* Territory Cards */
+.cardsRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 1100px) {
+  .cardsRow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .cardsRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+.territoryCard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.territoryName {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary, #1a1a2e);
+  margin: 0;
+}
+
+.summaryRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.summaryItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.summaryValue {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-teal, #0d9488);
+  line-height: 1;
+}
+
+.summaryLabel {
+  font-size: 12px;
+  color: var(--color-text-secondary, #6b7280);
+}
+
+.statusSummary {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.statusCount {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary, #1a1a2e);
+}
+
+.metricsList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.metricItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #e5e7eb);
+  font-size: 13px;
+}
+
+.metricName {
+  color: var(--color-text-secondary, #6b7280);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metricValues {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.metricValue {
+  font-weight: 500;
+  color: var(--color-text-primary, #1a1a2e);
+}

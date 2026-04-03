@@ -1,0 +1,38 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.presetBtn {
+  padding: 6px 14px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.presetBtn:hover {
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+}
+
+.presetBtnActive {
+  background: var(--color-teal);
+  color: #fff;
+}
+
+.presetBtnActive:hover {
+  background: var(--color-teal);
+  color: #fff;
+}
