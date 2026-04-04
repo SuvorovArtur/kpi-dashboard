@@ -37,34 +37,48 @@ export function useSocialMonitor() {
   const [messages, setMessages] = useState<TgMessage[]>([]);
   const [issues, setIssues] = useState<TgIssue[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [analysisStatus, setAnalysisStatus] = useState<{
+    lastRun: string | null;
+    nextRun: string | null;
+    queueSize: number;
+    lastThreads: number;
+    lastAlerts: number;
+    status: string;
+  }>({ lastRun: null, nextRun: null, queueSize: 0, lastThreads: 0, lastAlerts: 0, status: 'unknown' });
 
   const [chatCounts, setChatCounts] = useState<Map<number, { total: number; today: number }>>(new Map());
 
   const fetchData = useCallback(async () => {
     setIsLoading(true);
-    const today = new Date().toISOString().slice(0, 10);
-    const [chatsRes, msgsRes, issuesRes, countsRes, todayRes] = await Promise.all([
+    const [chatsRes, msgsRes, issuesRes, countsRes, logRes, queueRes] = await Promise.all([
       supabase.from('tg_chats').select('*').eq('is_active', true),
       supabase.from('tg_messages').select('*').order('date', { ascending: false }).limit(10),
       supabase.from('tg_issues').select('*').order('last_seen', { ascending: false }),
-      supabase.from('tg_messages').select('chat_id', { count: 'exact', head: false }),
-      supabase.from('tg_messages').select('chat_id', { count: 'exact', head: false }).gte('date', today),
+      supabase.rpc('get_chat_message_counts'),
+      supabase.from('tg_analysis_log').select('*').order('started_at', { ascending: false }).limit(1),
+      supabase.rpc('get_unanalyzed_messages', { msg_limit: 1 }),
     ]);
 
-    // Build per-chat counts
+    // Analysis status
+    const lastLog = logRes.data?.[0] as any;
+    const queueSize = queueRes.count ?? 0;
+    if (lastLog) {
+      const lastFinished = lastLog.finished_at || lastLog.started_at;
+      const nextRun = new Date(new Date(lastFinished).getTime() + 1800000).toISOString();
+      setAnalysisStatus({
+        lastRun: lastFinished,
+        nextRun,
+        queueSize,
+        lastThreads: lastLog.threads_found ?? 0,
+        lastAlerts: lastLog.alerts_found ?? 0,
+        status: lastLog.status ?? 'unknown',
+      });
+    }
+
     const counts = new Map<number, { total: number; today: number }>();
     if (countsRes.data) {
       for (const r of countsRes.data as any[]) {
-        const c = counts.get(r.chat_id) ?? { total: 0, today: 0 };
-        c.total++;
-        counts.set(r.chat_id, c);
-      }
-    }
-    if (todayRes.data) {
-      for (const r of todayRes.data as any[]) {
-        const c = counts.get(r.chat_id) ?? { total: 0, today: 0 };
-        c.today++;
-        counts.set(r.chat_id, c);
+        counts.set(r.chat_id, { total: Number(r.total), today: Number(r.today) });
       }
     }
     setChatCounts(counts);
@@ -102,41 +116,78 @@ export function useSocialMonitor() {
     await fetchData();
   }, [fetchData]);
 
+  const fetchIssueMessages = useCallback(async (issueId: number) => {
+    const { data: links } = await supabase
+      .from('tg_issue_messages')
+      .select('message_id')
+      .eq('issue_id', issueId);
+    if (!links || links.length === 0) return [];
+    const msgIds = links.map((l: any) => l.message_id);
+    const { data: msgs } = await supabase
+      .from('tg_messages')
+      .select('*')
+      .in('id', msgIds)
+      .order('date', { ascending: true });
+    return (msgs ?? []).map((m: any) => ({
+      id: m.id, chatId: m.chat_id, messageId: m.message_id, date: m.date,
+      senderName: m.sender_name, text: m.text,
+    }));
+  }, []);
+
   const updateChatId = useCallback(async (oldChatId: number, newChatId: number) => {
     await supabase.from('tg_chats').update({ chat_id: newChatId }).eq('chat_id', oldChatId);
     await fetchData();
   }, [fetchData]);
 
-  // Chat statistics helper
-  const getChatStats = useCallback((chatId: number) => {
-    const chatMsgs = messages.filter(m => m.chatId === chatId);
+  // Fetch full chat stats from DB
+  const fetchChatStats = useCallback(async (chatId: number) => {
     const counts = chatCounts.get(chatId);
-    const total = counts?.total ?? chatMsgs.length;
+    const total = counts?.total ?? 0;
     const todayCount = counts?.today ?? 0;
 
-    // Messages per day (last 7 days)
-    const days = new Map<string, number>();
-    for (const m of chatMsgs) {
-      const day = m.date.slice(0, 10);
-      days.set(day, (days.get(day) ?? 0) + 1);
+    const [statsRes, recentRes] = await Promise.all([
+      supabase.from('tg_messages').select('date, sender_name').eq('chat_id', chatId),
+      supabase.from('tg_messages').select('id, chat_id, message_id, date, sender_name, text')
+        .eq('chat_id', chatId).order('date', { ascending: false }).limit(5),
+    ]);
+
+    const msgs = statsRes.data ?? [];
+
+    // Per day: messages count + unique senders count
+    const dayMsgs = new Map<string, number>();
+    const daySenders = new Map<string, Set<string>>();
+    for (const m of msgs) {
+      const day = (m.date as string).slice(0, 10);
+      dayMsgs.set(day, (dayMsgs.get(day) ?? 0) + 1);
+      if (m.sender_name) {
+        if (!daySenders.has(day)) daySenders.set(day, new Set());
+        daySenders.get(day)!.add(m.sender_name as string);
+      }
     }
-    const perDay = Array.from(days.entries())
+    const perDay = Array.from(dayMsgs.entries())
       .sort(([a], [b]) => a.localeCompare(b))
       .slice(-7)
-      .map(([date, count]) => ({ date, count }));
+      .map(([date, count]) => ({ date, count, senders: daySenders.get(date)?.size ?? 0 }));
 
     // Top senders
     const senders = new Map<string, number>();
-    for (const m of chatMsgs) {
-      if (m.senderName) senders.set(m.senderName, (senders.get(m.senderName) ?? 0) + 1);
+    for (const m of msgs) {
+      const name = m.sender_name as string | null;
+      if (name) senders.set(name, (senders.get(name) ?? 0) + 1);
     }
     const topSenders = Array.from(senders.entries())
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5)
       .map(([name, count]) => ({ name, count }));
 
-    return { total, todayCount, perDay, topSenders };
-  }, [messages]);
+    // Recent messages
+    const recentMessages = (recentRes.data ?? []).map((m: any) => ({
+      id: m.id, chatId: m.chat_id, messageId: m.message_id, date: m.date,
+      senderName: m.sender_name, text: m.text,
+    }));
 
-  return { chats, messages, issues, isLoading, refetch: fetchData, updateIssueStatus, addChat, removeChat, updateChatId, getChatStats };
+    return { total, todayCount, perDay, topSenders, recentMessages };
+  }, [chatCounts]);
+
+  return { chats, messages, issues, isLoading, chatCounts, analysisStatus, refetch: fetchData, updateIssueStatus, addChat, removeChat, updateChatId, fetchChatStats, fetchIssueMessages };
 }

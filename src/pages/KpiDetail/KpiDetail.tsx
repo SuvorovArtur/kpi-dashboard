@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   ResponsiveContainer,
@@ -63,57 +63,56 @@ export function KpiDetail() {
   const { data: appeals } = useAppeals({ dateFrom: range.from, dateTo: range.to });
   const { getNumber } = useAppSettings();
   const population = getNumber('population') || 88876;
-  const syncedRef = useRef(false);
-
-  // Auto-sync: calculate KPI values from appeals as period aggregate (same as Overview)
+  // Auto-sync: calculate daily KPI values from appeals (re-runs on period change)
+  const syncKey = `${range.from}_${range.to}_${appeals.length}`;
   useEffect(() => {
-    if (appeals.length === 0 || syncedRef.current) return;
-    syncedRef.current = true;
+    if (appeals.length === 0) return;
 
-    const total = appeals.length;
-    const date = range.to; // use end of period as date
-
-    // ISN — aggregate over entire period
-    const withScore = appeals.filter(a => a.sentiment_score != null && !a.is_spam);
-    let isnValue = 0;
-    if (withScore.length > 0) {
-      const sumS = withScore.reduce((s, a) => s + (a.sentiment_score ?? 0), 0);
-      const sumSq = withScore.reduce((s, a) => s + (a.sentiment_score ?? 0) ** 2, 0);
-      isnValue = Math.round((sumSq / sumS) * 10) / 10;
-    }
-
-    // Appeals per 1k — total for period
-    const per1k = Math.round((total / (population / 1000)) * 10) / 10;
-
-    // Repeated (hot addresses) — aggregate
     const vagueAddresses = ['Россия, Московская область, городской округ Мытищи', 'Россия, Московская область, Мытищи', 'городской округ Мытищи'];
-    const addrKey = new Map<string, number>();
-    let reps = 0;
+
+    // Group by date
+    const byDate = new Map<string, typeof appeals>();
     for (const a of appeals) {
-      if (!a.address || vagueAddresses.includes(a.address)) continue;
-      const k = `${a.address}__${a.direction}`;
-      const c = (addrKey.get(k) ?? 0) + 1;
-      addrKey.set(k, c);
-      if (c > 1) reps++;
+      if (!byDate.has(a.date)) byDate.set(a.date, []);
+      byDate.get(a.date)!.push(a);
     }
-    const repeatedPct = total > 0 ? Math.round((reps / total) * 100) : 0;
 
-    // Delayed — aggregate
-    const delayed = appeals.filter(a => a.status === 'Закрыта с отложенным').length;
-    const delayedPct = total > 0 ? Math.round((delayed / total) * 1000) / 10 : 0;
+    const rows: { date: string; kpi_id: string; value: number; territory: string }[] = [];
+    for (const [date, dayAppeals] of byDate) {
+      const total = dayAppeals.length;
+      if (total === 0) continue;
 
-    const rows = [
-      { date, kpi_id: 'isn', value: isnValue, territory: 'total' },
-      { date, kpi_id: 'appeals_per_1k', value: per1k, territory: 'total' },
-      { date, kpi_id: 'repeated_appeals', value: repeatedPct, territory: 'total' },
-      { date, kpi_id: 'delayed_appeals', value: delayedPct, territory: 'total' },
-    ];
+      // ISN per day
+      const withScore = dayAppeals.filter(a => a.sentiment_score != null && !a.is_spam);
+      if (withScore.length > 0) {
+        const sumS = withScore.reduce((s, a) => s + (a.sentiment_score ?? 0), 0);
+        const sumSq = withScore.reduce((s, a) => s + (a.sentiment_score ?? 0) ** 2, 0);
+        rows.push({ date, kpi_id: 'isn', value: Math.round((sumSq / sumS) * 10) / 10, territory: 'total' });
+      }
+
+      // Appeals per 1k per day
+      rows.push({ date, kpi_id: 'appeals_per_1k', value: Math.round((total / (population / 1000)) * 10) / 10, territory: 'total' });
+
+      // Hot addresses per day
+      const addrKey = new Map<string, number>();
+      let reps = 0;
+      for (const a of dayAppeals) {
+        if (!a.address || vagueAddresses.includes(a.address)) continue;
+        const k = `${a.address}__${a.direction}`;
+        const c = (addrKey.get(k) ?? 0) + 1;
+        addrKey.set(k, c);
+        if (c > 1) reps++;
+      }
+      rows.push({ date, kpi_id: 'repeated_appeals', value: total > 0 ? Math.round((reps / total) * 100) : 0, territory: 'total' });
+
+      // Delayed per day
+      const delayed = dayAppeals.filter(a => a.status === 'Закрыта с отложенным').length;
+      rows.push({ date, kpi_id: 'delayed_appeals', value: total > 0 ? Math.round((delayed / total) * 1000) / 10 : 0, territory: 'total' });
+    }
 
     supabase.from('kpi_values').upsert(rows, { onConflict: 'date,kpi_id,territory' }).then(() => refetch());
-  }, [appeals, population, refetch]);
-
-  // Reset sync flag when range changes
-  useEffect(() => { syncedRef.current = false; }, [range.from, range.to]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [syncKey]);
 
   // Add value form
   const [showAddForm, setShowAddForm] = useState(false);

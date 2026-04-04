@@ -5,7 +5,63 @@
   padding: 0 0 48px;
 }
 
+/* ISS block (traffic light) */
+.issBlock {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 20px;
+  border-radius: 12px;
+  border: 1px solid;
+}
+.iss_green {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+.iss_yellow {
+  background: #fefce8;
+  border-color: #fde68a;
+}
+.iss_red {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+.issSignal {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.iss_green .issSignal { background: #16a34a; color: #fff; }
+.iss_yellow .issSignal { background: #ca8a04; color: #fff; }
+.iss_red .issSignal { background: #dc2626; color: #fff; }
+.issInfo { flex: 1; }
+.issTitle {
+  font-size: 18px;
+  font-weight: 800;
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+}
+.iss_green .issTitle { color: #16a34a; }
+.iss_yellow .issTitle { color: #ca8a04; }
+.iss_red .issTitle { color: #dc2626; }
+.issSub {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
+
 /* Stats */
+.statHint {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
 .statsRow {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -22,16 +78,57 @@
   border-color: #fecaca;
   background: #fef2f2;
 }
+.statLabel {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  font-weight: 600;
+}
 .statValue {
   display: block;
   font-size: 28px;
   font-weight: 800;
   color: var(--color-text-primary);
   font-family: var(--font-heading);
+  margin: 2px 0;
 }
 .statDanger .statValue { color: #dc2626; }
-.statLabel {
+
+/* Analysis status bar */
+.analysisBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px;
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
   font-size: 12px;
+  color: var(--color-text-secondary);
+  flex-wrap: wrap;
+}
+.analysisDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.analysisDotRunning {
+  background: #16a34a;
+  animation: pulse 1.5s infinite;
+}
+.analysisDotIdle {
+  background: #9ca3af;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.analysisLabel {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+.analysisItem {
   color: var(--color-text-secondary);
 }
 
@@ -178,10 +275,71 @@
   line-height: 1.5;
   margin: 10px 0;
 }
+/* Issue messages */
+.issueMsgList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+.issueMsgItem {
+  display: block;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #f9fafb;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.15s;
+  border-left: 3px solid var(--color-teal);
+}
+.issueMsgItem:hover {
+  background: rgba(14, 92, 93, 0.06);
+}
+.issueMsgMeta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 3px;
+}
+.issueMsgSender {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+.issueMsgTime {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+.issueMsgChat {
+  font-size: 10px;
+  color: var(--color-teal);
+  background: rgba(14, 92, 93, 0.08);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+.issueMsgText {
+  font-size: 13px;
+  color: var(--color-text-primary);
+  line-height: 1.4;
+  margin: 0;
+}
+
 .issueActions {
   display: flex;
   gap: 6px;
+  flex-wrap: wrap;
 }
+.issueCopyBtn {
+  padding: 6px 14px;
+  background: var(--color-teal);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.issueCopyBtn:hover { opacity: 0.9; }
 .issueActionBtn {
   padding: 5px 12px;
   border: 1px solid var(--color-border);
@@ -370,6 +528,11 @@
   align-items: center;
   gap: 2px;
 }
+.chatBarSenders {
+  font-size: 9px;
+  color: var(--color-teal);
+  font-weight: 500;
+}
 .chatBarCount {
   font-size: 10px;
   font-weight: 600;
@@ -394,6 +557,55 @@
 .chatBarDate {
   font-size: 9px;
   color: var(--color-text-secondary);
+}
+
+/* Two column layout */
+.chatColumns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 800px) {
+  .chatColumns { grid-template-columns: 1fr; }
+}
+
+/* Recent messages in chat card */
+.chatRecentList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.chatRecentItem {
+  display: block;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: #f9fafb;
+  text-decoration: none;
+  color: inherit;
+  border-left: 2px solid var(--color-teal);
+  transition: background 0.15s;
+}
+.chatRecentItem:hover { background: rgba(14, 92, 93, 0.06); }
+.chatRecentMeta {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 2px;
+}
+.chatRecentSender {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+.chatRecentTime {
+  font-size: 10px;
+  color: var(--color-text-secondary);
+}
+.chatRecentText {
+  font-size: 12px;
+  color: var(--color-text-primary);
+  line-height: 1.3;
+  margin: 0;
 }
 
 /* Top senders */

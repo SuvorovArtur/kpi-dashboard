@@ -35,10 +35,10 @@ function timeAgo(dateStr: string): string {
   return `${days}д назад`;
 }
 
-type Tab = 'issues' | 'feed' | 'chats';
+type Tab = 'issues' | 'chats';
 
 export function SocialMonitor() {
-  const { chats, messages, issues, isLoading, updateIssueStatus, addChat, removeChat, updateChatId, getChatStats } = useSocialMonitor();
+  const { chats, issues, isLoading, chatCounts, analysisStatus, updateIssueStatus, addChat, removeChat, updateChatId, fetchChatStats, fetchIssueMessages } = useSocialMonitor();
   const [tab, setTab] = useState<Tab>('issues');
   const [statusFilter, setStatusFilter] = useState<string>('active');
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
@@ -57,15 +57,31 @@ export function SocialMonitor() {
     const active = issues.filter(i => ['new', 'watching', 'escalated'].includes(i.status));
     const critical = active.filter(i => i.severity >= 8);
     const escalated = active.filter(i => i.status === 'escalated');
+
+    // ISS: Индекс социальных сетей (по аналогии с ИСН)
+    const scored = active.filter(i => i.severity > 0);
+    let issWeighted = 0;
+    let issSimple = 0;
+    let acutePct = 0;
+    if (scored.length > 0) {
+      const sumS = scored.reduce((s, i) => s + i.severity, 0);
+      const sumSq = scored.reduce((s, i) => s + i.severity * i.severity, 0);
+      issWeighted = Math.round((sumSq / sumS) * 10) / 10;
+      issSimple = Math.round((sumS / scored.length) * 10) / 10;
+      acutePct = Math.round((scored.filter(i => i.severity >= 7).length / scored.length) * 1000) / 10;
+    }
+    const issStatus = issWeighted > 6 || acutePct > 10 ? 'red' : issWeighted > 4 || acutePct > 5 ? 'yellow' : 'green';
+    const issLabel = issStatus === 'red' ? 'Эскалация' : issStatus === 'yellow' ? 'Внимание' : 'Штатный режим';
+
     return {
       total: issues.length,
       active: active.length,
       critical: critical.length,
       escalated: escalated.length,
       chats: chats.length,
-      messages: messages.length,
+      issWeighted, issSimple, acutePct, issStatus, issLabel, analyzed: scored.length,
     };
-  }, [issues, chats, messages]);
+  }, [issues, chats]);
 
   if (isLoading) {
     return <div className={styles.page}><Header title="Мониторинг соцсетей" /><Skeleton variant="card" height={300} /></div>;
@@ -75,30 +91,67 @@ export function SocialMonitor() {
     <div className={styles.page}>
       <Header title="Мониторинг соцсетей" />
 
-      {/* Stats row */}
+      {/* ISS: Индекс социальных сетей */}
+      {stats.analyzed > 0 && (
+        <div className={`${styles.issBlock} ${styles[`iss_${stats.issStatus}`]}`}>
+          <div className={styles.issSignal}>
+            {stats.issStatus === 'green' ? '✓' : stats.issStatus === 'yellow' ? '⚠' : '!'}
+          </div>
+          <div className={styles.issInfo}>
+            <div className={styles.issTitle}>{stats.issLabel}</div>
+            <div className={styles.issSub}>
+              ИСС {stats.issWeighted} · Острых {stats.acutePct}% · {stats.analyzed} проблем · {stats.chats} чатов
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* KPI cards */}
       <div className={styles.statsRow}>
         <div className={styles.statCard}>
+          <span className={styles.statLabel}>ИСС (взвешенный)</span>
+          <span className={styles.statValue}>{stats.analyzed > 0 ? stats.issWeighted : '—'}</span>
+          <span className={styles.statHint}>{stats.analyzed > 0 ? `Простой: ${stats.issSimple}` : 'Нет данных'}</span>
+        </div>
+        <div className={styles.statCard}>
+          <span className={styles.statLabel}>Острые проблемы</span>
+          <span className={styles.statValue}>{stats.analyzed > 0 ? `${stats.acutePct}%` : '—'}</span>
+          <span className={styles.statHint}>{stats.critical} из {stats.analyzed}</span>
+        </div>
+        <div className={styles.statCard}>
+          <span className={styles.statLabel}>Активных</span>
           <span className={styles.statValue}>{stats.active}</span>
-          <span className={styles.statLabel}>Активных проблем</span>
-        </div>
-        <div className={`${styles.statCard} ${stats.critical > 0 ? styles.statDanger : ''}`}>
-          <span className={styles.statValue}>{stats.critical}</span>
-          <span className={styles.statLabel}>Критических</span>
+          <span className={styles.statHint}>{stats.escalated} на эскалации</span>
         </div>
         <div className={styles.statCard}>
-          <span className={styles.statValue}>{stats.escalated}</span>
-          <span className={styles.statLabel}>На эскалации</span>
-        </div>
-        <div className={styles.statCard}>
-          <span className={styles.statValue}>{stats.chats}</span>
           <span className={styles.statLabel}>Чатов</span>
+          <span className={styles.statValue}>{stats.chats}</span>
+          <span className={styles.statHint}>мониторинг</span>
         </div>
+      </div>
+
+      {/* Analysis status bar */}
+      <div className={styles.analysisBar}>
+        <span className={`${styles.analysisDot} ${analysisStatus.status === 'running' ? styles.analysisDotRunning : styles.analysisDotIdle}`} />
+        <span className={styles.analysisLabel}>
+          {analysisStatus.status === 'running' ? 'Анализ...' : 'Анализатор'}
+        </span>
+        {analysisStatus.lastRun && (
+          <span className={styles.analysisItem}>Последний: {timeAgo(analysisStatus.lastRun)}</span>
+        )}
+        {analysisStatus.nextRun && (
+          <span className={styles.analysisItem}>Следующий: {timeAgo(analysisStatus.nextRun)}</span>
+        )}
+        <span className={styles.analysisItem}>В очереди: {analysisStatus.queueSize}</span>
+        {analysisStatus.lastThreads > 0 && (
+          <span className={styles.analysisItem}>Найдено: {analysisStatus.lastThreads} проблем</span>
+        )}
       </div>
 
       {/* Toolbar */}
       <div className={styles.toolbar}>
         <div className={styles.tabs}>
-          {([['issues', 'Проблемы'], ['feed', 'Лента'], ['chats', 'Чаты']] as [Tab, string][]).map(([key, label]) => (
+          {([['issues', 'Проблемы'], ['chats', 'Чаты']] as [Tab, string][]).map(([key, label]) => (
             <button key={key} className={`${styles.tab} ${tab === key ? styles.tabActive : ''}`} onClick={() => setTab(key)}>{label}</button>
           ))}
         </div>
@@ -126,7 +179,7 @@ export function SocialMonitor() {
         ) : (
           <div className={styles.issueList}>
             {filteredIssues.map(issue => (
-              <IssueCard key={issue.id} issue={issue} onStatusChange={async (status) => {
+              <IssueCard key={issue.id} issue={issue} chats={chats} fetchMessages={() => fetchIssueMessages(issue.id)} onStatusChange={async (status) => {
                 await updateIssueStatus(issue.id, status);
                 setToast({ message: `Статус изменён: ${STATUS_LABELS[status]}`, type: 'success' });
               }} />
@@ -135,41 +188,11 @@ export function SocialMonitor() {
         )
       )}
 
-      {/* Feed tab */}
-      {tab === 'feed' && (
-        messages.length === 0 ? (
-          <Card>
-            <div className={styles.empty}>
-              <p className={styles.emptyTitle}>Сообщений пока нет</p>
-              <p className={styles.emptyHint}>Бот начнёт собирать сообщения после запуска</p>
-            </div>
-          </Card>
-        ) : (
-          <Card>
-            <div className={styles.feedList}>
-              {messages.map(msg => {
-                const chat = chats.find(c => c.chatId === msg.chatId);
-                return (
-                  <div key={msg.id} className={styles.feedItem}>
-                    <div className={styles.feedMeta}>
-                      <span className={styles.feedChat}>{chat?.title ?? '?'}</span>
-                      <span className={styles.feedTime}>{timeAgo(msg.date)}</span>
-                    </div>
-                    {msg.senderName && <span className={styles.feedSender}>{msg.senderName}</span>}
-                    <p className={styles.feedText}>{msg.text.slice(0, 300)}{msg.text.length > 300 ? '…' : ''}</p>
-                  </div>
-                );
-              })}
-            </div>
-          </Card>
-        )
-      )}
-
       {/* Chats tab */}
       {tab === 'chats' && (
         <div className={styles.stack}>
           {chats.map(chat => (
-            <ChatCard key={chat.id} chat={chat} stats={getChatStats(chat.chatId)}
+            <ChatCard key={chat.id} chat={chat} counts={chatCounts.get(chat.chatId)} fetchStats={() => fetchChatStats(chat.chatId)}
               onRemove={async () => { await removeChat(chat.chatId); setToast({ message: 'Чат отключён', type: 'success' }); }}
               onUpdateChatId={async (newId) => { await updateChatId(chat.chatId, newId); setToast({ message: 'ID обновлён', type: 'success' }); }} />
           ))}
@@ -201,12 +224,35 @@ export function SocialMonitor() {
 }
 
 /* ===== Issue Card ===== */
-function IssueCard({ issue, onStatusChange }: { issue: TgIssue; onStatusChange: (s: TgIssue['status']) => void }) {
+function tgLink(chatId: number, messageId: number): string {
+  // Convert -100XXXXXXXXXX → XXXXXXXXXX for t.me/c/ format
+  const raw = Math.abs(chatId);
+  const stripped = raw > 1000000000000 ? raw - 1000000000000 : raw;
+  return `https://t.me/c/${stripped}/${messageId}`;
+}
+
+function IssueCard({ issue, chats, fetchMessages, onStatusChange }: {
+  issue: TgIssue;
+  chats: { chatId: number; title: string }[];
+  fetchMessages: () => Promise<{ id: number; chatId: number; messageId: number; date: string; senderName: string | null; text: string }[]>;
+  onStatusChange: (s: TgIssue['status']) => void;
+}) {
   const [expanded, setExpanded] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [msgs, setMsgs] = useState<{ id: number; chatId: number; messageId: number; date: string; senderName: string | null; text: string }[] | null>(null);
+
+  const handleExpand = async () => {
+    const next = !expanded;
+    setExpanded(next);
+    if (next && !msgs) {
+      const data = await fetchMessages();
+      setMsgs(data);
+    }
+  };
 
   return (
     <div className={`${styles.issueCard} ${issue.severity >= 8 ? styles.issueCritical : ''}`}>
-      <div className={styles.issueHeader} onClick={() => setExpanded(!expanded)}>
+      <div className={styles.issueHeader} onClick={handleExpand}>
         <div className={styles.issueSeverity} style={{ background: severityColor(issue.severity) }}>
           {issue.severity}
         </div>
@@ -227,7 +273,72 @@ function IssueCard({ issue, onStatusChange }: { issue: TgIssue; onStatusChange: 
       {expanded && (
         <div className={styles.issueExpanded}>
           {issue.summary && <p className={styles.issueSummary}>{issue.summary}</p>}
+
+          {/* Messages */}
+          {msgs && msgs.length > 0 && (
+            <div className={styles.issueMsgList}>
+              {msgs.slice(0, 5).map(m => {
+                const chat = chats.find(c => c.chatId === m.chatId);
+                return (
+                  <a key={m.id} href={tgLink(m.chatId, m.messageId)} target="_blank" rel="noopener noreferrer" className={styles.issueMsgItem}>
+                    <div className={styles.issueMsgMeta}>
+                      <span className={styles.issueMsgSender}>{m.senderName ?? '?'}</span>
+                      <span className={styles.issueMsgTime}>{timeAgo(m.date)}</span>
+                      {chat && <span className={styles.issueMsgChat}>{chat.title}</span>}
+                    </div>
+                    <p className={styles.issueMsgText}>{m.text.slice(0, 200)}{m.text.length > 200 ? '…' : ''}</p>
+                  </a>
+                );
+              })}
+            </div>
+          )}
+
           <div className={styles.issueActions}>
+            <button className={styles.issueCopyBtn} onClick={(e) => {
+              e.stopPropagation();
+              const icon = issue.severity >= 9 ? '🚨' : issue.severity >= 7 ? '⚠️' : 'ℹ️';
+              const lines: string[] = [];
+
+              lines.push(`${icon} ${issue.title}`);
+              lines.push(`Острота: ${issue.severity}/10`);
+              lines.push('');
+
+              if (issue.location && issue.location !== 'не указана') lines.push(`Где: ${issue.location}`);
+              if (issue.direction) lines.push(`Тема: ${issue.direction}`);
+
+              if (issue.summary) {
+                const clean = issue.summary.split('\n\nЦитаты:')[0];
+                lines.push('', clean);
+              }
+
+              if (msgs && msgs.length > 0) {
+                lines.push('');
+                msgs.slice(0, 3).forEach(m => {
+                  const link = tgLink(m.chatId, m.messageId);
+                  const text = m.text.slice(0, 80).replace(/\n/g, ' ') + (m.text.length > 80 ? '…' : '');
+                  lines.push(`— "${text}"  [→]( ${link} )`);
+                });
+              }
+
+              lines.push('', `${issue.messageCount} сообщ. · SocPulse`);
+              const text = lines.join('\n');
+              try {
+                navigator.clipboard.writeText(text);
+              } catch {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+              }
+              setCopied(true);
+              setTimeout(() => setCopied(false), 2000);
+            }}>
+              {copied ? '✓ Скопировано' : 'Копировать для Telegram'}
+            </button>
             {(['watching', 'escalated', 'resolved', 'ignored'] as TgIssue['status'][])
               .filter(s => s !== issue.status)
               .map(s => (
@@ -244,46 +355,59 @@ function IssueCard({ issue, onStatusChange }: { issue: TgIssue; onStatusChange: 
 }
 
 /* ===== Chat Card with expandable stats ===== */
-function ChatCard({ chat, stats, onRemove, onUpdateChatId }: {
+function ChatCard({ chat, counts, fetchStats, onRemove, onUpdateChatId }: {
   chat: { id: number; chatId: number; title: string; username: string | null };
-  stats: { total: number; todayCount: number; perDay: { date: string; count: number }[]; topSenders: { name: string; count: number }[] };
+  counts?: { total: number; today: number };
+  fetchStats: () => Promise<any>;
   onRemove: () => void;
   onUpdateChatId: (newId: number) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   const [editingId, setEditingId] = useState(false);
   const [tempId, setTempId] = useState(String(chat.chatId));
-  const maxPerDay = Math.max(1, ...stats.perDay.map(d => d.count));
+  const [stats, setStats] = useState<any>(null);
+
+  const handleExpand = async () => {
+    const next = !expanded;
+    setExpanded(next);
+    if (next && !stats) {
+      const data = await fetchStats();
+      setStats(data);
+    }
+  };
+
+  const maxPerDay = Math.max(1, ...(stats?.perDay ?? []).map((d: any) => d.count));
 
   return (
     <Card>
-      <div className={styles.chatCardHeader} onClick={() => setExpanded(!expanded)}>
+      <div className={styles.chatCardHeader} onClick={handleExpand}>
         <div className={styles.chatCardInfo}>
           <span className={styles.chatTitle}>{chat.title}</span>
           {chat.username && <span className={styles.chatUsername}>@{chat.username}</span>}
         </div>
         <div className={styles.chatCardStats}>
           <div className={styles.chatStat}>
-            <span className={styles.chatStatValue}>{stats.total}</span>
+            <span className={styles.chatStatValue}>{counts?.total ?? 0}</span>
             <span className={styles.chatStatLabel}>всего</span>
           </div>
           <div className={styles.chatStat}>
-            <span className={styles.chatStatValue}>{stats.todayCount}</span>
+            <span className={styles.chatStatValue}>{counts?.today ?? 0}</span>
             <span className={styles.chatStatLabel}>сегодня</span>
           </div>
         </div>
         <span className={styles.chatExpand}>{expanded ? '▲' : '▼'}</span>
       </div>
 
-      {expanded && (
+      {expanded && stats && (
         <div className={styles.chatCardBody}>
-          {/* Messages per day mini chart */}
+          {/* Bar chart: messages per day + senders count on top */}
           {stats.perDay.length > 0 && (
             <div className={styles.chatSection}>
-              <span className={styles.chatSectionTitle}>Сообщений по дням</span>
+              <span className={styles.chatSectionTitle}>Активность по дням</span>
               <div className={styles.chatBarChart}>
-                {stats.perDay.map(d => (
+                {stats.perDay.map((d: any) => (
                   <div key={d.date} className={styles.chatBarCol}>
+                    <span className={styles.chatBarSenders}>{d.senders} уч.</span>
                     <span className={styles.chatBarCount}>{d.count}</span>
                     <div className={styles.chatBarTrack}>
                       <div className={styles.chatBarFill} style={{ height: `${(d.count / maxPerDay) * 100}%` }} />
@@ -295,20 +419,41 @@ function ChatCard({ chat, stats, onRemove, onUpdateChatId }: {
             </div>
           )}
 
-          {/* Top senders */}
-          {stats.topSenders.length > 0 && (
-            <div className={styles.chatSection}>
-              <span className={styles.chatSectionTitle}>Активные участники</span>
-              <div className={styles.chatSenderList}>
-                {stats.topSenders.map((s, i) => (
-                  <div key={i} className={styles.chatSenderItem}>
-                    <span className={styles.chatSenderName}>{s.name}</span>
-                    <span className={styles.chatSenderCount}>{s.count}</span>
-                  </div>
-                ))}
+          {/* Two columns: senders + recent messages */}
+          <div className={styles.chatColumns}>
+            {/* Top senders */}
+            {stats.topSenders.length > 0 && (
+              <div className={styles.chatSection}>
+                <span className={styles.chatSectionTitle}>Активные участники</span>
+                <div className={styles.chatSenderList}>
+                  {stats.topSenders.map((s: any, i: number) => (
+                    <div key={i} className={styles.chatSenderItem}>
+                      <span className={styles.chatSenderName}>{s.name}</span>
+                      <span className={styles.chatSenderCount}>{s.count}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+
+            {/* Recent messages */}
+            {stats.recentMessages?.length > 0 && (
+              <div className={styles.chatSection}>
+                <span className={styles.chatSectionTitle}>Последние сообщения</span>
+                <div className={styles.chatRecentList}>
+                  {stats.recentMessages.map((m: any) => (
+                    <a key={m.id} href={tgLink(m.chatId, m.messageId)} target="_blank" rel="noopener noreferrer" className={styles.chatRecentItem}>
+                      <div className={styles.chatRecentMeta}>
+                        <span className={styles.chatRecentSender}>{m.senderName ?? '?'}</span>
+                        <span className={styles.chatRecentTime}>{timeAgo(m.date)}</span>
+                      </div>
+                      <p className={styles.chatRecentText}>{m.text.slice(0, 120)}{m.text.length > 120 ? '…' : ''}</p>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
 
           <div className={styles.chatCardFooter}>
             {editingId ? (
