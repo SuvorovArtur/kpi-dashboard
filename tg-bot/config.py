@@ -17,5 +17,5 @@ DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY', '')
 DEEPSEEK_MODEL = 'deepseek-chat'
 
 # Analysis settings
-BATCH_SIZE = 10  # messages per analysis batch
-ANALYSIS_INTERVAL = 300  # seconds between analysis runs
+BATCH_SIZE = 100  # messages per analysis batch
+ANALYSIS_INTERVAL = 1800  # seconds between analysis runs (30 min)

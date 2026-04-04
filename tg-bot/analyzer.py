@@ -1,62 +1,146 @@
-"""DeepSeek-based message analysis: extract issues, match to existing, assess severity."""
+"""DeepSeek-based message analysis with thread grouping and severity scoring."""
 import json
 import httpx
 from config import DEEPSEEK_API_KEY, DEEPSEEK_MODEL
 import db
 
-SYSTEM_PROMPT = """Ты — аналитик мониторинга социальных сетей для муниципального управления (г.о. Мытищи).
+SYSTEM_PROMPT = """Ты — аналитик потока сообщений из Telegram-чатов Мытищинского городского округа.
 
-Тебе приходят сообщения из Telegram-чатов жителей. Твоя задача:
+ЗАДАЧА: Получи пакет сообщений за последние 30 минут из одного или нескольких чатов. Проанализируй поток. Отсей мусор. Выдели проблемы. Оцени критичность каждой. Верни структурированный результат в формате json.
 
-1. Определить, содержат ли сообщения жалобу/проблему, которая требует внимания администрации.
-2. Если да — извлечь: тему проблемы, адрес/локацию (если есть), направление (Дороги, Двор, Освещение, ЖКХ, Транспорт, Благоустройство, Экология, Безопасность, Другое).
-3. Оценить остроту по шкале 1-10:
-   - 1-3: бытовое обсуждение, не требует реакции
-   - 4-6: проблема есть, но не критичная
-   - 7-8: острая проблема, жители активно жалуются
-   - 9-10: ЧП, угроза жизни/здоровью, массовый протест
-4. Определить, относится ли сообщение к уже известной проблеме (по списку активных).
+═══════════════════════════════════════
+ШАГ 1: ФИЛЬТРАЦИЯ МУСОРА
+═══════════════════════════════════════
 
-Обычные разговоры, флуд, рекламу, мемы — игнорируй (severity=0).
+Игнорируй полностью (не включай в анализ):
+- Приветствия, прощания
+- Стикеры, GIF, эмодзи без текста
+- Реакции и короткие реплики без содержания («ок», «понял», «спасибо», «ахаха», «+1» без контекста)
+- Рекламу, спам, продажи
+- Обсуждение погоды, пробок без жалоб
+- Личные разговоры
+- Политические дискуссии без привязки к муниципальной проблеме
+- Информационные запросы («кто знает телефон...», «где находится...»)
 
-Отвечай ТОЛЬКО валидным JSON."""
+НЕ игнорируй:
+- Упоминание конкретной проблемы с адресом или локацией
+- Жалобы на состояние территории, инфраструктуры, услуг
+- Сообщения о ЧП, авариях, опасных ситуациях
+- Обсуждения, где несколько человек подтверждают одну проблему
+- Эмоциональные высказывания о бездействии властей
+- Фото/видео проблем
 
-def analyze_messages(messages: list[dict], active_issues: list[dict]) -> list[dict]:
-    """Analyze a batch of messages, return extracted issues."""
+═══════════════════════════════════════
+ШАГ 2: ГРУППИРОВКА В ВЕТКИ (THREADS)
+═══════════════════════════════════════
+
+Объедини связанные сообщения в тематические ветки. Признаки одной ветки:
+- Реплаи друг на друга
+- Упоминание одного адреса/места
+- Продолжение одной темы в пределах 10 минут
+- Подтверждения других пользователей
+
+═══════════════════════════════════════
+ШАГ 3: ОЦЕНКА КРИТИЧНОСТИ (1–10)
+═══════════════════════════════════════
+
+1–2: Нейтральное обсуждение.
+3: Фиксация проблемы без эмоций.
+4: Лёгкое недовольство.
+5: Умеренная жалоба с эмоциями.
+6: Ощутимое недовольство, несколько человек.
+7: Выраженное раздражение, обвинения в бездействии.
+8: Угрозы прокуратуры/СМИ, описание опасности.
+9: АЛЕРТ. Угроза здоровью/жизни, массовое возмущение.
+10: АЛЕРТ. Угрозы протеста, ЧП в реальном времени.
+
+МОДИФИКАТОРЫ:
+- 5+ участников → +1, 10+ → +2
+- Фото/видео → +1
+- Призыв к коллективным действиям = мин 7
+- ЧП в реальном времени = мин 8
+- Угроза жизни/здоровью = мин 9
+
+═══════════════════════════════════════
+ШАГ 4: ТЕМА И ЛОКАЦИЯ
+═══════════════════════════════════════
+
+Тема: дороги, благоустройство, мусор, вода, ЖКХ, экология, освещение, транспорт, безопасность, земля, энергетика, канализация, администрация, ЧП, другое
+
+Локация: максимально точный адрес. Если нет — район, улица, ЖК. Если ничего — «не указана».
+
+═══════════════════════════════════════
+ФОРМАТ ОТВЕТА — json
+═══════════════════════════════════════
+
+{
+  "period": "<время начала — время конца>",
+  "stats": {
+    "total_messages": <всего>,
+    "filtered_noise": <отсеяно>,
+    "threads_found": <веток>,
+    "alerts": <веток с score >= 9>
+  },
+  "threads": [
+    {
+      "id": 1,
+      "summary": "<суть проблемы>",
+      "score": <1-10>,
+      "is_alert": <true если score >= 9>,
+      "topic": "<тема>",
+      "location": "<адрес>",
+      "participants": <кол-во авторов>,
+      "has_media": <true/false>,
+      "key_quotes": ["<цитата до 100 символов>"],
+      "reasoning": "<почему такой балл>",
+      "source_chat": "<название чата>",
+      "message_ids": [<список MSG_ID>]
+    }
+  ],
+  "alerts": [
+    {
+      "thread_id": <id ветки>,
+      "urgency": "<что требует внимания>",
+      "recommended_action": "<рекомендация>"
+    }
+  ]
+}
+
+Ветки отсортированы по score убыванию. Alerts только для score >= 9. Если нет проблем — threads пустой массив."""
+
+
+def format_messages_for_api(messages: list[dict], chats: dict[int, str]) -> str:
+    """Format messages into chat-style text for DeepSeek."""
+    by_chat: dict[int, list[dict]] = {}
+    for m in messages:
+        cid = m.get('chat_id', 0)
+        if cid not in by_chat:
+            by_chat[cid] = []
+        by_chat[cid].append(m)
+
+    lines = []
+    for chat_id, msgs in by_chat.items():
+        chat_name = chats.get(chat_id, f'Chat {chat_id}')
+        lines.append(f"[ЧАТ: {chat_name} | ID: {chat_id}]")
+        for m in sorted(msgs, key=lambda x: x.get('date', '')):
+            date_str = m.get('date', '')
+            time_str = date_str[11:16] if len(date_str) > 16 else date_str[:5]
+            sender = m.get('sender_name', '?') or '?'
+            text = m.get('text', '')[:500]
+            msg_id = m.get('id', 0)
+            lines.append(f"[{time_str}] [MSG_ID:{msg_id}] {sender}: {text}")
+        lines.append("")
+
+    return "\n".join(lines)
+
+
+def analyze_messages(messages: list[dict], chats: dict[int, str]) -> dict | None:
+    """Analyze a batch of messages, return structured result."""
     if not messages:
-        return []
+        return None
 
-    issues_context = ""
-    if active_issues:
-        issues_list = "\n".join([
-            f"- ID:{i['id']} | {i['title']} | severity:{i['severity']} | {i.get('location', '—')}"
-            for i in active_issues[:20]
-        ])
-        issues_context = f"\n\nАктивные проблемы (если сообщение относится к одной из них, укажи existing_issue_id):\n{issues_list}"
-
-    msgs_text = "\n\n".join([
-        f"[MSG_ID:{m['id']}] [{m.get('sender_name', '?')}] {m['text'][:500]}"
-        for m in messages
-    ])
-
-    user_prompt = f"""Проанализируй сообщения из Telegram-чатов:{issues_context}
-
-Сообщения:
-{msgs_text}
-
-Ответь JSON массивом. Для каждой найденной проблемы:
-{{
-  "title": "Краткое название проблемы",
-  "summary": "Описание в 1-2 предложениях",
-  "severity": 1-10,
-  "direction": "Дороги|Двор|Освещение|ЖКХ|Транспорт|Благоустройство|Экология|Безопасность|Другое",
-  "location": "адрес или место, если упоминается",
-  "message_ids": [список MSG_ID связанных сообщений],
-  "existing_issue_id": null или ID существующей проблемы
-}}
-
-Если в сообщениях нет проблем — верни пустой массив [].
-Группируй сообщения об одной проблеме в одну запись."""
+    formatted = format_messages_for_api(messages, chats)
+    user_prompt = f"Проанализируй сообщения за последние 30 минут.\n\n{formatted}"
 
     try:
         response = httpx.post(
@@ -72,66 +156,98 @@ def analyze_messages(messages: list[dict], active_issues: list[dict]) -> list[di
                     {'role': 'user', 'content': user_prompt},
                 ],
                 'response_format': {'type': 'json_object'},
-                'temperature': 0.3,
+                'temperature': 0.15,
+                'max_tokens': 2000,
             },
-            timeout=30,
+            timeout=60,
         )
         response.raise_for_status()
         content = response.json()['choices'][0]['message']['content']
-        result = json.loads(content)
-
-        # Handle both {"issues": [...]} and [...] formats
-        if isinstance(result, dict):
-            result = result.get('issues', result.get('problems', []))
-        if not isinstance(result, list):
-            return []
-
-        return [r for r in result if isinstance(r, dict) and r.get('severity', 0) >= 3]
+        return json.loads(content)
 
     except Exception as e:
         print(f"[analyzer] Error: {e}")
-        return []
+        return None
 
 
 def process_batch():
     """Main analysis pipeline: fetch unanalyzed messages, analyze, save issues."""
-    messages = db.get_unanalyzed_messages(50)
+    messages = db.get_unanalyzed_messages(100)
     if not messages:
         print("[analyzer] No new messages to analyze")
         return 0
 
-    active_issues = db.get_active_issues()
-    print(f"[analyzer] Analyzing {len(messages)} messages, {len(active_issues)} active issues")
+    chats_list = db.get_active_chats()
+    chats_map = {c['chat_id']: c['title'] for c in chats_list}
 
-    results = analyze_messages(messages, active_issues)
+    print(f"[analyzer] Analyzing {len(messages)} messages from {len(chats_map)} chats")
+
+    result = analyze_messages(messages, chats_map)
+    if not result:
+        return 0
+
+    stats = result.get('stats', {})
+    threads = result.get('threads', [])
+    alerts = result.get('alerts', [])
+
+    print(f"[analyzer] Stats: {stats.get('threads_found', 0)} threads, {stats.get('alerts', 0)} alerts, {stats.get('filtered_noise', 0)} noise")
+
     created = 0
+    active_issues = db.get_active_issues()
 
-    for issue_data in results:
-        msg_ids = issue_data.get('message_ids', [])
-        existing_id = issue_data.get('existing_issue_id')
+    for thread in threads:
+        score = thread.get('score', 0)
+        if score < 3:
+            continue
 
-        if existing_id:
-            # Add to existing issue
+        msg_ids = thread.get('message_ids', [])
+        summary = thread.get('summary', '')
+        title = summary[:100] if summary else thread.get('topic', 'Проблема')
+
+        # Match to existing issue by location + topic
+        matched_issue = None
+        for issue in active_issues:
+            if (issue.get('location') and thread.get('location')
+                    and issue['location'].lower() in thread['location'].lower()
+                    and issue.get('direction') == thread.get('topic')):
+                matched_issue = issue
+                break
+
+        quotes = thread.get('key_quotes', [])
+        full_summary = summary
+        if quotes:
+            full_summary += "\n\nЦитаты: " + "; ".join(quotes)
+
+        if matched_issue:
             db.update_issue(
-                issue_id=existing_id,
+                issue_id=matched_issue['id'],
                 message_ids=msg_ids,
-                summary=issue_data.get('summary'),
-                severity=issue_data.get('severity'),
+                summary=full_summary,
+                severity=max(score, matched_issue.get('severity', 0)),
             )
-            print(f"[analyzer] Updated issue #{existing_id}: +{len(msg_ids)} msgs")
+            print(f"[analyzer] Updated issue #{matched_issue['id']}: {title[:50]} (score {score})")
         else:
-            # Create new issue
             issue_id = db.save_issue(
-                title=issue_data['title'],
-                summary=issue_data.get('summary', ''),
-                severity=issue_data.get('severity', 5),
-                direction=issue_data.get('direction'),
-                location=issue_data.get('location'),
+                title=title,
+                summary=full_summary,
+                severity=score,
+                direction=thread.get('topic'),
+                location=thread.get('location'),
                 message_ids=msg_ids,
             )
             if issue_id:
                 created += 1
-                print(f"[analyzer] New issue #{issue_id}: {issue_data['title']} (severity {issue_data['severity']})")
+                if thread.get('is_alert'):
+                    db.get_client().table('tg_issues').update({'status': 'escalated'}).eq('id', issue_id).execute()
 
-    print(f"[analyzer] Done: {created} new issues, {len(results) - created} updated")
-    return len(results)
+                emoji = '🚨' if thread.get('is_alert') else '⚠️' if score >= 7 else '📋'
+                print(f"[analyzer] {emoji} New #{issue_id}: {title[:60]} (score {score})")
+
+                # Log alerts
+                for a in alerts:
+                    if a.get('thread_id') == thread.get('id'):
+                        print(f"[analyzer] 🚨 ALERT: {a.get('urgency', '')}")
+                        print(f"[analyzer]    Action: {a.get('recommended_action', '')}")
+
+    print(f"[analyzer] Done: {created} new, {len(threads) - created} updated")
+    return len(threads)
