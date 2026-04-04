@@ -79,5 +79,36 @@ export function useSocialMonitor() {
     await fetchData();
   }, [fetchData]);
 
-  return { chats, messages, issues, isLoading, refetch: fetchData, updateIssueStatus, addChat, removeChat };
+  // Chat statistics helper
+  const getChatStats = useCallback((chatId: number) => {
+    const chatMsgs = messages.filter(m => m.chatId === chatId);
+    const total = chatMsgs.length;
+    const today = new Date().toISOString().slice(0, 10);
+    const todayCount = chatMsgs.filter(m => m.date.startsWith(today)).length;
+
+    // Messages per day (last 7 days)
+    const days = new Map<string, number>();
+    for (const m of chatMsgs) {
+      const day = m.date.slice(0, 10);
+      days.set(day, (days.get(day) ?? 0) + 1);
+    }
+    const perDay = Array.from(days.entries())
+      .sort(([a], [b]) => a.localeCompare(b))
+      .slice(-7)
+      .map(([date, count]) => ({ date, count }));
+
+    // Top senders
+    const senders = new Map<string, number>();
+    for (const m of chatMsgs) {
+      if (m.senderName) senders.set(m.senderName, (senders.get(m.senderName) ?? 0) + 1);
+    }
+    const topSenders = Array.from(senders.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([name, count]) => ({ name, count }));
+
+    return { total, todayCount, perDay, topSenders };
+  }, [messages]);
+
+  return { chats, messages, issues, isLoading, refetch: fetchData, updateIssueStatus, addChat, removeChat, getChatStats };
 }

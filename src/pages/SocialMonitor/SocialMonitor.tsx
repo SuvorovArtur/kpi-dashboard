@@ -38,7 +38,7 @@ function timeAgo(dateStr: string): string {
 type Tab = 'issues' | 'feed' | 'chats';
 
 export function SocialMonitor() {
-  const { chats, messages, issues, isLoading, updateIssueStatus, addChat, removeChat } = useSocialMonitor();
+  const { chats, messages, issues, isLoading, updateIssueStatus, addChat, removeChat, getChatStats } = useSocialMonitor();
   const [tab, setTab] = useState<Tab>('issues');
   const [statusFilter, setStatusFilter] = useState<string>('active');
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
@@ -167,38 +167,31 @@ export function SocialMonitor() {
 
       {/* Chats tab */}
       {tab === 'chats' && (
-        <Card>
-          <div className={styles.chatList}>
-            {chats.map(chat => (
-              <div key={chat.id} className={styles.chatItem}>
-                <div className={styles.chatInfo}>
-                  <span className={styles.chatTitle}>{chat.title}</span>
-                  {chat.username && <span className={styles.chatUsername}>@{chat.username}</span>}
-                </div>
-                <span className={styles.chatId}>ID: {chat.chatId}</span>
-                <button className={styles.chatRemoveBtn} onClick={async () => {
-                  await removeChat(chat.chatId);
-                  setToast({ message: 'Чат отключён', type: 'success' });
-                }}>x</button>
-              </div>
-            ))}
-            {chats.length === 0 && <div className={styles.emptyHint}>Нет подключённых чатов</div>}
-          </div>
-          <div className={styles.addChatRow}>
-            <input className={styles.addChatInput} placeholder="Chat ID" value={newChatId}
-              onChange={e => setNewChatId(e.target.value)} type="number" />
-            <input className={styles.addChatInput} placeholder="Название чата" value={newChatTitle}
-              onChange={e => setNewChatTitle(e.target.value)} />
-            <button className={styles.addChatBtn} disabled={!newChatId || !newChatTitle}
-              onClick={async () => {
-                try {
-                  await addChat(Number(newChatId), newChatTitle);
-                  setNewChatId(''); setNewChatTitle('');
-                  setToast({ message: 'Чат добавлен', type: 'success' });
-                } catch { setToast({ message: 'Ошибка', type: 'error' }); }
-              }}>Добавить</button>
-          </div>
-        </Card>
+        <div className={styles.stack}>
+          {chats.map(chat => (
+            <ChatCard key={chat.id} chat={chat} stats={getChatStats(chat.chatId)}
+              onRemove={async () => { await removeChat(chat.chatId); setToast({ message: 'Чат отключён', type: 'success' }); }} />
+          ))}
+          {chats.length === 0 && (
+            <Card><div className={styles.empty}><p className={styles.emptyTitle}>Нет подключённых чатов</p></div></Card>
+          )}
+          <Card>
+            <div className={styles.addChatRow}>
+              <input className={styles.addChatInput} placeholder="Chat ID" value={newChatId}
+                onChange={e => setNewChatId(e.target.value)} type="number" />
+              <input className={styles.addChatInput} placeholder="Название чата" value={newChatTitle}
+                onChange={e => setNewChatTitle(e.target.value)} />
+              <button className={styles.addChatBtn} disabled={!newChatId || !newChatTitle}
+                onClick={async () => {
+                  try {
+                    await addChat(Number(newChatId), newChatTitle);
+                    setNewChatId(''); setNewChatTitle('');
+                    setToast({ message: 'Чат добавлен', type: 'success' });
+                  } catch { setToast({ message: 'Ошибка', type: 'error' }); }
+                }}>Добавить</button>
+            </div>
+          </Card>
+        </div>
       )}
 
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
@@ -246,6 +239,80 @@ function IssueCard({ issue, onStatusChange }: { issue: TgIssue; onStatusChange: 
         </div>
       )}
     </div>
+  );
+}
+
+/* ===== Chat Card with expandable stats ===== */
+function ChatCard({ chat, stats, onRemove }: {
+  chat: { id: number; chatId: number; title: string; username: string | null };
+  stats: { total: number; todayCount: number; perDay: { date: string; count: number }[]; topSenders: { name: string; count: number }[] };
+  onRemove: () => void;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const maxPerDay = Math.max(1, ...stats.perDay.map(d => d.count));
+
+  return (
+    <Card>
+      <div className={styles.chatCardHeader} onClick={() => setExpanded(!expanded)}>
+        <div className={styles.chatCardInfo}>
+          <span className={styles.chatTitle}>{chat.title}</span>
+          {chat.username && <span className={styles.chatUsername}>@{chat.username}</span>}
+        </div>
+        <div className={styles.chatCardStats}>
+          <div className={styles.chatStat}>
+            <span className={styles.chatStatValue}>{stats.total}</span>
+            <span className={styles.chatStatLabel}>всего</span>
+          </div>
+          <div className={styles.chatStat}>
+            <span className={styles.chatStatValue}>{stats.todayCount}</span>
+            <span className={styles.chatStatLabel}>сегодня</span>
+          </div>
+        </div>
+        <span className={styles.chatExpand}>{expanded ? '▲' : '▼'}</span>
+      </div>
+
+      {expanded && (
+        <div className={styles.chatCardBody}>
+          {/* Messages per day mini chart */}
+          {stats.perDay.length > 0 && (
+            <div className={styles.chatSection}>
+              <span className={styles.chatSectionTitle}>Сообщений по дням</span>
+              <div className={styles.chatBarChart}>
+                {stats.perDay.map(d => (
+                  <div key={d.date} className={styles.chatBarCol}>
+                    <span className={styles.chatBarCount}>{d.count}</span>
+                    <div className={styles.chatBarTrack}>
+                      <div className={styles.chatBarFill} style={{ height: `${(d.count / maxPerDay) * 100}%` }} />
+                    </div>
+                    <span className={styles.chatBarDate}>{d.date.slice(5)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Top senders */}
+          {stats.topSenders.length > 0 && (
+            <div className={styles.chatSection}>
+              <span className={styles.chatSectionTitle}>Активные участники</span>
+              <div className={styles.chatSenderList}>
+                {stats.topSenders.map((s, i) => (
+                  <div key={i} className={styles.chatSenderItem}>
+                    <span className={styles.chatSenderName}>{s.name}</span>
+                    <span className={styles.chatSenderCount}>{s.count}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className={styles.chatCardFooter}>
+            <span className={styles.chatId}>ID: {chat.chatId}</span>
+            <button className={styles.chatRemoveBtn} onClick={(e) => { e.stopPropagation(); onRemove(); }}>Отключить</button>
+          </div>
+        </div>
+      )}
+    </Card>
   );
 }
 
