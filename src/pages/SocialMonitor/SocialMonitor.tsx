@@ -38,7 +38,7 @@ function timeAgo(dateStr: string): string {
 type Tab = 'issues' | 'feed' | 'chats';
 
 export function SocialMonitor() {
-  const { chats, messages, issues, isLoading, updateIssueStatus, addChat, removeChat, getChatStats } = useSocialMonitor();
+  const { chats, messages, issues, isLoading, updateIssueStatus, addChat, removeChat, updateChatId, getChatStats } = useSocialMonitor();
   const [tab, setTab] = useState<Tab>('issues');
   const [statusFilter, setStatusFilter] = useState<string>('active');
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
@@ -147,7 +147,7 @@ export function SocialMonitor() {
         ) : (
           <Card>
             <div className={styles.feedList}>
-              {messages.slice(0, 50).map(msg => {
+              {messages.map(msg => {
                 const chat = chats.find(c => c.chatId === msg.chatId);
                 return (
                   <div key={msg.id} className={styles.feedItem}>
@@ -170,7 +170,8 @@ export function SocialMonitor() {
         <div className={styles.stack}>
           {chats.map(chat => (
             <ChatCard key={chat.id} chat={chat} stats={getChatStats(chat.chatId)}
-              onRemove={async () => { await removeChat(chat.chatId); setToast({ message: 'Чат отключён', type: 'success' }); }} />
+              onRemove={async () => { await removeChat(chat.chatId); setToast({ message: 'Чат отключён', type: 'success' }); }}
+              onUpdateChatId={async (newId) => { await updateChatId(chat.chatId, newId); setToast({ message: 'ID обновлён', type: 'success' }); }} />
           ))}
           {chats.length === 0 && (
             <Card><div className={styles.empty}><p className={styles.emptyTitle}>Нет подключённых чатов</p></div></Card>
@@ -243,12 +244,15 @@ function IssueCard({ issue, onStatusChange }: { issue: TgIssue; onStatusChange: 
 }
 
 /* ===== Chat Card with expandable stats ===== */
-function ChatCard({ chat, stats, onRemove }: {
+function ChatCard({ chat, stats, onRemove, onUpdateChatId }: {
   chat: { id: number; chatId: number; title: string; username: string | null };
   stats: { total: number; todayCount: number; perDay: { date: string; count: number }[]; topSenders: { name: string; count: number }[] };
   onRemove: () => void;
+  onUpdateChatId: (newId: number) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
+  const [editingId, setEditingId] = useState(false);
+  const [tempId, setTempId] = useState(String(chat.chatId));
   const maxPerDay = Math.max(1, ...stats.perDay.map(d => d.count));
 
   return (
@@ -307,7 +311,15 @@ function ChatCard({ chat, stats, onRemove }: {
           )}
 
           <div className={styles.chatCardFooter}>
-            <span className={styles.chatId}>ID: {chat.chatId}</span>
+            {editingId ? (
+              <div className={styles.editIdRow}>
+                <input className={styles.editIdInput} value={tempId} onChange={e => setTempId(e.target.value)} type="text" placeholder="-100..." />
+                <button className={styles.editIdSave} onClick={(e) => { e.stopPropagation(); onUpdateChatId(Number(tempId)); setEditingId(false); }}>OK</button>
+                <button className={styles.editIdCancel} onClick={(e) => { e.stopPropagation(); setEditingId(false); setTempId(String(chat.chatId)); }}>x</button>
+              </div>
+            ) : (
+              <span className={styles.chatId} onClick={(e) => { e.stopPropagation(); setEditingId(true); }} title="Нажмите для редактирования">ID: {chat.chatId}</span>
+            )}
             <button className={styles.chatRemoveBtn} onClick={(e) => { e.stopPropagation(); onRemove(); }}>Отключить</button>
           </div>
         </div>

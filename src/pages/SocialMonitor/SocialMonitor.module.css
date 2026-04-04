@@ -429,6 +429,47 @@
   border-top: 1px solid var(--color-border);
 }
 
+.chatId {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  font-family: monospace;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.chatId:hover { background: #f3f4f6; }
+
+.editIdRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.editIdInput {
+  width: 160px;
+  padding: 4px 8px;
+  border: 1px solid var(--color-teal);
+  border-radius: 5px;
+  font-size: 12px;
+  font-family: monospace;
+}
+.editIdSave {
+  padding: 4px 10px;
+  background: var(--color-teal);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 11px;
+  cursor: pointer;
+}
+.editIdCancel {
+  padding: 4px 8px;
+  background: var(--color-border);
+  border: none;
+  border-radius: 5px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
 .chatRemoveBtn {
   padding: 4px 12px;
   background: none;

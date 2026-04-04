@@ -38,13 +38,36 @@ export function useSocialMonitor() {
   const [issues, setIssues] = useState<TgIssue[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const [chatCounts, setChatCounts] = useState<Map<number, { total: number; today: number }>>(new Map());
+
   const fetchData = useCallback(async () => {
     setIsLoading(true);
-    const [chatsRes, msgsRes, issuesRes] = await Promise.all([
+    const today = new Date().toISOString().slice(0, 10);
+    const [chatsRes, msgsRes, issuesRes, countsRes, todayRes] = await Promise.all([
       supabase.from('tg_chats').select('*').eq('is_active', true),
-      supabase.from('tg_messages').select('*').order('date', { ascending: false }).limit(100),
+      supabase.from('tg_messages').select('*').order('date', { ascending: false }).limit(10),
       supabase.from('tg_issues').select('*').order('last_seen', { ascending: false }),
+      supabase.from('tg_messages').select('chat_id', { count: 'exact', head: false }),
+      supabase.from('tg_messages').select('chat_id', { count: 'exact', head: false }).gte('date', today),
     ]);
+
+    // Build per-chat counts
+    const counts = new Map<number, { total: number; today: number }>();
+    if (countsRes.data) {
+      for (const r of countsRes.data as any[]) {
+        const c = counts.get(r.chat_id) ?? { total: 0, today: 0 };
+        c.total++;
+        counts.set(r.chat_id, c);
+      }
+    }
+    if (todayRes.data) {
+      for (const r of todayRes.data as any[]) {
+        const c = counts.get(r.chat_id) ?? { total: 0, today: 0 };
+        c.today++;
+        counts.set(r.chat_id, c);
+      }
+    }
+    setChatCounts(counts);
 
     if (chatsRes.data) setChats(chatsRes.data.map((c: any) => ({
       id: c.id, chatId: c.chat_id, title: c.title, username: c.username, isActive: c.is_active,
@@ -79,12 +102,17 @@ export function useSocialMonitor() {
     await fetchData();
   }, [fetchData]);
 
+  const updateChatId = useCallback(async (oldChatId: number, newChatId: number) => {
+    await supabase.from('tg_chats').update({ chat_id: newChatId }).eq('chat_id', oldChatId);
+    await fetchData();
+  }, [fetchData]);
+
   // Chat statistics helper
   const getChatStats = useCallback((chatId: number) => {
     const chatMsgs = messages.filter(m => m.chatId === chatId);
-    const total = chatMsgs.length;
-    const today = new Date().toISOString().slice(0, 10);
-    const todayCount = chatMsgs.filter(m => m.date.startsWith(today)).length;
+    const counts = chatCounts.get(chatId);
+    const total = counts?.total ?? chatMsgs.length;
+    const todayCount = counts?.today ?? 0;
 
     // Messages per day (last 7 days)
     const days = new Map<string, number>();
@@ -110,5 +138,5 @@ export function useSocialMonitor() {
     return { total, todayCount, perDay, topSenders };
   }, [messages]);
 
-  return { chats, messages, issues, isLoading, refetch: fetchData, updateIssueStatus, addChat, removeChat, getChatStats };
+  return { chats, messages, issues, isLoading, refetch: fetchData, updateIssueStatus, addChat, removeChat, updateChatId, getChatStats };
 }
