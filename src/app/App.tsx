@@ -17,6 +17,8 @@ function AppLayout() {
       ...(get('show_kpi_detail') === 'true' ? [{ key: 'kpi', label: 'KPI подробно', icon: 'Target', path: '/kpi' }] : []),
       { key: 'appeals', label: 'Обращения', icon: 'MessageSquare', path: '/appeals' },
       { key: 'isn', label: 'ИСН', icon: 'Activity', path: '/isn' },
+      { key: 'attendance', label: 'Яндекс Вектор', icon: 'Users', path: '/attendance' },
+      { key: 'social', label: 'Соцсети', icon: 'MessageSquare', path: '/social' },
       { key: 'settings', label: 'Настройки', icon: 'Settings', path: '/settings' },
     ];
     return items;

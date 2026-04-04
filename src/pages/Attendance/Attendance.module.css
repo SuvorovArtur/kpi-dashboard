@@ -1,0 +1,329 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 0 48px;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Toolbar: tabs + selectors in one row */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.tabs {
+  display: flex;
+  gap: 2px;
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 3px;
+}
+
+.tab {
+  padding: 6px 16px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tab:hover { background: rgba(14, 92, 93, 0.05); }
+.tabActive { background: var(--color-teal); color: #fff; }
+
+.controls {
+  display: flex;
+  gap: 6px;
+}
+
+.select {
+  padding: 6px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-card-bg);
+  font-size: 13px;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+/* Year avg */
+.yearAvgBadge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.yearAvgLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+/* PctBadge */
+.pctBadge {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 5px;
+  font-weight: 700;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.pctSm { font-size: 11px; padding: 1px 5px; }
+.pctEmpty { color: var(--color-text-secondary); font-size: 12px; }
+.pct_green { color: #16a34a; background: #f0fdf4; }
+.pct_yellow { color: #ca8a04; background: #fefce8; }
+.pct_red { color: #dc2626; background: #fef2f2; }
+.pct_gray { color: #9ca3af; background: #f3f4f6; }
+
+/* Mini progress bar */
+.miniBar {
+  height: 6px;
+  background: #f3f4f6;
+  border-radius: 3px;
+  overflow: hidden;
+  min-width: 60px;
+}
+.miniBarFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+
+/* ===== INPUT TAB ===== */
+.inputHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.inputAvg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.inputAvgLabel {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+.planEdit {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.planLabel {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+.planEditRow {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.planInput {
+  width: 50px;
+  padding: 3px 6px;
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  font-size: 12px;
+}
+.planSaveBtn {
+  padding: 3px 8px;
+  background: var(--color-teal);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 11px;
+  cursor: pointer;
+}
+.planCancelBtn {
+  padding: 3px 6px;
+  background: var(--color-border);
+  border: none;
+  border-radius: 5px;
+  font-size: 11px;
+  cursor: pointer;
+}
+.planDisplay {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+.planEditBtn {
+  padding: 2px 8px;
+  background: var(--color-border);
+  border: none;
+  border-radius: 5px;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+.planEditBtn:hover { background: #e2e8f0; }
+
+/* Compact day grid */
+.dayGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  margin-bottom: 10px;
+}
+.dayBtn {
+  padding: 6px 0;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #f3f4f6;
+  color: #6b7280;
+  transition: all 0.12s;
+}
+.dayBtn:hover { background: #e5e7eb; }
+.dayBtnActive {
+  background: var(--color-teal) !important;
+  color: #fff !important;
+  box-shadow: 0 1px 4px rgba(14, 92, 93, 0.3);
+}
+.dayBtnFilled { background: #dcfce7; color: #16a34a; }
+.dayBtnToday { box-shadow: inset 0 0 0 2px #3b82f6; }
+
+/* Fact input row — compact inline */
+.factRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: #f9fafb;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+.factLabel {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  font-weight: 500;
+}
+.factField {
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  width: 50px;
+  outline: none;
+}
+.factOf {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+.factActions {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+.saveBtn {
+  padding: 6px 14px;
+  background: var(--color-teal);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.saveBtn:hover { opacity: 0.9; }
+.saveBtn:disabled { opacity: 0.4; }
+.deleteBtn {
+  padding: 6px 10px;
+  background: #f3f4f6;
+  color: #9ca3af;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.deleteBtn:hover { background: #fef2f2; color: #dc2626; }
+
+/* Chart */
+.chart {
+  width: 100%;
+  height: 150px;
+}
+.chartSection {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
+}
+
+/* Table */
+.tableWrap { overflow-x: auto; }
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.table th {
+  padding: 6px 10px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  background: #f9fafb;
+  border-bottom: 1px solid var(--color-border);
+}
+.thBar { width: 30%; }
+.table td {
+  padding: 5px 10px;
+  border-bottom: 1px solid var(--color-border);
+}
+.tdDay { font-weight: 500; color: var(--color-text-primary); }
+.tdCenter { text-align: center; }
+.rowToday { background: rgba(59, 130, 246, 0.06); }
+.rowEven { background: rgba(0, 0, 0, 0.01); }
+.rowQuarter { background: rgba(59, 130, 246, 0.04); font-weight: 600; }
+.rowAvg { background: #f1f5f9; font-weight: 700; border-top: 2px solid var(--color-border); }
+
+/* Quarter tab */
+.quarterHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.quarterTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+.quarterGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.quarterCell {
+  padding: 10px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+.quarterCellHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin-bottom: 6px;
+}

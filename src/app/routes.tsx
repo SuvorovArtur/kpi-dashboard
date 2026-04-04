@@ -10,6 +10,8 @@ const Staff = lazy(() => import('../pages/Staff/Staff'));
 const Roadmap = lazy(() => import('../pages/Roadmap/Roadmap'));
 const ISN = lazy(() => import('../pages/ISN/ISN'));
 const Settings = lazy(() => import('../pages/Settings/Settings'));
+const Attendance = lazy(() => import('../pages/Attendance/Attendance'));
+const SocialMonitor = lazy(() => import('../pages/SocialMonitor/SocialMonitor'));
 
 const PageLoader = () => (
   <div style={{ padding: 32 }}>
@@ -30,6 +32,8 @@ export function AppRoutes() {
         <Route path="/staff" element={<Staff />} />
         <Route path="/isn" element={<ISN />} />
         <Route path="/roadmap" element={<Roadmap />} />
+        <Route path="/attendance" element={<Attendance />} />
+        <Route path="/social" element={<SocialMonitor />} />
         <Route path="/settings" element={<Settings />} />
       </Routes>
     </Suspense>

@@ -1,0 +1,305 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 0 48px;
+}
+
+/* Stats */
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.statCard {
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  text-align: center;
+}
+.statDanger {
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+.statValue {
+  display: block;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  font-family: var(--font-heading);
+}
+.statDanger .statValue { color: #dc2626; }
+.statLabel {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+/* Toolbar */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.tabs {
+  display: flex;
+  gap: 2px;
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 3px;
+}
+.tab {
+  padding: 6px 16px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tab:hover { background: rgba(14, 92, 93, 0.05); }
+.tabActive { background: var(--color-teal); color: #fff; }
+
+.filters {
+  display: flex;
+  gap: 4px;
+}
+.filterBtn {
+  padding: 4px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-card-bg);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+.filterBtn:hover { border-color: var(--color-teal); }
+.filterActive {
+  background: var(--color-teal);
+  color: #fff;
+  border-color: var(--color-teal);
+}
+
+/* Empty state */
+.empty {
+  text-align: center;
+  padding: 40px 20px;
+}
+.emptyTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 6px;
+}
+.emptyHint {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* Issue list */
+.issueList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.issueCard {
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: box-shadow 0.15s;
+}
+.issueCard:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.issueCritical { border-left: 3px solid #dc2626; }
+
+.issueHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+}
+
+.issueSeverity {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.issueInfo {
+  flex: 1;
+  min-width: 0;
+}
+.issueTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  display: block;
+  margin-bottom: 3px;
+}
+.issueMeta {
+  display: flex;
+  gap: 10px;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  flex-wrap: wrap;
+}
+.issueLocation { color: var(--color-teal); font-weight: 500; }
+.issueDirection { }
+.issueTime { }
+.issueMsgCount { }
+
+.issueStatus {
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.issueExpanded {
+  padding: 0 16px 14px;
+  border-top: 1px solid var(--color-border);
+}
+.issueSummary {
+  font-size: 13px;
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  margin: 10px 0;
+}
+.issueActions {
+  display: flex;
+  gap: 6px;
+}
+.issueActionBtn {
+  padding: 5px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-card-bg);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.issueActionBtn:hover { background: #f9fafb; }
+
+/* Feed */
+.feedList {
+  display: flex;
+  flex-direction: column;
+}
+.feedItem {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.feedItem:last-child { border-bottom: none; }
+.feedMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+.feedChat {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-teal);
+  background: rgba(14, 92, 93, 0.08);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.feedTime {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+.feedSender {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin-bottom: 2px;
+  display: block;
+}
+.feedText {
+  font-size: 13px;
+  color: var(--color-text-primary);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Chats */
+.chatList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.chatItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+.chatInfo { flex: 1; }
+.chatTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+.chatUsername {
+  font-size: 12px;
+  color: var(--color-teal);
+  margin-left: 8px;
+}
+.chatId {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  font-family: monospace;
+}
+.chatRemoveBtn {
+  padding: 4px 8px;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 16px;
+  cursor: pointer;
+}
+.chatRemoveBtn:hover { color: #dc2626; }
+
+.addChatRow {
+  display: flex;
+  gap: 8px;
+}
+.addChatInput {
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 13px;
+  flex: 1;
+}
+.addChatBtn {
+  padding: 8px 16px;
+  background: var(--color-teal);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.addChatBtn:disabled { opacity: 0.4; }
+
+@media (max-width: 800px) {
+  .statsRow { grid-template-columns: repeat(2, 1fr); }
+}

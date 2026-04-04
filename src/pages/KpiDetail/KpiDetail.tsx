@@ -70,7 +70,7 @@ export function KpiDetail() {
     if (appeals.length === 0 || syncedRef.current) return;
     syncedRef.current = true;
 
-    const AUTO_KPIS = ['isn', 'appeals_per_1k', 'repeated_appeals', 'delayed_appeals'];
+    // Uses AUTO_KPI_IDS from module scope
     // Group appeals by date
     const byDate = new Map<string, typeof appeals>();
     for (const a of appeals) {
