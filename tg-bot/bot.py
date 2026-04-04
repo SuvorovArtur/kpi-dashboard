@@ -32,9 +32,16 @@ async def load_chats():
 @client.on(events.NewMessage)
 async def on_message(event):
     """Handle incoming messages from monitored chats."""
-    chat_id = event.chat_id
+    raw_id = event.chat_id
+    # Normalize: Telethon gives negative IDs for channels/supergroups, DB stores positive with 100 prefix
+    chat_id = raw_id
+    if raw_id and raw_id < 0:
+        chat_id = abs(raw_id)  # -1001853464166 → 1001853464166
+
     if chat_id not in monitored_chat_ids:
         return
+
+    print(f"[bot] MSG from chat {chat_id}: {(event.text or '')[:50]}")
 
     # Skip empty messages, service messages, media-only
     if not event.text or len(event.text.strip()) < 5:

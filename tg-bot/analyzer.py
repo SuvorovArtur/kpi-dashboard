@@ -171,8 +171,8 @@ def analyze_messages(messages: list[dict], chats: dict[int, str]) -> dict | None
 
 
 def process_batch():
-    """Main analysis pipeline: fetch unanalyzed messages, analyze, save issues."""
-    messages = db.get_unanalyzed_messages(100)
+    """Main analysis pipeline: fetch unanalyzed messages, analyze PER CHAT, save issues."""
+    messages = db.get_unanalyzed_messages(200)
     if not messages:
         print("[analyzer] No new messages to analyze")
         return 0
@@ -180,74 +180,90 @@ def process_batch():
     chats_list = db.get_active_chats()
     chats_map = {c['chat_id']: c['title'] for c in chats_list}
 
-    print(f"[analyzer] Analyzing {len(messages)} messages from {len(chats_map)} chats")
+    # Group messages by chat
+    by_chat: dict[int, list[dict]] = {}
+    for m in messages:
+        cid = m.get('chat_id', 0)
+        if cid not in by_chat:
+            by_chat[cid] = []
+        by_chat[cid].append(m)
 
-    result = analyze_messages(messages, chats_map)
-    if not result:
-        return 0
+    print(f"[analyzer] {len(messages)} messages across {len(by_chat)} chats")
 
-    stats = result.get('stats', {})
-    threads = result.get('threads', [])
-    alerts = result.get('alerts', [])
+    total_threads = 0
 
-    print(f"[analyzer] Stats: {stats.get('threads_found', 0)} threads, {stats.get('alerts', 0)} alerts, {stats.get('filtered_noise', 0)} noise")
+    for chat_id, chat_msgs in by_chat.items():
+        chat_name = chats_map.get(chat_id, f'Chat {chat_id}')
+        print(f"[analyzer] --- {chat_name}: {len(chat_msgs)} messages ---")
 
-    created = 0
-    active_issues = db.get_active_issues()
-
-    for thread in threads:
-        score = thread.get('score', 0)
-        if score < 3:
+        result = analyze_messages(chat_msgs, {chat_id: chat_name})
+        if not result:
             continue
 
-        msg_ids = thread.get('message_ids', [])
-        summary = thread.get('summary', '')
-        title = summary[:100] if summary else thread.get('topic', 'Проблема')
+        stats = result.get('stats', {})
+        threads = result.get('threads', [])
+        alerts = result.get('alerts', [])
 
-        # Match to existing issue by location + topic
-        matched_issue = None
-        for issue in active_issues:
-            if (issue.get('location') and thread.get('location')
-                    and issue['location'].lower() in thread['location'].lower()
-                    and issue.get('direction') == thread.get('topic')):
-                matched_issue = issue
-                break
+        print(f"[analyzer] {chat_name}: {stats.get('threads_found', 0)} threads, {stats.get('alerts', 0)} alerts, {stats.get('filtered_noise', 0)} noise")
 
-        quotes = thread.get('key_quotes', [])
-        full_summary = summary
-        if quotes:
-            full_summary += "\n\nЦитаты: " + "; ".join(quotes)
+        created = 0
+        active_issues = db.get_active_issues()
 
-        if matched_issue:
-            db.update_issue(
-                issue_id=matched_issue['id'],
-                message_ids=msg_ids,
-                summary=full_summary,
-                severity=max(score, matched_issue.get('severity', 0)),
-            )
-            print(f"[analyzer] Updated issue #{matched_issue['id']}: {title[:50]} (score {score})")
-        else:
-            issue_id = db.save_issue(
-                title=title,
-                summary=full_summary,
-                severity=score,
-                direction=thread.get('topic'),
-                location=thread.get('location'),
-                message_ids=msg_ids,
-            )
-            if issue_id:
-                created += 1
-                if thread.get('is_alert'):
-                    db.get_client().table('tg_issues').update({'status': 'escalated'}).eq('id', issue_id).execute()
+        for thread in threads:
+            score = thread.get('score', 0)
+            if score < 3:
+                continue
 
-                emoji = '🚨' if thread.get('is_alert') else '⚠️' if score >= 7 else '📋'
-                print(f"[analyzer] {emoji} New #{issue_id}: {title[:60]} (score {score})")
+            msg_ids = thread.get('message_ids', [])
+            summary = thread.get('summary', '')
+            title = summary[:100] if summary else thread.get('topic', 'Проблема')
 
-                # Log alerts
-                for a in alerts:
-                    if a.get('thread_id') == thread.get('id'):
-                        print(f"[analyzer] 🚨 ALERT: {a.get('urgency', '')}")
-                        print(f"[analyzer]    Action: {a.get('recommended_action', '')}")
+            # Match to existing issue by location + topic
+            matched_issue = None
+            for issue in active_issues:
+                if (issue.get('location') and thread.get('location')
+                        and issue['location'].lower() in thread['location'].lower()
+                        and issue.get('direction') == thread.get('topic')):
+                    matched_issue = issue
+                    break
 
-    print(f"[analyzer] Done: {created} new, {len(threads) - created} updated")
-    return len(threads)
+            quotes = thread.get('key_quotes', [])
+            full_summary = summary
+            if quotes:
+                full_summary += "\n\nЦитаты: " + "; ".join(quotes)
+
+            if matched_issue:
+                db.update_issue(
+                    issue_id=matched_issue['id'],
+                    message_ids=msg_ids,
+                    summary=full_summary,
+                    severity=max(score, matched_issue.get('severity', 0)),
+                )
+                print(f"[analyzer] Updated issue #{matched_issue['id']}: {title[:50]} (score {score})")
+            else:
+                issue_id = db.save_issue(
+                    title=title,
+                    summary=full_summary,
+                    severity=score,
+                    direction=thread.get('topic'),
+                    location=thread.get('location'),
+                    message_ids=msg_ids,
+                )
+                if issue_id:
+                    created += 1
+                    if thread.get('is_alert'):
+                        db.get_client().table('tg_issues').update({'status': 'escalated'}).eq('id', issue_id).execute()
+
+                    emoji = '🚨' if thread.get('is_alert') else '⚠️' if score >= 7 else '📋'
+                    print(f"[analyzer] {emoji} New #{issue_id}: {title[:60]} (score {score})")
+
+                    for a in alerts:
+                        if a.get('thread_id') == thread.get('id'):
+                            print(f"[analyzer] 🚨 ALERT: {a.get('urgency', '')}")
+                            print(f"[analyzer]    Action: {a.get('recommended_action', '')}")
+
+        total_threads += len(threads)
+        print(f"[analyzer] {chat_name}: {created} new issues")
+
+    print(f"[analyzer] Total: {total_threads} threads across all chats")
+    return total_threads
