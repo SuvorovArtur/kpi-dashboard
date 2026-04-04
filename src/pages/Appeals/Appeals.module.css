@@ -7,11 +7,17 @@
 
 .kpiRow {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 16px;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1400px) {
+  .kpiRow {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 1000px) {
   .kpiRow {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -98,4 +104,210 @@
   border-color: var(--color-teal, #0d9488);
   color: #fff;
   opacity: 0.9;
+}
+
+/* Data entry */
+.tableHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.tableHeader .sectionTitle {
+  margin: 0;
+}
+
+.addBtn {
+  padding: 8px 16px;
+  border: 1px solid var(--color-teal, #0d9488);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-teal, #0d9488);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.addBtn:hover {
+  background: var(--color-teal, #0d9488);
+  color: #fff;
+}
+
+.addForm {
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 10px;
+  background: var(--color-bg, #f9fafb);
+}
+
+.addFormRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 800px) {
+  .addFormRow {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 500px) {
+  .addFormRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.formLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-secondary, #6b7280);
+}
+
+.formInput {
+  padding: 8px 12px;
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  background: var(--color-surface, #fff);
+  color: var(--color-text-primary, #1a1a2e);
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: var(--color-teal, #0d9488);
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.15);
+}
+
+.checkboxRow {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 12px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--color-text-primary, #1a1a2e);
+  cursor: pointer;
+}
+
+.saveBtn {
+  padding: 8px 24px;
+  border: none;
+  border-radius: 8px;
+  background: var(--color-teal, #0d9488);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.saveBtn:hover {
+  opacity: 0.9;
+}
+
+.saveBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dataRangeBadge {
+  padding: 6px 14px;
+  background: var(--color-bg, #f3f4f6);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.analyzeBtn {
+  padding: 8px 16px;
+  border: 1px solid var(--color-orange, #FFB460);
+  border-radius: 8px;
+  background: var(--color-orange, #FFB460);
+  color: #1a1a2e;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+}
+
+.analyzeBtn:hover {
+  opacity: 0.9;
+}
+
+.analyzeBtn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.totalCount {
+  font-size: 13px;
+  color: var(--color-text-secondary, #6b7280);
+}
+
+/* Appeal card */
+.appealCard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cardField {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border, #e5e7eb);
+}
+
+.cardFieldFull {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border, #e5e7eb);
+}
+
+.cardLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary, #6b7280);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  min-width: 120px;
+}
+
+.cardValue {
+  font-size: 14px;
+  color: var(--color-text-primary, #1a1a2e);
+  text-align: right;
+}
+
+.cardDescription {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-text-primary, #1a1a2e);
+  margin: 0;
+  white-space: pre-wrap;
 }

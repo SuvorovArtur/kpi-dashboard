@@ -125,3 +125,7 @@
   color: #fff;
   border-color: var(--color-teal);
 }
+
+.clickableRow {
+  cursor: pointer;
+}

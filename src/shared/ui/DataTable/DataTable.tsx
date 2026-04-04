@@ -14,6 +14,7 @@ interface DataTableProps<T extends Record<string, unknown>> {
   columns: Column<T>[];
   data: T[];
   onSort?: (key: string, dir: 'asc' | 'desc') => void;
+  onRowClick?: (row: T) => void;
   pageSize?: number;
   exportFilename?: string;
 }
@@ -22,6 +23,7 @@ export function DataTable<T extends Record<string, unknown>>({
   columns,
   data,
   onSort,
+  onRowClick,
   pageSize = 10,
   exportFilename,
 }: DataTableProps<T>) {
@@ -130,7 +132,11 @@ export function DataTable<T extends Record<string, unknown>>({
         </thead>
         <tbody>
           {pageData.map((row, rowIdx) => (
-            <tr key={rowIdx}>
+            <tr
+              key={rowIdx}
+              onClick={onRowClick ? () => onRowClick(row) : undefined}
+              className={clsx(onRowClick && styles.clickableRow)}
+            >
               {columns.map((col) => (
                 <td key={col.key}>
                   {col.render ? col.render(row[col.key], row) : String(row[col.key] ?? '')}

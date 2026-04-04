@@ -8,6 +8,7 @@ const Territories = lazy(() => import('../pages/Territories/Territories'));
 const Appeals = lazy(() => import('../pages/Appeals/Appeals'));
 const Staff = lazy(() => import('../pages/Staff/Staff'));
 const Roadmap = lazy(() => import('../pages/Roadmap/Roadmap'));
+const ISN = lazy(() => import('../pages/ISN/ISN'));
 const Settings = lazy(() => import('../pages/Settings/Settings'));
 
 const PageLoader = () => (
@@ -27,6 +28,7 @@ export function AppRoutes() {
         <Route path="/territories" element={<Territories />} />
         <Route path="/appeals" element={<Appeals />} />
         <Route path="/staff" element={<Staff />} />
+        <Route path="/isn" element={<ISN />} />
         <Route path="/roadmap" element={<Roadmap />} />
         <Route path="/settings" element={<Settings />} />
       </Routes>

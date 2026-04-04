@@ -129,13 +129,23 @@
 .territoryItem {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 12px;
   padding: 10px 14px;
   border: 1px solid var(--color-border, #e5e7eb);
   border-radius: 8px;
   font-size: 14px;
   color: var(--color-text-primary, #1a1a2e);
   background: var(--color-surface, #fff);
+}
+
+.territoryItem span:first-child {
+  flex: 1;
+}
+
+.territoryId {
+  font-size: 12px;
+  color: var(--color-text-tertiary, #9ca3af);
+  font-family: var(--font-mono, monospace);
 }
 
 .btnRemove {
@@ -262,7 +272,77 @@
   color: var(--color-text-tertiary, #9ca3af);
 }
 
+.settingHint {
+  font-size: 13px;
+  color: var(--color-text-secondary, #6b7280);
+  margin: 0 0 12px;
+}
+
+.settingUnit {
+  font-size: 14px;
+  color: var(--color-text-secondary, #6b7280);
+  white-space: nowrap;
+  align-self: center;
+}
+
 /* Export */
+.toggleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+.toggleLabel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.toggleInput {
+  display: none;
+}
+
+.toggleSwitch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background: var(--color-border);
+  border-radius: 12px;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.toggleSwitch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
+.toggleInput:checked + .toggleSwitch {
+  background: var(--color-teal);
+}
+
+.toggleInput:checked + .toggleSwitch::after {
+  transform: translateX(20px);
+}
+
+.toggleHint {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
 .exportRow {
   display: flex;
   gap: 12px;

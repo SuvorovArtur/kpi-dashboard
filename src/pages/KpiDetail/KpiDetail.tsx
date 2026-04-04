@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   ResponsiveContainer,
@@ -10,13 +10,16 @@ import {
   Tooltip as RechartsTooltip,
   ReferenceLine,
 } from 'recharts';
-import { Card, KpiCard, DataTable, Badge, Skeleton, Header, DateRangePicker } from '../../shared/ui';
+import { Card, KpiCard, DataTable, Badge, Skeleton, Header, DateRangePicker, Toast } from '../../shared/ui';
 import type { Column } from '../../shared/ui';
-import { useKpiData, useDateRange } from '../../shared/hooks';
+import { useKpiData, useDateRange, useAppeals, useAppSettings } from '../../shared/hooks';
 import { formatNumber, formatPercent, formatDate } from '../../shared/utils/formatters';
 import { getKpiStatus, getTrend, getTrendValue, getProgressToTarget } from '../../shared/utils/kpi-helpers';
+import { supabase } from '../../shared/lib/supabase';
 import type { KpiDefinition } from '../../shared/types';
 import styles from './KpiDetail.module.css';
+
+const AUTO_KPI_IDS = ['isn', 'appeals_per_1k', 'repeated_appeals', 'delayed_appeals'];
 
 const FREQUENCY_LABELS: Record<string, string> = {
   weekly: 'Еженедельно',
@@ -24,7 +27,6 @@ const FREQUENCY_LABELS: Record<string, string> = {
   quarterly: 'Ежеквартально',
 };
 
-/** Helper to read targets from definitions -- handles both flat and nested shapes */
 function getTargets(def: KpiDefinition) {
   return {
     d90: def.d90 ?? 0,
@@ -40,16 +42,93 @@ const TERRITORY_LABELS: Record<string, string> = {
   fedoskino: 'Федоскино',
 };
 
+const TERRITORY_OPTIONS = [
+  { id: 'total', name: 'Общая территория' },
+  { id: 'pirogovsky', name: 'Пироговский' },
+  { id: 'fedoskino', name: 'Федоскино' },
+];
+
 export function KpiDetail() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { range, setRange } = useDateRange();
-  const { data, definitions, isLoading } = useKpiData({
+  const { range, setRange } = useDateRange({
+    from: (() => { const d = new Date(); d.setDate(d.getDate() - 7); return d.toISOString().slice(0, 10); })(),
+    to: new Date().toISOString().slice(0, 10),
+  });
+  const { data, definitions, isLoading, refetch } = useKpiData({
     dateFrom: range.from,
     dateTo: range.to,
   });
-  const [comment, setComment] = useState('');
 
-  const selectedId = searchParams.get('id') ?? definitions[0]?.id ?? '';
+  // Load appeals for auto-KPI calculation
+  const { data: appeals } = useAppeals({ dateFrom: range.from, dateTo: range.to });
+  const { getNumber } = useAppSettings();
+  const population = getNumber('population') || 88876;
+  const syncedRef = useRef(false);
+
+  // Auto-sync: calculate KPI values from appeals and write to kpi_values (daily aggregates)
+  useEffect(() => {
+    if (appeals.length === 0 || syncedRef.current) return;
+    syncedRef.current = true;
+
+    const AUTO_KPIS = ['isn', 'appeals_per_1k', 'repeated_appeals', 'delayed_appeals'];
+    // Group appeals by date
+    const byDate = new Map<string, typeof appeals>();
+    for (const a of appeals) {
+      if (!byDate.has(a.date)) byDate.set(a.date, []);
+      byDate.get(a.date)!.push(a);
+    }
+
+    const rows: { date: string; kpi_id: string; value: number; territory: string }[] = [];
+    for (const [date, dayAppeals] of byDate) {
+      const total = dayAppeals.length;
+      if (total === 0) continue;
+
+      // ISN
+      const withScore = dayAppeals.filter(a => a.sentiment_score != null && !a.is_spam);
+      if (withScore.length > 0) {
+        const sumS = withScore.reduce((s, a) => s + (a.sentiment_score ?? 0), 0);
+        const sumSq = withScore.reduce((s, a) => s + (a.sentiment_score ?? 0) ** 2, 0);
+        rows.push({ date, kpi_id: 'isn', value: Math.round((sumSq / sumS) * 10) / 10, territory: 'total' });
+      }
+
+      // Appeals per 1k
+      rows.push({ date, kpi_id: 'appeals_per_1k', value: Math.round((total / (population / 1000)) * 10) / 10, territory: 'total' });
+
+      // Repeated
+      const addrKey = new Map<string, number>();
+      let reps = 0;
+      for (const a of dayAppeals) {
+        if (!a.address) continue;
+        const k = `${a.address}__${a.direction}`;
+        const c = (addrKey.get(k) ?? 0) + 1;
+        addrKey.set(k, c);
+        if (c > 1) reps++;
+      }
+      rows.push({ date, kpi_id: 'repeated_appeals', value: total > 0 ? Math.round((reps / total) * 100) : 0, territory: 'total' });
+
+      // Delayed
+      const delayed = dayAppeals.filter(a => a.status === 'Закрыта с отложенным').length;
+      rows.push({ date, kpi_id: 'delayed_appeals', value: total > 0 ? Math.round((delayed / total) * 1000) / 10 : 0, territory: 'total' });
+    }
+
+    if (rows.length > 0) {
+      supabase.from('kpi_values').upsert(rows, { onConflict: 'date,kpi_id,territory' }).then(() => refetch());
+    }
+  }, [appeals, population, refetch]);
+
+  // Reset sync flag when range changes
+  useEffect(() => { syncedRef.current = false; }, [range.from, range.to]);
+
+  // Add value form
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [addDate, setAddDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [addTerritory, setAddTerritory] = useState('total');
+  const [addValue, setAddValue] = useState('');
+  const [addNote, setAddNote] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
+  const selectedId = searchParams.get('id') ?? (definitions.find(d => d.id === 'isn')?.id || definitions[0]?.id) ?? '';
 
   const selectKpi = useCallback(
     (id: string) => {
@@ -63,21 +142,18 @@ export function KpiDetail() {
     [definitions, selectedId],
   );
 
-  // All data points for selected KPI (territory=total)
   const kpiPoints = useMemo(() => {
     return data
       .filter((d) => d.kpiId === selectedId && d.territory === 'total')
       .sort((a, b) => a.date.localeCompare(b.date));
   }, [data, selectedId]);
 
-  // All data points for selected KPI (all territories, for table)
   const allKpiPoints = useMemo(() => {
     return data
       .filter((d) => d.kpiId === selectedId)
       .sort((a, b) => b.date.localeCompare(a.date));
   }, [data, selectedId]);
 
-  // Chart data
   const chartData = useMemo(() => {
     return kpiPoints.map((p) => ({
       date: formatDate(p.date),
@@ -85,11 +161,55 @@ export function KpiDetail() {
     }));
   }, [kpiPoints]);
 
-  // Latest value
   const latestValue = useMemo(() => {
     if (kpiPoints.length === 0) return 0;
     return kpiPoints[kpiPoints.length - 1].value;
   }, [kpiPoints]);
+
+  // Save new value
+  const handleAddValue = useCallback(async () => {
+    if (!selectedId || !addValue) return;
+    setSaving(true);
+    try {
+      const { error } = await supabase.from('kpi_values').upsert(
+        {
+          date: addDate,
+          kpi_id: selectedId,
+          value: parseFloat(addValue),
+          territory: addTerritory,
+          note: addNote || null,
+        },
+        { onConflict: 'date,kpi_id,territory' },
+      );
+      if (error) throw error;
+      setToast({ message: 'Значение сохранено', type: 'success' });
+      setAddValue('');
+      setAddNote('');
+      setShowAddForm(false);
+      refetch();
+    } catch (err) {
+      setToast({ message: `Ошибка: ${err instanceof Error ? err.message : String(err)}`, type: 'error' });
+    } finally {
+      setSaving(false);
+    }
+  }, [selectedId, addDate, addTerritory, addValue, addNote, refetch]);
+
+  // Delete value
+  const handleDeleteValue = useCallback(async (date: string, territory: string) => {
+    try {
+      const { error } = await supabase
+        .from('kpi_values')
+        .delete()
+        .eq('date', date)
+        .eq('kpi_id', selectedId)
+        .eq('territory', territory);
+      if (error) throw error;
+      setToast({ message: 'Запись удалена', type: 'success' });
+      refetch();
+    } catch (err) {
+      setToast({ message: `Ошибка удаления: ${err instanceof Error ? err.message : String(err)}`, type: 'error' });
+    }
+  }, [selectedId, refetch]);
 
   // Table columns
   const tableColumns: Column<Record<string, unknown>>[] = useMemo(() => {
@@ -132,10 +252,22 @@ export function KpiDetail() {
         title: 'Примечание',
         render: (val: unknown) => String(val ?? '—'),
       },
+      {
+        key: '_actions',
+        title: '',
+        render: (_val: unknown, row: Record<string, unknown>) => (
+          <button
+            className={styles.deleteBtn}
+            onClick={() => handleDeleteValue(String(row.date), String(row.territory))}
+            title="Удалить"
+          >
+            &times;
+          </button>
+        ),
+      },
     ];
-  }, [selectedDef]);
+  }, [selectedDef, handleDeleteValue]);
 
-  // Table data with computed status
   const tableData = useMemo(() => {
     if (!selectedDef) return [];
     const targets = getTargets(selectedDef);
@@ -145,10 +277,10 @@ export function KpiDetail() {
       territory: p.territory ?? 'total',
       status: getKpiStatus(p.value, targets.d90, selectedDef.direction),
       note: p.note ?? '',
+      _actions: '',
     }));
   }, [allKpiPoints, selectedDef]);
 
-  // Loading state
   if (isLoading) {
     return (
       <div className={styles.page}>
@@ -191,7 +323,10 @@ export function KpiDetail() {
 
       {/* KPI Selector Tabs */}
       <div className={styles.kpiSelector}>
-        {definitions.map((def) => (
+        {[...definitions]
+          .filter(d => AUTO_KPI_IDS.includes(d.id))
+          .sort((a, b) => AUTO_KPI_IDS.indexOf(a.id) - AUTO_KPI_IDS.indexOf(b.id))
+          .map((def) => (
           <button
             key={def.id}
             className={`${styles.kpiTab} ${def.id === selectedId ? styles.kpiTabActive : ''}`}
@@ -239,7 +374,7 @@ export function KpiDetail() {
                       tickFormatter={(v: number) => v.toLocaleString('ru-RU')}
                     />
                     <RechartsTooltip
-                      formatter={(value: any) => [Number(value).toLocaleString('ru-RU'), 'Значение']}
+                      formatter={(value: unknown) => [Number(value).toLocaleString('ru-RU'), 'Значение']}
                       labelStyle={{ fontWeight: 600 }}
                     />
                     <ReferenceLine
@@ -298,9 +433,74 @@ export function KpiDetail() {
             </div>
           </Card>
 
-          {/* Data Table */}
+          {/* Data Entry + Table */}
           <Card>
-            <h3 className={styles.sectionTitle}>Данные по периодам</h3>
+            <div className={styles.tableHeader}>
+              <h3 className={styles.sectionTitle}>Данные по периодам</h3>
+              <button
+                className={styles.addBtn}
+                onClick={() => setShowAddForm(!showAddForm)}
+              >
+                {showAddForm ? 'Отмена' : '+ Добавить значение'}
+              </button>
+            </div>
+
+            {showAddForm && (
+              <div className={styles.addForm}>
+                <div className={styles.addFormRow}>
+                  <div className={styles.formField}>
+                    <label className={styles.formLabel}>Дата</label>
+                    <input
+                      type="date"
+                      className={styles.formInput}
+                      value={addDate}
+                      onChange={(e) => setAddDate(e.target.value)}
+                    />
+                  </div>
+                  <div className={styles.formField}>
+                    <label className={styles.formLabel}>Территория</label>
+                    <select
+                      className={styles.formInput}
+                      value={addTerritory}
+                      onChange={(e) => setAddTerritory(e.target.value)}
+                    >
+                      {TERRITORY_OPTIONS.map((t) => (
+                        <option key={t.id} value={t.id}>{t.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className={styles.formField}>
+                    <label className={styles.formLabel}>Значение ({selectedDef.unit})</label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      className={styles.formInput}
+                      value={addValue}
+                      onChange={(e) => setAddValue(e.target.value)}
+                      placeholder="0.0"
+                    />
+                  </div>
+                  <div className={styles.formField}>
+                    <label className={styles.formLabel}>Примечание</label>
+                    <input
+                      type="text"
+                      className={styles.formInput}
+                      value={addNote}
+                      onChange={(e) => setAddNote(e.target.value)}
+                      placeholder="Необязательно"
+                    />
+                  </div>
+                </div>
+                <button
+                  className={styles.saveBtn}
+                  onClick={handleAddValue}
+                  disabled={saving || !addValue}
+                >
+                  {saving ? 'Сохранение...' : 'Сохранить'}
+                </button>
+              </div>
+            )}
+
             {tableData.length === 0 ? (
               <div className={styles.emptyMessage}>Нет данных за выбранный период</div>
             ) : (
@@ -347,24 +547,10 @@ export function KpiDetail() {
               </div>
             </div>
           </Card>
-
-          {/* Comments */}
-          <Card>
-            <div className={styles.commentSection}>
-              <label className={styles.commentLabel} htmlFor="kpi-comment">
-                Комментарии и заметки
-              </label>
-              <textarea
-                id="kpi-comment"
-                className={styles.commentArea}
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                placeholder="Введите комментарий к показателю..."
-              />
-            </div>
-          </Card>
         </>
       )}
+
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
     </div>
   );
 }

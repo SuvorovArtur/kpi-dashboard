@@ -45,7 +45,7 @@ export function Sidebar({
     <aside className={clsx(styles.sidebar, collapsed ? styles.collapsed : styles.expanded)}>
       <div className={styles.logo}>
         <BarChart3 size={24} />
-        {!collapsed && <span>KPI Dashboard</span>}
+        {!collapsed && <span>Суворов А.О.</span>}
       </div>
 
       <nav className={styles.nav}>
@@ -69,6 +69,12 @@ export function Sidebar({
           );
         })}
       </nav>
+
+      {!collapsed && (
+        <div className={styles.userBlock}>
+          <span className={styles.userName}>Суворов А.О.</span>
+        </div>
+      )}
     </aside>
   );
 }

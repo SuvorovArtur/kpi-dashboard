@@ -12,3 +12,6 @@ export { DateRangePicker } from './DateRangePicker/DateRangePicker';
 export { Tooltip } from './Tooltip/Tooltip';
 export { Skeleton } from './Skeleton/Skeleton';
 export { EmptyState } from './EmptyState/EmptyState';
+export { Toast } from './Toast/Toast';
+export { XlsxImport } from './XlsxImport/XlsxImport';
+export { SlideOver } from './SlideOver/SlideOver';

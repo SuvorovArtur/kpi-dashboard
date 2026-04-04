@@ -23,15 +23,31 @@ export interface KpiDataPoint {
 }
 
 export interface Appeal {
-  id: string;
+  id: number;
+  ecur_number: string;
+  source_number: string | null;
   date: string;
-  category: string;
-  territory: string;
-  status: 'new' | 'in_progress' | 'delayed' | 'resolved' | 'repeated';
-  responseHours?: number;
-  hasPhotoBefore: boolean;
-  hasPhotoAfter: boolean;
-  source: 'ецур' | 'мцур' | 'telegram' | 'phone' | 'eds';
+  direction: string;
+  synth_group: string | null;
+  fact: string | null;
+  subtopic: string | null;
+  status: string;
+  curator: string | null;
+  executor: string | null;
+  omsu: string | null;
+  source: string | null;
+  is_spam: boolean;
+  message_type: string | null;
+  description: string | null;
+  address: string | null;
+  district: string | null;
+  settlement: string | null;
+  street: string | null;
+  house: string | null;
+  tu_to: string | null;
+  sector: string | null;
+  sentiment_score: number | null;
+  is_repeated: boolean;
 }
 
 export interface StaffMetrics {

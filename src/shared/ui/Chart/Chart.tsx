@@ -24,7 +24,7 @@ import type { ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import styles from './Chart.module.css';
 
 interface ChartProps {
-  type: 'line' | 'bar' | 'area' | 'pie' | 'radar';
+  type: 'line' | 'bar' | 'area' | 'pie' | 'radar' | 'horizontal-bar';
   data: Record<string, unknown>[];
   xKey: string;
   yKey: string | string[];
@@ -76,6 +76,31 @@ function CustomTooltip(props: any) {
   );
 }
 
+function RadarTooltip(props: any) {
+  const { active, payload } = props;
+  if (!active || !payload?.length) return null;
+  const d = payload[0]?.payload;
+  if (!d) return null;
+
+  return (
+    <div className={styles.tooltip}>
+      <div className={styles.tooltipLabel}>{d.subject}</div>
+      <div className={styles.tooltipItem}>
+        <span style={{ fontWeight: 600 }}>Факт: {d.displayValue}</span>
+      </div>
+      {d.targetLabel && (
+        <div className={styles.tooltipItem}>
+          <span style={{ color: 'var(--color-text-secondary)' }}>{d.targetLabel}</span>
+        </div>
+      )}
+      <div className={styles.tooltipItem}>
+        <span className={styles.tooltipDot} style={{ background: d.value >= 70 ? 'var(--color-status-green)' : d.value >= 40 ? 'var(--color-orange)' : 'var(--color-red)' }} />
+        <span>Исполнение: {d.value}%</span>
+      </div>
+    </div>
+  );
+}
+
 export function Chart({
   type,
   data,
@@ -97,9 +122,13 @@ export function Chart({
         <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
         <XAxis
           dataKey={xKey}
-          tick={{ fontSize: 12, fill: 'var(--color-text-secondary)' }}
+          tick={{ fontSize: 11, fill: 'var(--color-text-secondary)' }}
           axisLine={{ stroke: 'var(--color-border)' }}
           tickLine={false}
+          angle={ChartComponent === BarChart ? -30 : 0}
+          textAnchor={ChartComponent === BarChart ? 'end' : 'middle'}
+          height={ChartComponent === BarChart ? 80 : 30}
+          interval={0}
         />
         <YAxis
           tick={{ fontSize: 12, fill: 'var(--color-text-secondary)' }}
@@ -187,23 +216,73 @@ export function Chart({
         </ResponsiveContainer>
       )}
 
+      {type === 'horizontal-bar' && (
+        <ResponsiveContainer width="100%" height={height}>
+          <BarChart data={data} layout="vertical" margin={{ left: 20 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" horizontal={false} />
+            <XAxis
+              type="number"
+              tick={{ fontSize: 12, fill: 'var(--color-text-secondary)' }}
+              axisLine={false}
+              tickLine={false}
+              tickFormatter={(v: number) => v.toLocaleString('ru-RU')}
+            />
+            <YAxis
+              type="category"
+              dataKey={xKey}
+              tick={{ fontSize: 12, fill: 'var(--color-text-secondary)' }}
+              axisLine={false}
+              tickLine={false}
+              width={160}
+            />
+            <RechartsTooltip content={<CustomTooltip />} />
+            {yKeys.map((key, i) => (
+              <Bar
+                key={key}
+                dataKey={key}
+                fill={colors[i % colors.length]}
+                radius={[0, 4, 4, 0]}
+                barSize={20}
+              />
+            ))}
+          </BarChart>
+        </ResponsiveContainer>
+      )}
+
       {type === 'radar' && (
         <ResponsiveContainer width="100%" height={height}>
-          <RadarChart data={data} cx="50%" cy="50%" outerRadius="70%">
-            <PolarGrid stroke="var(--color-border)" />
+          <RadarChart data={data} cx="50%" cy="50%" outerRadius="48%">
+            <PolarGrid stroke="var(--color-border)" gridType="polygon" />
             <PolarAngleAxis
               dataKey="subject"
-              tick={{ fontSize: 12, fill: 'var(--color-text-secondary)' }}
+              tick={(tickProps: any) => {
+                const { x, y, payload } = tickProps;
+                const item = data.find((d: any) => d.subject === payload.value);
+                const fact = item?.displayValue ?? '';
+                const pct = item?.value ?? 0;
+                const factColor = pct >= 70 ? '#16a34a' : pct >= 40 ? '#d97706' : '#dc2626';
+                return (
+                  <g>
+                    <text x={x} y={y - 2} textAnchor="middle" fontSize={12} fontWeight={600} fill="var(--color-text-primary)">
+                      {payload.value}
+                    </text>
+                    <text x={x} y={y + 14} textAnchor="middle" fontSize={14} fontWeight={700} fill={factColor}>
+                      {fact}
+                    </text>
+                  </g>
+                );
+              }}
             />
-            <PolarRadiusAxis tick={{ fontSize: 10, fill: 'var(--color-text-secondary)' }} />
+            <PolarRadiusAxis tick={false} axisLine={false} domain={[0, 100]} />
             <Radar
               dataKey="value"
               stroke={colors[0]}
               fill={colors[0]}
-              fillOpacity={0.2}
-              strokeWidth={2}
+              fillOpacity={0.25}
+              strokeWidth={2.5}
+              dot={{ r: 4, fill: colors[0], strokeWidth: 0 }}
             />
-            <RechartsTooltip content={<CustomTooltip />} />
+            <RechartsTooltip content={<RadarTooltip />} />
           </RadarChart>
         </ResponsiveContainer>
       )}

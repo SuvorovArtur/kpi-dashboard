@@ -1,9 +1,9 @@
-import { useState, useMemo, useCallback } from 'react';
-import { Card, Header, Skeleton } from '../../shared/ui';
-import { useKpiData } from '../../shared/hooks';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { Card, Header, Skeleton, Toast } from '../../shared/ui';
+import { useKpiData, useTerritories, useAppSettings } from '../../shared/hooks';
 import { formatNumber } from '../../shared/utils/formatters';
 import { exportToCsv, exportToPdf } from '../../shared/utils/export';
-import { territories } from '../../shared/config/kpi-config';
+import { supabase } from '../../shared/lib/supabase';
 import type { KpiDefinition } from '../../shared/types';
 import styles from './Settings.module.css';
 
@@ -14,83 +14,95 @@ interface EditableTargets {
 }
 
 export function Settings() {
-  const { data, definitions, isLoading } = useKpiData();
+  const { data, definitions, isLoading, refetch: refetchKpi } = useKpiData();
+  const { data: territoriesList, isLoading: terrLoading, add: addTerritory, remove: removeTerritory } = useTerritories();
+  const { get: getSetting, update: updateSetting, isLoading: settingsLoading } = useAppSettings();
 
-  // Editable KPI targets (local state)
-  const [targetOverrides, setTargetOverrides] = useState<
-    Map<string, EditableTargets>
-  >(new Map());
   const [editingRow, setEditingRow] = useState<string | null>(null);
-  const [editValues, setEditValues] = useState<EditableTargets>({
-    d90: 0,
-    d180: 0,
-    d360: 0,
-  });
-
-  // Territories (local state)
-  const [localTerritories, setLocalTerritories] = useState<{id: string; name: string}[]>(() =>
-    territories.map((t) => ({ id: t.id, name: t.name })),
-  );
+  const [populationValue, setPopulationValue] = useState('');
+  const [populationLoaded, setPopulationLoaded] = useState(false);
+  const [editValues, setEditValues] = useState<EditableTargets>({ d90: 0, d180: 0, d360: 0 });
   const [newTerritoryName, setNewTerritoryName] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
-  // Thresholds
-  const [greenThreshold, setGreenThreshold] = useState(0.9);
-  const [yellowThreshold, setYellowThreshold] = useState(0.7);
+  // Load population setting
+  useEffect(() => {
+    if (!settingsLoading && !populationLoaded) {
+      setPopulationValue(getSetting('population') ?? '88876');
+      setPopulationLoaded(true);
+    }
+  }, [settingsLoading, populationLoaded, getSetting]);
 
-  // Get targets for a definition, considering overrides
-  const getTargets = useCallback(
-    (def: KpiDefinition) => {
-      const override = targetOverrides.get(def.id);
-      if (override) return override;
-      return {
-        d90: def.d90 ?? 0,
-        d180: def.d180 ?? 0,
-        d360: def.d360 ?? 0,
-      };
-    },
-    [targetOverrides],
-  );
+  const handleSavePopulation = useCallback(async () => {
+    try {
+      await updateSetting('population', populationValue);
+      setToast({ message: 'Население сохранено', type: 'success' });
+    } catch (err) {
+      setToast({ message: `Ошибка: ${err instanceof Error ? err.message : String(err)}`, type: 'error' });
+    }
+  }, [populationValue, updateSetting]);
 
-  const startEdit = useCallback(
-    (def: KpiDefinition) => {
-      const targets = getTargets(def);
-      setEditingRow(def.id);
-      setEditValues({
-        d90: targets.d90,
-        d180: targets.d180,
-        d360: targets.d360,
-      });
-    },
-    [getTargets],
-  );
+  const getTargets = useCallback((def: KpiDefinition) => ({
+    d90: def.d90 ?? 0,
+    d180: def.d180 ?? 0,
+    d360: def.d360 ?? 0,
+  }), []);
 
-  const saveEdit = useCallback(() => {
+  const startEdit = useCallback((def: KpiDefinition) => {
+    const targets = getTargets(def);
+    setEditingRow(def.id);
+    setEditValues({ d90: targets.d90, d180: targets.d180, d360: targets.d360 });
+  }, [getTargets]);
+
+  const saveEdit = useCallback(async () => {
     if (!editingRow) return;
-    setTargetOverrides((prev) => {
-      const next = new Map(prev);
-      next.set(editingRow, { ...editValues });
-      return next;
-    });
-    setEditingRow(null);
-  }, [editingRow, editValues]);
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from('kpi_definitions')
+        .update({ d90: editValues.d90, d180: editValues.d180, d360: editValues.d360 })
+        .eq('id', editingRow);
+      if (error) throw error;
+      setToast({ message: 'Целевые значения сохранены', type: 'success' });
+      setEditingRow(null);
+      refetchKpi();
+    } catch (err) {
+      setToast({ message: `Ошибка: ${err instanceof Error ? err.message : String(err)}`, type: 'error' });
+    } finally {
+      setSaving(false);
+    }
+  }, [editingRow, editValues, refetchKpi]);
 
   const cancelEdit = useCallback(() => {
     setEditingRow(null);
   }, []);
 
-  // Territory management
-  const addTerritory = useCallback(() => {
+  const handleAddTerritory = useCallback(async () => {
     const name = newTerritoryName.trim();
     if (!name) return;
-    const id = name.toLowerCase().replace(/\s+/g, '_');
-    if (localTerritories.some((t) => t.id === id)) return;
-    setLocalTerritories((prev) => [...prev, { id, name }]);
-    setNewTerritoryName('');
-  }, [newTerritoryName, localTerritories]);
+    const id = name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-zа-яё0-9_]/gi, '');
+    if (territoriesList.some((t) => t.id === id)) {
+      setToast({ message: 'Территория с таким ID уже существует', type: 'error' });
+      return;
+    }
+    try {
+      await addTerritory(id, name);
+      setNewTerritoryName('');
+      setToast({ message: `Территория "${name}" добавлена`, type: 'success' });
+    } catch (err) {
+      setToast({ message: `Ошибка: ${err instanceof Error ? err.message : String(err)}`, type: 'error' });
+    }
+  }, [newTerritoryName, territoriesList, addTerritory]);
 
-  const removeTerritory = useCallback((id: string) => {
-    setLocalTerritories((prev) => prev.filter((t) => t.id !== id));
-  }, []);
+  const handleRemoveTerritory = useCallback(async (id: string) => {
+    try {
+      await removeTerritory(id);
+      setToast({ message: 'Территория удалена', type: 'success' });
+    } catch (err) {
+      setToast({ message: `Ошибка: ${err instanceof Error ? err.message : String(err)}`, type: 'error' });
+    }
+  }, [removeTerritory]);
 
   // Export handlers
   const handleExportCsv = useCallback(() => {
@@ -113,13 +125,12 @@ export function Settings() {
     await exportToPdf('root', 'kpi-report');
   }, []);
 
-  // Memoize sorted definitions for display
   const sortedDefs = useMemo(
     () => [...definitions].sort((a, b) => a.name.localeCompare(b.name)),
     [definitions],
   );
 
-  if (isLoading) {
+  if (isLoading || terrLoading || settingsLoading) {
     return (
       <div className={styles.page}>
         <Header title="Настройки" />
@@ -162,12 +173,7 @@ export function Settings() {
                             type="number"
                             className={styles.inlineInput}
                             value={editValues.d90}
-                            onChange={(e) =>
-                              setEditValues((v) => ({
-                                ...v,
-                                d90: Number(e.target.value),
-                              }))
-                            }
+                            onChange={(e) => setEditValues((v) => ({ ...v, d90: Number(e.target.value) }))}
                           />
                         </td>
                         <td>
@@ -175,12 +181,7 @@ export function Settings() {
                             type="number"
                             className={styles.inlineInput}
                             value={editValues.d180}
-                            onChange={(e) =>
-                              setEditValues((v) => ({
-                                ...v,
-                                d180: Number(e.target.value),
-                              }))
-                            }
+                            onChange={(e) => setEditValues((v) => ({ ...v, d180: Number(e.target.value) }))}
                           />
                         </td>
                         <td>
@@ -188,28 +189,15 @@ export function Settings() {
                             type="number"
                             className={styles.inlineInput}
                             value={editValues.d360}
-                            onChange={(e) =>
-                              setEditValues((v) => ({
-                                ...v,
-                                d360: Number(e.target.value),
-                              }))
-                            }
+                            onChange={(e) => setEditValues((v) => ({ ...v, d360: Number(e.target.value) }))}
                           />
                         </td>
                         <td>
                           <div className={styles.editActions}>
-                            <button
-                              className={styles.btnSave}
-                              onClick={saveEdit}
-                            >
-                              Сохранить
+                            <button className={styles.btnSave} onClick={saveEdit} disabled={saving}>
+                              {saving ? '...' : 'Сохранить'}
                             </button>
-                            <button
-                              className={styles.btnCancel}
-                              onClick={cancelEdit}
-                            >
-                              Отмена
-                            </button>
+                            <button className={styles.btnCancel} onClick={cancelEdit}>Отмена</button>
                           </div>
                         </td>
                       </>
@@ -219,12 +207,7 @@ export function Settings() {
                         <td>{formatNumber(targets.d180)}</td>
                         <td>{formatNumber(targets.d360)}</td>
                         <td>
-                          <button
-                            className={styles.btnEdit}
-                            onClick={() => startEdit(def)}
-                          >
-                            Изменить
-                          </button>
+                          <button className={styles.btnEdit} onClick={() => startEdit(def)}>Изменить</button>
                         </td>
                       </>
                     )}
@@ -240,12 +223,13 @@ export function Settings() {
       <Card>
         <h3 className={styles.sectionTitle}>Территориальные участки</h3>
         <div className={styles.territoryList}>
-          {localTerritories.map((t) => (
+          {territoriesList.map((t) => (
             <div key={t.id} className={styles.territoryItem}>
               <span>{t.name}</span>
+              <span className={styles.territoryId}>{t.id}</span>
               <button
                 className={styles.btnRemove}
-                onClick={() => removeTerritory(t.id)}
+                onClick={() => handleRemoveTerritory(t.id)}
                 title="Удалить"
               >
                 &times;
@@ -260,68 +244,59 @@ export function Settings() {
             placeholder="Название нового участка"
             value={newTerritoryName}
             onChange={(e) => setNewTerritoryName(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && addTerritory()}
+            onKeyDown={(e) => e.key === 'Enter' && handleAddTerritory()}
           />
-          <button className={styles.btnAdd} onClick={addTerritory}>
+          <button className={styles.btnAdd} onClick={handleAddTerritory}>
             Добавить
           </button>
         </div>
       </Card>
 
-      {/* Thresholds */}
+      {/* Population */}
       <Card>
-        <h3 className={styles.sectionTitle}>Пороги светофора</h3>
-        <div className={styles.thresholdGrid}>
-          <div className={styles.thresholdField}>
-            <label className={styles.label}>
-              Зелёный порог (от целевого значения)
-            </label>
-            <div className={styles.thresholdInputRow}>
-              <input
-                type="number"
-                step="0.01"
-                min="0"
-                max="1"
-                className={styles.thresholdInput}
-                value={greenThreshold}
-                onChange={(e) => setGreenThreshold(Number(e.target.value))}
-              />
-              <span className={styles.thresholdHint}>
-                ({Math.round(greenThreshold * 100)}%)
-              </span>
-              <span
-                className={styles.thresholdDot}
-                style={{ background: '#22c55e' }}
-              />
-            </div>
-          </div>
-          <div className={styles.thresholdField}>
-            <label className={styles.label}>
-              Жёлтый порог (от целевого значения)
-            </label>
-            <div className={styles.thresholdInputRow}>
-              <input
-                type="number"
-                step="0.01"
-                min="0"
-                max="1"
-                className={styles.thresholdInput}
-                value={yellowThreshold}
-                onChange={(e) => setYellowThreshold(Number(e.target.value))}
-              />
-              <span className={styles.thresholdHint}>
-                ({Math.round(yellowThreshold * 100)}%)
-              </span>
-              <span
-                className={styles.thresholdDot}
-                style={{ background: '#eab308' }}
-              />
-            </div>
-          </div>
-        </div>
-        <p className={styles.thresholdNote}>
-          Ниже жёлтого порога — красный статус
+        <h3 className={styles.sectionTitle}>Население сельских территорий</h3>
+        <p className={styles.settingHint}>
+          Используется для расчёта KPI «Обращений на 1000 жителей». Источник: Росстат.
         </p>
+        <div className={styles.addRow}>
+          <input
+            type="number"
+            className={styles.textInput}
+            value={populationValue}
+            onChange={(e) => setPopulationValue(e.target.value)}
+            placeholder="88876"
+          />
+          <span className={styles.settingUnit}>чел.</span>
+          <button className={styles.btnAdd} onClick={handleSavePopulation}>
+            Сохранить
+          </button>
+        </div>
+      </Card>
+
+      {/* Menu sections toggle */}
+      <Card>
+        <h3 className={styles.sectionTitle}>Разделы меню</h3>
+        <p className={styles.settingHint}>Включение дополнительных страниц в боковом меню.</p>
+        <div className={styles.toggleRow}>
+          <label className={styles.toggleLabel}>
+            <input
+              type="checkbox"
+              className={styles.toggleInput}
+              checked={getSetting('show_kpi_detail') === 'true'}
+              onChange={async (e) => {
+                try {
+                  await updateSetting('show_kpi_detail', e.target.checked ? 'true' : 'false');
+                  setToast({ message: e.target.checked ? 'Раздел «KPI подробно» включён' : 'Раздел «KPI подробно» скрыт', type: 'success' });
+                } catch (err) {
+                  setToast({ message: `Ошибка: ${err instanceof Error ? err.message : String(err)}`, type: 'error' });
+                }
+              }}
+            />
+            <span className={styles.toggleSwitch} />
+            <span>KPI подробно</span>
+          </label>
+          <span className={styles.toggleHint}>Ручной ввод и паспорта KPI-показателей</span>
+        </div>
       </Card>
 
       {/* Export */}
@@ -336,6 +311,8 @@ export function Settings() {
           </button>
         </div>
       </Card>
+
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
     </div>
   );
 }

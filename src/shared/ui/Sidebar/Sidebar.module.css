@@ -4,6 +4,8 @@
   background: var(--color-teal);
   color: #fff;
   height: 100vh;
+  position: sticky;
+  top: 0;
   transition: width 0.25s ease;
   overflow: hidden;
   flex-shrink: 0;
@@ -80,4 +82,15 @@
 .navLabel {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.userBlock {
+  padding: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.userName {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
 }

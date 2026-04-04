@@ -1,0 +1,693 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 0 0 48px;
+}
+
+/* Traffic light card */
+.trafficCard {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px 32px;
+  border-radius: 12px;
+  border-left: 6px solid;
+}
+
+.trafficCard.green {
+  background: #e8f5e9;
+  border-left-color: var(--color-status-green);
+}
+
+.trafficCard.yellow {
+  background: #fff8e1;
+  border-left-color: var(--color-status-yellow);
+}
+
+.trafficCard.red {
+  background: #ffebe6;
+  border-left-color: var(--color-red);
+}
+
+.trafficSignal {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.green .trafficSignal {
+  background: var(--color-status-green);
+  color: #fff;
+}
+
+.yellow .trafficSignal {
+  background: var(--color-status-yellow);
+  color: #fff;
+}
+
+.red .trafficSignal {
+  background: var(--color-red);
+  color: #fff;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+.trafficInfo {
+  flex: 1;
+}
+
+.trafficLabel {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.green .trafficLabel { color: var(--color-status-green); }
+.yellow .trafficLabel { color: #b8860b; }
+.red .trafficLabel { color: var(--color-red); }
+
+.trafficSub {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+}
+
+/* KPI row */
+.kpiRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .kpiRow {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .kpiRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Charts */
+.chartsRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .chartsRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Section title */
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 16px;
+}
+
+/* Analyze button */
+.analyzeBtn {
+  padding: 8px 16px;
+  border: 1px solid var(--color-orange, #FFB460);
+  border-radius: 8px;
+  background: var(--color-orange, #FFB460);
+  color: #1a1a2e;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+}
+
+.analyzeBtn:hover { opacity: 0.9; }
+.analyzeBtn:disabled { opacity: 0.6; cursor: wait; }
+
+/* Empty */
+.emptyCard {
+  text-align: center;
+  padding: 48px 24px;
+  background: var(--color-card-bg);
+  border-radius: 12px;
+  border: 2px dashed var(--color-border);
+}
+
+.emptyCard p {
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+/* Acute list */
+.acuteList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.acuteItem {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.acuteItem:last-child {
+  border-bottom: none;
+}
+
+.acuteHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.acuteScore {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.acuteDirection {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.acuteDate {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.acuteEcur {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  opacity: 0.6;
+  margin-left: auto;
+}
+
+.acuteText {
+  font-size: 13px;
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  margin: 0;
+  padding-left: 42px;
+}
+
+/* Topic table */
+.topicTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.topicTable th {
+  text-align: left;
+  padding: 10px 12px;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-secondary);
+  border-bottom: 2px solid var(--color-border);
+}
+
+.topicTable td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.topicTable tbody tr:hover td {
+  background: var(--color-teal-light);
+}
+
+/* Interactive distribution chart */
+.chartTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-teal);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 16px;
+  font-family: var(--font-heading);
+}
+
+.distChart {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 220px;
+  padding: 0 4px;
+}
+
+.distCol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  cursor: pointer;
+  padding: 0 2px 0;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+}
+
+.distCol:hover {
+  background: var(--color-bg, #f3f4f6);
+}
+
+.distColActive {
+  background: var(--color-teal-light, #BBDFD3);
+}
+
+.distCount {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+}
+
+.distBar {
+  width: 80%;
+  min-height: 4px;
+  border-radius: 4px 4px 0 0;
+  transition: height 0.3s ease;
+}
+
+.distLabel {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-top: 6px;
+}
+
+/* Score appeals list (under chart) */
+.scoreAppealsList {
+  margin-top: 16px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 12px;
+}
+
+.scoreAppealsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+}
+
+.scoreClose {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.scoreClose:hover {
+  color: var(--color-text-primary);
+  background: var(--color-bg);
+}
+
+.scoreAppealItem {
+  display: flex;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: background 0.1s ease;
+  align-items: flex-start;
+}
+
+.scoreAppealItem:hover {
+  background: var(--color-bg);
+  margin: 0 -8px;
+  padding-left: 8px;
+  padding-right: 8px;
+  border-radius: 6px;
+}
+
+.scoreAppealItem:last-child {
+  border-bottom: none;
+}
+
+.scoreAppealDate {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.scoreAppealDir {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-teal);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.scoreAppealText {
+  font-size: 13px;
+  color: var(--color-text-primary);
+  line-height: 1.4;
+  flex: 1;
+  min-width: 0;
+}
+
+.scoreEmpty {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  padding: 12px 0;
+}
+
+/* Critical block (9-10) */
+.criticalBlock {
+  background: #fff5f5;
+  border: 2px solid var(--color-red, #DD4526);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.criticalTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-red, #DD4526);
+  margin: 0 0 16px;
+  font-family: var(--font-body);
+}
+
+.criticalIcon {
+  width: 32px;
+  height: 32px;
+  background: var(--color-red, #DD4526);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.criticalList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.criticalItem {
+  background: #fff;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  padding: 16px;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease;
+}
+
+.criticalItem:hover {
+  box-shadow: 0 4px 16px rgba(221, 69, 38, 0.12);
+}
+
+.criticalItemHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.criticalScore {
+  background: var(--color-red, #DD4526);
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.criticalDirection {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.criticalDate {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.criticalLink {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-teal);
+  text-decoration: underline;
+  margin-left: auto;
+}
+
+.criticalLink:hover {
+  color: var(--color-text-primary);
+}
+
+.criticalCopy {
+  padding: 4px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.criticalCopy:hover {
+  border-color: var(--color-teal);
+  color: var(--color-teal);
+}
+
+.criticalText {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.criticalLocation {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+/* Dobrodel link in slide-over */
+.dobrodelLink {
+  display: block;
+  text-align: center;
+  padding: 10px 24px;
+  border: 1px solid var(--color-teal);
+  border-radius: 10px;
+  color: var(--color-teal);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.dobrodelLink:hover {
+  background: var(--color-teal);
+  color: #fff;
+}
+
+.acuteItem {
+  cursor: pointer;
+}
+
+.acuteItem:hover {
+  background: var(--color-bg, #f9fafb);
+  border-radius: 8px;
+  margin: 0 -12px;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+/* Detail slide-over */
+.detail {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.detailScoreBig {
+  align-self: flex-start;
+  padding: 12px 24px;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 28px;
+  font-weight: 800;
+  font-family: var(--font-heading);
+}
+
+.detailFields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.df {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dl {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 100px;
+  flex-shrink: 0;
+}
+
+.detailDesc {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.detailDesc p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.copyBtn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  background: var(--color-teal);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  align-self: stretch;
+  text-align: center;
+}
+
+.copyBtn:hover {
+  opacity: 0.9;
+}
+
+/* Moderation */
+.modSection {
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 2px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.modButtons {
+  display: flex;
+  gap: 4px;
+}
+
+.modScoreBtn {
+  width: 36px;
+  height: 36px;
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-card-bg);
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.modScoreBtn:hover {
+  border-color: var(--color-teal);
+  transform: scale(1.1);
+}
+
+.modScoreBtnActive {
+  color: #fff;
+  border-color: transparent;
+}
+
+.modExcludeBtn {
+  padding: 10px;
+  border: 1px dashed var(--color-red, #DD4526);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-red, #DD4526);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.modExcludeBtn:hover {
+  background: #fff5f5;
+}
+
+.avgBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+}

@@ -1,23 +1,26 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { BrowserRouter, useNavigate, useLocation } from 'react-router-dom';
 import { Sidebar } from '../shared/ui';
+import { useAppSettings } from '../shared/hooks';
 import { AppRoutes } from './routes';
 import styles from './App.module.css';
-
-const navItems = [
-  { key: 'overview', label: 'Обзор', icon: 'BarChart3', path: '/' },
-  { key: 'kpi', label: 'KPI подробно', icon: 'Target', path: '/kpi' },
-  { key: 'territories', label: 'Территории', icon: 'Map', path: '/territories' },
-  { key: 'appeals', label: 'Обращения', icon: 'MessageSquare', path: '/appeals' },
-  { key: 'staff', label: 'Кадры', icon: 'Users', path: '/staff' },
-  { key: 'roadmap', label: 'Дорожная карта', icon: 'Calendar', path: '/roadmap' },
-  { key: 'settings', label: 'Настройки', icon: 'Settings', path: '/settings' },
-];
 
 function AppLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
+  const { get } = useAppSettings();
+
+  const navItems = useMemo(() => {
+    const items = [
+      { key: 'overview', label: 'Обзор', icon: 'BarChart3', path: '/' },
+      ...(get('show_kpi_detail') === 'true' ? [{ key: 'kpi', label: 'KPI подробно', icon: 'Target', path: '/kpi' }] : []),
+      { key: 'appeals', label: 'Обращения', icon: 'MessageSquare', path: '/appeals' },
+      { key: 'isn', label: 'ИСН', icon: 'Activity', path: '/isn' },
+      { key: 'settings', label: 'Настройки', icon: 'Settings', path: '/settings' },
+    ];
+    return items;
+  }, [get]);
 
   const activeKey = navItems.find(
     item => item.path === location.pathname ||

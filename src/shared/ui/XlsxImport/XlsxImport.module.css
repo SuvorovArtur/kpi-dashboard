@@ -1,0 +1,27 @@
+.wrapper {
+  display: inline-flex;
+}
+
+.fileInput {
+  display: none;
+}
+
+.uploadBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid var(--color-primary, #0d9488);
+  border-radius: 8px;
+  background: var(--color-primary, #0d9488);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+}
+
+.uploadBtn:hover {
+  opacity: 0.9;
+}

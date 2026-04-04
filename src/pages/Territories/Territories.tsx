@@ -1,13 +1,11 @@
 import { useMemo } from 'react';
 import { Card, Chart, Badge, Header, DateRangePicker, EmptyState, Skeleton } from '../../shared/ui';
-import { useKpiData, useDateRange } from '../../shared/hooks';
+import { useKpiData, useDateRange, useTerritories } from '../../shared/hooks';
 import { formatNumber, formatPercent } from '../../shared/utils/formatters';
 import { getKpiStatus, getProgressToTarget } from '../../shared/utils/kpi-helpers';
 import type { KpiDefinition, KpiDataPoint } from '../../shared/types';
-import { territories } from '../../shared/config/kpi-config';
 import styles from './Territories.module.css';
 
-/** Helper to read targets from definitions (flat fields) */
 function getTargets(def: KpiDefinition) {
   return {
     d90: def.d90 ?? 0,
@@ -23,8 +21,8 @@ export function Territories() {
     dateFrom: range.from,
     dateTo: range.to,
   });
+  const { data: territories, isLoading: terrLoading } = useTerritories();
 
-  // Latest data point per KPI per territory
   const latestByKpiTerritory = useMemo(() => {
     const map = new Map<string, KpiDataPoint>();
     for (const point of data) {
@@ -37,7 +35,6 @@ export function Territories() {
     return map;
   }, [data]);
 
-  // Comparison table data
   const comparisonRows = useMemo(() => {
     return definitions.map((def) => {
       const targets = getTargets(def);
@@ -50,9 +47,8 @@ export function Territories() {
       });
       return { def, targets, cells };
     });
-  }, [definitions, latestByKpiTerritory]);
+  }, [definitions, territories, latestByKpiTerritory]);
 
-  // Bar chart data: territories compared by % of target achieved
   const barChartData = useMemo(() => {
     return definitions.map((def) => {
       const targets = getTargets(def);
@@ -68,9 +64,8 @@ export function Territories() {
       }
       return entry;
     });
-  }, [definitions, latestByKpiTerritory]);
+  }, [definitions, territories, latestByKpiTerritory]);
 
-  // Territory cards: summary per territory
   const territoryCards = useMemo(() => {
     return territories.map((t) => {
       const metrics = definitions.map((def) => {
@@ -93,19 +88,14 @@ export function Territories() {
 
       return { territory: t, metrics, greenCount, yellowCount, redCount, avgProgress };
     });
-  }, [definitions, latestByKpiTerritory]);
+  }, [definitions, territories, latestByKpiTerritory]);
 
-  if (isLoading) {
+  if (isLoading || terrLoading) {
     return (
       <div className={styles.page}>
         <Header title="Территории" />
         <Skeleton variant="card" height={300} />
         <Skeleton variant="chart" height={320} />
-        <div className={styles.cardsRow}>
-          {territories.map((t) => (
-            <Skeleton key={t.id} variant="card" height={250} />
-          ))}
-        </div>
       </div>
     );
   }
@@ -124,6 +114,15 @@ export function Territories() {
       <div className={styles.page}>
         <Header title="Территории" />
         <EmptyState title="Нет данных" description="Данные KPI не найдены для отображения" />
+      </div>
+    );
+  }
+
+  if (territories.length === 0) {
+    return (
+      <div className={styles.page}>
+        <Header title="Территории" />
+        <EmptyState title="Нет территорий" description="Добавьте территории в Настройках" />
       </div>
     );
   }
@@ -172,7 +171,7 @@ export function Territories() {
         </div>
       </Card>
 
-      {/* Stacked Bar Chart */}
+      {/* Bar Chart */}
       <Card>
         <Chart
           type="bar"
