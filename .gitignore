@@ -12,6 +12,18 @@ dist
 dist-ssr
 *.local
 
+# Secrets & credentials
+.env
+.env.*
+!.env.example
+*.session
+*.session-journal
+tg-bot/.env
+tg-bot/*.session
+
+# Local tool configs
+.mcp.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
