@@ -1,15 +1,19 @@
-import { useState, useMemo } from 'react';
-import { BrowserRouter, useNavigate, useLocation } from 'react-router-dom';
+import { useState, useMemo, lazy, Suspense } from 'react';
+import { BrowserRouter, useNavigate, useLocation, Routes, Route, Navigate } from 'react-router-dom';
 import { Sidebar } from '../shared/ui';
 import { useAppSettings } from '../shared/hooks';
+import { AuthProvider, useAuth } from '../shared/hooks/useAuth';
 import { AppRoutes } from './routes';
 import styles from './App.module.css';
+
+const Login = lazy(() => import('../pages/Login/Login'));
 
 function AppLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
   const { get } = useAppSettings();
+  const { profile, signOut } = useAuth();
 
   const navItems = useMemo(() => {
     const items = [
@@ -19,6 +23,7 @@ function AppLayout() {
       { key: 'isn', label: 'ИСН', icon: 'Activity', path: '/isn' },
       { key: 'attendance', label: 'Яндекс Вектор', icon: 'Users', path: '/attendance' },
       { key: 'social', label: 'Соцсети', icon: 'MessageSquare', path: '/social' },
+      { key: 'map', label: 'Карта', icon: 'Map', path: '/map' },
       { key: 'settings', label: 'Настройки', icon: 'Settings', path: '/settings' },
     ];
     return items;
@@ -36,6 +41,8 @@ function AppLayout() {
         activeKey={activeKey}
         onNavigate={(path) => navigate(path)}
         collapsed={collapsed}
+        userName={profile?.display_name}
+        onSignOut={signOut}
       />
       <button
         className={styles.collapseBtn}
@@ -51,10 +58,39 @@ function AppLayout() {
   );
 }
 
+function AuthGate() {
+  const { session, loading } = useAuth();
+
+  if (loading) return null;
+
+  return (
+    <Routes>
+      <Route
+        path="/login"
+        element={
+          session ? (
+            <Navigate to="/" replace />
+          ) : (
+            <Suspense fallback={null}>
+              <Login />
+            </Suspense>
+          )
+        }
+      />
+      <Route
+        path="*"
+        element={session ? <AppLayout /> : <Navigate to="/login" replace />}
+      />
+    </Routes>
+  );
+}
+
 export default function App() {
   return (
     <BrowserRouter>
-      <AppLayout />
+      <AuthProvider>
+        <AuthGate />
+      </AuthProvider>
     </BrowserRouter>
   );
 }

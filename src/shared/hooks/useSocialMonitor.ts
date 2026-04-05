@@ -7,6 +7,8 @@ export interface TgChat {
   title: string;
   username: string | null;
   isActive: boolean;
+  type: 'chat' | 'channel';
+  subscribers: number;
 }
 
 export interface TgMessage {
@@ -84,7 +86,7 @@ export function useSocialMonitor() {
     setChatCounts(counts);
 
     if (chatsRes.data) setChats(chatsRes.data.map((c: any) => ({
-      id: c.id, chatId: c.chat_id, title: c.title, username: c.username, isActive: c.is_active,
+      id: c.id, chatId: c.chat_id, title: c.title, username: c.username, isActive: c.is_active, type: c.type ?? 'chat', subscribers: c.subscribers ?? 0,
     })));
     if (msgsRes.data) setMessages(msgsRes.data.map((m: any) => ({
       id: m.id, chatId: m.chat_id, messageId: m.message_id, date: m.date,
@@ -106,8 +108,8 @@ export function useSocialMonitor() {
     await fetchData();
   }, [fetchData]);
 
-  const addChat = useCallback(async (chatId: number, title: string, username?: string) => {
-    await supabase.from('tg_chats').upsert({ chat_id: chatId, title, username }, { onConflict: 'chat_id' });
+  const addChat = useCallback(async (chatId: number, title: string, username?: string, type: 'chat' | 'channel' = 'chat') => {
+    await supabase.from('tg_chats').upsert({ chat_id: chatId, title, username, type }, { onConflict: 'chat_id' });
     await fetchData();
   }, [fetchData]);
 
@@ -189,5 +191,42 @@ export function useSocialMonitor() {
     return { total, todayCount, perDay, topSenders, recentMessages };
   }, [chatCounts]);
 
-  return { chats, messages, issues, isLoading, chatCounts, analysisStatus, refetch: fetchData, updateIssueStatus, addChat, removeChat, updateChatId, fetchChatStats, fetchIssueMessages };
+  const fetchChannelNews = useCallback(async (chatId: number) => {
+    const { data } = await supabase
+      .from('tg_news')
+      .select('*')
+      .eq('chat_id', chatId)
+      .order('created_at', { ascending: false })
+      .limit(10);
+    return (data ?? []).map((n: any) => ({
+      id: n.id,
+      chatId: n.chat_id,
+      messageId: n.message_id,
+      text: n.text,
+      photoUrl: n.photo_url,
+      summary: n.summary,
+      topic: n.topic,
+      location: n.location,
+      severity: n.severity,
+      channelName: n.channel_name,
+      postUrl: n.post_url,
+      createdAt: n.created_at,
+    }));
+  }, []);
+
+  const fetchChannelStats = useCallback(async (chatId: number) => {
+    const { data } = await supabase
+      .from('tg_channel_stats')
+      .select('*')
+      .eq('chat_id', chatId)
+      .order('date', { ascending: true })
+      .limit(30);
+    return (data ?? []).map((s: any) => ({
+      date: s.date,
+      subscribers: s.subscribers,
+      postsFound: s.posts_found,
+    }));
+  }, []);
+
+  return { chats, messages, issues, isLoading, chatCounts, analysisStatus, refetch: fetchData, updateIssueStatus, addChat, removeChat, updateChatId, fetchChatStats, fetchIssueMessages, fetchChannelNews, fetchChannelStats };
 }

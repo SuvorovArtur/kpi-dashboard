@@ -1,0 +1,281 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 0 0 48px;
+}
+
+.kpiRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  /* 4 cards: total, on map, critical 6+, hot 3-5 */
+  gap: 16px;
+}
+
+@media (max-width: 1200px) {
+  .kpiRow { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .kpiRow { grid-template-columns: 1fr; }
+}
+
+.mapWrapper {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--color-border, #e5e7eb);
+  background: var(--color-surface, #fff);
+}
+
+.mapContainer {
+  width: 100%;
+  height: 600px;
+}
+
+@media (max-width: 768px) {
+  .mapContainer { height: 400px; }
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filterGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filterLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary, #6b7280);
+  white-space: nowrap;
+}
+
+.filterBtn {
+  padding: 6px 14px;
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 6px;
+  background: var(--color-surface, #fff);
+  color: var(--color-text-secondary, #6b7280);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.filterBtn:hover {
+  border-color: var(--color-teal, #0d9488);
+  color: var(--color-teal, #0d9488);
+}
+
+.filterBtnActive {
+  background: var(--color-teal, #0d9488);
+  border-color: var(--color-teal, #0d9488);
+  color: #fff;
+}
+
+.geocodeBtn {
+  padding: 8px 16px;
+  border: 1px solid var(--color-orange, #FFB460);
+  border-radius: 8px;
+  background: var(--color-orange, #FFB460);
+  color: #1a1a2e;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+}
+
+.geocodeBtn:hover {
+  opacity: 0.9;
+}
+
+.geocodeBtn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.geocodeProgress {
+  font-size: 13px;
+  color: var(--color-text-secondary, #6b7280);
+}
+
+.legend {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: 1000;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.93);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--color-text-secondary, #6b7280);
+}
+
+.legendTitle {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary, #1a1a2e);
+}
+
+.legendBar {
+  width: 160px;
+  height: 14px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background: linear-gradient(to right, #00ff00 0%, #adff2f 20%, #ffff00 40%, #ff8c00 60%, #ff4500 80%, #ff0000 100%);
+}
+
+.legendLabels {
+  display: flex;
+  justify-content: space-between;
+  width: 160px;
+  margin-top: 3px;
+  font-size: 10px;
+}
+
+.stats {
+  font-size: 13px;
+  color: var(--color-text-secondary, #6b7280);
+  white-space: nowrap;
+}
+
+.statCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.statValue {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-primary, #1a1a2e);
+  line-height: 1.2;
+}
+
+.statLabel {
+  font-size: 13px;
+  color: var(--color-text-secondary, #6b7280);
+}
+
+.statIcon {
+  color: var(--color-teal, #0d9488);
+}
+
+.statIconOrange {
+  color: var(--color-orange, #FFB460);
+}
+
+.statIconDanger {
+  color: var(--color-danger, #DD4526);
+}
+
+.statIconWarn {
+  color: var(--color-danger, #DD4526);
+}
+
+.statCardClickable {
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.statCardClickable:hover {
+  background: var(--color-bg, #f3f4f6);
+}
+
+.hotspotList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.hotspotItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 6px;
+  background: var(--color-bg, #f3f4f6);
+  cursor: pointer;
+  text-align: left;
+  font-size: 13px;
+  color: var(--color-text-primary, #1a1a2e);
+  transition: background 0.15s;
+}
+
+.hotspotItem:hover {
+  background: var(--color-teal, #0d9488);
+  color: #fff;
+}
+
+.hotspotItem:hover .hotspotCount {
+  background: rgba(255,255,255,0.25);
+  color: #fff;
+}
+
+.hotspotCount {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-orange, #FFB460);
+  color: #1a1a2e;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.hotspotCountDanger {
+  background: var(--color-danger, #DD4526);
+  color: #fff;
+}
+
+.hotspotAddr {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.exportBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--color-teal, #0d9488);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-teal, #0d9488);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.exportBtn:hover {
+  background: var(--color-teal, #0d9488);
+  color: #fff;
+}
+
+.exportBtn:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}

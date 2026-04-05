@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
+import { getSettlementCoords, extractCoordsFromText } from '../../lib/settlement-coords';
 import styles from './XlsxImport.module.css';
 
 interface ImportResult {
@@ -76,6 +77,14 @@ export function XlsxImport({ onComplete, onError }: XlsxImportProps) {
           house: r['Дом'] || null,
           tu_to: r['ТУ/ТО'] || null,
           sector: r['Сектор'] || null,
+          ...(() => {
+            // 1) GPS из описания (точнее всего)
+            const gps = extractCoordsFromText(r['Описание'] as string);
+            if (gps) return { lat: gps.lat, lng: gps.lng };
+            // 2) По справочнику улиц (ЖК) и населённых пунктов
+            const coords = getSettlementCoords(r['Населенный пункт'] as string, r['Улица'] as string, r['Адрес (формат)'] as string);
+            return coords ? { lat: coords.lat, lng: coords.lng } : {};
+          })(),
         });
       }
 

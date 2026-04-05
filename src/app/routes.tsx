@@ -12,6 +12,7 @@ const ISN = lazy(() => import('../pages/ISN/ISN'));
 const Settings = lazy(() => import('../pages/Settings/Settings'));
 const Attendance = lazy(() => import('../pages/Attendance/Attendance'));
 const SocialMonitor = lazy(() => import('../pages/SocialMonitor/SocialMonitor'));
+const HeatMap = lazy(() => import('../pages/HeatMap/HeatMap'));
 
 const PageLoader = () => (
   <div style={{ padding: 32 }}>
@@ -34,6 +35,7 @@ export function AppRoutes() {
         <Route path="/roadmap" element={<Roadmap />} />
         <Route path="/attendance" element={<Attendance />} />
         <Route path="/social" element={<SocialMonitor />} />
+        <Route path="/map" element={<HeatMap />} />
         <Route path="/settings" element={<Settings />} />
       </Routes>
     </Suspense>

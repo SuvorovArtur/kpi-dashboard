@@ -85,12 +85,38 @@
 }
 
 .userBlock {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 16px;
   border-top: 1px solid rgba(255, 255, 255, 0.15);
+  gap: 8px;
 }
 
 .userName {
   font-size: 13px;
   color: rgba(255, 255, 255, 0.6);
   font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.signOutBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
+  flex-shrink: 0;
+}
+
+.signOutBtn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
 }

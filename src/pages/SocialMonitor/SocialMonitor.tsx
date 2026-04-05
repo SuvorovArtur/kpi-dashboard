@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Card, Header, Skeleton, Toast } from '../../shared/ui';
+import { Card, Header, Skeleton, Toast, Chart } from '../../shared/ui';
 import { useSocialMonitor, type TgIssue } from '../../shared/hooks/useSocialMonitor';
 import styles from './SocialMonitor.module.css';
 
@@ -35,15 +35,19 @@ function timeAgo(dateStr: string): string {
   return `${days}д назад`;
 }
 
-type Tab = 'issues' | 'chats';
+type Tab = 'issues' | 'chats' | 'channels';
 
 export function SocialMonitor() {
-  const { chats, issues, isLoading, chatCounts, analysisStatus, updateIssueStatus, addChat, removeChat, updateChatId, fetchChatStats, fetchIssueMessages } = useSocialMonitor();
+  const { chats, issues, isLoading, chatCounts, analysisStatus, updateIssueStatus, addChat, removeChat, updateChatId, fetchChatStats, fetchIssueMessages, fetchChannelNews, fetchChannelStats } = useSocialMonitor();
   const [tab, setTab] = useState<Tab>('issues');
   const [statusFilter, setStatusFilter] = useState<string>('active');
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   const [newChatId, setNewChatId] = useState('');
   const [newChatTitle, setNewChatTitle] = useState('');
+
+  // Split chats vs channels
+  const chatsList = useMemo(() => chats.filter(c => c.type !== 'channel'), [chats]);
+  const channelsList = useMemo(() => chats.filter(c => c.type === 'channel'), [chats]);
 
   // Filter issues
   const filteredIssues = useMemo(() => {
@@ -151,7 +155,7 @@ export function SocialMonitor() {
       {/* Toolbar */}
       <div className={styles.toolbar}>
         <div className={styles.tabs}>
-          {([['issues', 'Проблемы'], ['chats', 'Чаты']] as [Tab, string][]).map(([key, label]) => (
+          {([['issues', 'Проблемы'], ['chats', 'Чаты'], ['channels', 'Каналы']] as [Tab, string][]).map(([key, label]) => (
             <button key={key} className={`${styles.tab} ${tab === key ? styles.tabActive : ''}`} onClick={() => setTab(key)}>{label}</button>
           ))}
         </div>
@@ -191,12 +195,12 @@ export function SocialMonitor() {
       {/* Chats tab */}
       {tab === 'chats' && (
         <div className={styles.stack}>
-          {chats.map(chat => (
+          {chatsList.map(chat => (
             <ChatCard key={chat.id} chat={chat} counts={chatCounts.get(chat.chatId)} fetchStats={() => fetchChatStats(chat.chatId)}
               onRemove={async () => { await removeChat(chat.chatId); setToast({ message: 'Чат отключён', type: 'success' }); }}
               onUpdateChatId={async (newId) => { await updateChatId(chat.chatId, newId); setToast({ message: 'ID обновлён', type: 'success' }); }} />
           ))}
-          {chats.length === 0 && (
+          {chatsList.length === 0 && (
             <Card><div className={styles.empty}><p className={styles.emptyTitle}>Нет подключённых чатов</p></div></Card>
           )}
           <Card>
@@ -211,6 +215,45 @@ export function SocialMonitor() {
                     await addChat(Number(newChatId), newChatTitle);
                     setNewChatId(''); setNewChatTitle('');
                     setToast({ message: 'Чат добавлен', type: 'success' });
+                  } catch { setToast({ message: 'Ошибка', type: 'error' }); }
+                }}>Добавить</button>
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {/* Channels tab */}
+      {tab === 'channels' && (
+        <div className={styles.stack}>
+          {channelsList.map(ch => (
+            <ChannelNewsCard key={ch.id} channel={ch}
+              fetchNews={() => fetchChannelNews(ch.chatId)}
+              fetchStats={() => fetchChannelStats(ch.chatId)}
+              onRemove={async () => { await removeChat(ch.chatId); setToast({ message: 'Канал отключён', type: 'success' }); }}
+              onSendAlert={(text) => { setToast({ message: text, type: 'success' }); }} />
+          ))}
+          {channelsList.length === 0 && (
+            <Card><div className={styles.empty}><p className={styles.emptyTitle}>Нет подключённых каналов</p></div></Card>
+          )}
+          <Card>
+            <div className={styles.addChatRow}>
+              <input className={styles.addChatInput} placeholder="@username или ID канала" value={newChatId}
+                onChange={e => setNewChatId(e.target.value)} type="text" />
+              <input className={styles.addChatInput} placeholder="Название канала" value={newChatTitle}
+                onChange={e => setNewChatTitle(e.target.value)} />
+              <button className={styles.addChatBtn} disabled={!newChatId || !newChatTitle}
+                onClick={async () => {
+                  try {
+                    const val = newChatId.trim().replace(/^@/, '');
+                    const isNumeric = /^-?\d+$/.test(val);
+                    await addChat(
+                      isNumeric ? Number(val) : 0,
+                      newChatTitle,
+                      isNumeric ? undefined : val,
+                      'channel',
+                    );
+                    setNewChatId(''); setNewChatTitle('');
+                    setToast({ message: isNumeric ? 'Канал добавлен' : 'Канал добавлен, ID будет определён автоматически', type: 'success' });
                   } catch { setToast({ message: 'Ошибка', type: 'error' }); }
                 }}>Добавить</button>
             </div>
@@ -356,7 +399,7 @@ function IssueCard({ issue, chats, fetchMessages, onStatusChange }: {
 
 /* ===== Chat Card with expandable stats ===== */
 function ChatCard({ chat, counts, fetchStats, onRemove, onUpdateChatId }: {
-  chat: { id: number; chatId: number; title: string; username: string | null };
+  chat: { id: number; chatId: number; title: string; username: string | null; subscribers: number };
   counts?: { total: number; today: number };
   fetchStats: () => Promise<any>;
   onRemove: () => void;
@@ -376,7 +419,14 @@ function ChatCard({ chat, counts, fetchStats, onRemove, onUpdateChatId }: {
     }
   };
 
-  const maxPerDay = Math.max(1, ...(stats?.perDay ?? []).map((d: any) => d.count));
+  const chartData = useMemo(() =>
+    (stats?.perDay ?? []).map((d: any) => ({
+      date: d.date.slice(5),
+      'Сообщений': d.count,
+      'Авторов': d.senders,
+    })),
+    [stats],
+  );
 
   return (
     <Card>
@@ -387,38 +437,28 @@ function ChatCard({ chat, counts, fetchStats, onRemove, onUpdateChatId }: {
         </div>
         <div className={styles.chatCardStats}>
           <div className={styles.chatStat}>
+            <span className={styles.chatStatValue}>{chat.subscribers > 0 ? chat.subscribers.toLocaleString() : '\u2014'}</span>
+            <span className={styles.chatStatLabel}>участников</span>
+          </div>
+          <div className={styles.chatStat}>
             <span className={styles.chatStatValue}>{counts?.total ?? 0}</span>
-            <span className={styles.chatStatLabel}>всего</span>
+            <span className={styles.chatStatLabel}>сообщений</span>
           </div>
           <div className={styles.chatStat}>
             <span className={styles.chatStatValue}>{counts?.today ?? 0}</span>
             <span className={styles.chatStatLabel}>сегодня</span>
           </div>
         </div>
-        <span className={styles.chatExpand}>{expanded ? '▲' : '▼'}</span>
+        <span className={styles.chatExpand}>{expanded ? '\u25B2' : '\u25BC'}</span>
       </div>
 
       {expanded && stats && (
         <div className={styles.chatCardBody}>
-          {/* Bar chart: messages per day + senders count on top */}
-          {stats.perDay.length > 0 && (
+          {chartData.length > 0 && (
             <div className={styles.chatSection}>
-              <span className={styles.chatSectionTitle}>Активность по дням</span>
-              <div className={styles.chatBarChart}>
-                {stats.perDay.map((d: any) => (
-                  <div key={d.date} className={styles.chatBarCol}>
-                    <span className={styles.chatBarSenders}>{d.senders} уч.</span>
-                    <span className={styles.chatBarCount}>{d.count}</span>
-                    <div className={styles.chatBarTrack}>
-                      <div className={styles.chatBarFill} style={{ height: `${(d.count / maxPerDay) * 100}%` }} />
-                    </div>
-                    <span className={styles.chatBarDate}>{d.date.slice(5)}</span>
-                  </div>
-                ))}
-              </div>
+              <Chart type="line" data={chartData} xKey="date" yKey={['Сообщений', 'Авторов']} color={['var(--color-teal)', 'var(--color-orange)']} title="Активность по дням" height={220} />
             </div>
           )}
-
           {/* Two columns: senders + recent messages */}
           <div className={styles.chatColumns}>
             {/* Top senders */}
@@ -470,6 +510,174 @@ function ChatCard({ chat, counts, fetchStats, onRemove, onUpdateChatId }: {
         </div>
       )}
     </Card>
+  );
+}
+
+/* ===== Channel News Card ===== */
+interface NewsItem {
+  id: number;
+  chatId: number;
+  messageId: number;
+  text: string;
+  photoUrl: string | null;
+  summary: string;
+  topic: string;
+  location: string;
+  severity: number;
+  channelName: string;
+  postUrl: string | null;
+  createdAt: string;
+}
+
+function ChannelNewsCard({ channel, fetchNews, fetchStats, onRemove, onSendAlert }: {
+  channel: { id: number; chatId: number; title: string; username: string | null; subscribers: number };
+  fetchNews: () => Promise<NewsItem[]>;
+  fetchStats: () => Promise<{ date: string; subscribers: number; postsFound: number }[]>;
+  onRemove: () => void;
+  onSendAlert: (msg: string) => void;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const [news, setNews] = useState<NewsItem[] | null>(null);
+  const [stats, setStats] = useState<{ date: string; subscribers: number; postsFound: number }[] | null>(null);
+
+  const handleExpand = async () => {
+    const next = !expanded;
+    setExpanded(next);
+    if (next && !news) {
+      const [newsData, statsData] = await Promise.all([fetchNews(), fetchStats()]);
+      setNews(newsData);
+      setStats(statsData);
+    }
+  };
+
+  const newsCount = news?.length ?? 0;
+
+  return (
+    <Card>
+      <div className={styles.chatCardHeader} onClick={handleExpand}>
+        <div className={styles.chatCardInfo}>
+          <span className={styles.chatTitle}>{channel.title}</span>
+          {channel.username && <span className={styles.chatUsername}>@{channel.username}</span>}
+        </div>
+        <div className={styles.chatCardStats}>
+          <div className={styles.chatStat}>
+            <span className={styles.chatStatValue}>{channel.subscribers > 0 ? channel.subscribers.toLocaleString() : '\u2014'}</span>
+            <span className={styles.chatStatLabel}>подписчиков</span>
+          </div>
+          <div className={styles.chatStat}>
+            <span className={styles.chatStatValue}>{newsCount}</span>
+            <span className={styles.chatStatLabel}>отобрано</span>
+          </div>
+        </div>
+        <span className={styles.chatExpand}>{expanded ? '\u25B2' : '\u25BC'}</span>
+      </div>
+
+      {expanded && (
+        <div className={styles.channelBody}>
+          {/* Subscribers chart */}
+          {stats && stats.length > 1 && (
+            <div className={styles.channelChart}>
+              <Chart
+                type="line"
+                data={stats.slice(-14).map(s => ({ date: s.date.slice(5), '\u041F\u043E\u0434\u043F\u0438\u0441\u0447\u0438\u043A\u043E\u0432': s.subscribers }))}
+                xKey="date"
+                yKey={['\u041F\u043E\u0434\u043F\u0438\u0441\u0447\u0438\u043A\u043E\u0432']}
+                color={['var(--color-teal)']}
+                title="\u041F\u043E\u0434\u043F\u0438\u0441\u0447\u0438\u043A\u0438 \u043F\u043E \u0434\u043D\u044F\u043C"
+                height={200}
+              />
+            </div>
+          )}
+
+          {/* News cards */}
+          {news && news.length > 0 ? (
+            <div className={styles.newsRow}>
+              {news.slice(0, 3).map(item => (
+                <TgNewsCard key={item.id} item={item} onSendAlert={onSendAlert} />
+              ))}
+            </div>
+          ) : (
+            <div className={styles.empty}>
+              <p className={styles.emptyTitle}>Нет отобранных новостей</p>
+              <p className={styles.emptyHint}>Релевантные посты появятся автоматически</p>
+            </div>
+          )}
+          <div className={styles.chatCardFooter}>
+            <span className={styles.chatId}>ID: {channel.chatId}</span>
+            <button className={styles.chatRemoveBtn} onClick={(e) => { e.stopPropagation(); onRemove(); }}>Отключить</button>
+          </div>
+        </div>
+      )}
+    </Card>
+  );
+}
+
+function TgNewsCard({ item, onSendAlert }: { item: NewsItem; onSendAlert: (msg: string) => void }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleSend = () => {
+    const icon = item.severity >= 8 ? '\u{1F6A8}' : item.severity >= 5 ? '\u26A0\uFE0F' : '\u{1F4F0}';
+    const lines = [
+      `${icon} ${item.summary}`,
+      '',
+      `\u{1F4CD} ${item.location !== 'не указана' ? item.location : ''}`,
+      `\u{1F4E2} ${item.channelName}`,
+      '',
+      item.text.slice(0, 300) + (item.text.length > 300 ? '...' : ''),
+    ];
+    if (item.postUrl) lines.push('', `\u{1F517} ${item.postUrl}`);
+    lines.push('', `#новости #${item.topic.replace(/\s/g, '_')}`);
+
+    const text = lines.join('\n');
+    try {
+      navigator.clipboard.writeText(text);
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+    setCopied(true);
+    onSendAlert('Скопировано для Telegram');
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const date = new Date(item.createdAt);
+  const timeStr = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+  const dateStr = `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+
+  return (
+    <div className={styles.tgCard}>
+      {item.photoUrl && (
+        <div className={styles.tgCardPhoto}>
+          <img src={item.photoUrl} alt="" loading="lazy" />
+        </div>
+      )}
+      <div className={styles.tgCardContent}>
+        <div className={styles.tgCardHeader}>
+          <span className={styles.tgCardChannel}>{item.channelName}</span>
+          <span className={styles.tgCardTime}>{dateStr} {timeStr}</span>
+        </div>
+        <p className={styles.tgCardSummary}>{item.summary}</p>
+        <p className={styles.tgCardText}>{item.text.slice(0, 200)}{item.text.length > 200 ? '...' : ''}</p>
+        <div className={styles.tgCardFooter}>
+          <span className={styles.tgCardTopic}>{item.topic}</span>
+          {item.severity > 0 && (
+            <span className={styles.tgCardSeverity} style={{ color: severityColor(item.severity) }}>
+              {item.severity}/10
+            </span>
+          )}
+          {item.postUrl && (
+            <a href={item.postUrl} target="_blank" rel="noopener noreferrer" className={styles.tgCardLink}>
+              Открыть
+            </a>
+          )}
+        </div>
+      </div>
+      <button className={styles.tgCardSendBtn} onClick={handleSend}>
+        {copied ? '\u2713 Скопировано' : '\u{1F4E8} Отправить в Telegram'}
+      </button>
+    </div>
   );
 }
 

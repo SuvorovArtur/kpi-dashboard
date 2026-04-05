@@ -48,6 +48,8 @@ export interface Appeal {
   sector: string | null;
   sentiment_score: number | null;
   is_repeated: boolean;
+  lat: number | null;
+  lng: number | null;
 }
 
 export interface StaffMetrics {
