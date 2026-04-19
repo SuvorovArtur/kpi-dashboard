@@ -1,22 +1,23 @@
+"""One-shot helper to create/refresh the Pyrogram session file.
+
+Run interactively on the host that will execute bot.py:
+    python3 auth.py
+
+Pyrogram will prompt for phone number, SMS code, and (if set) 2FA password.
+Creates ./<TG_SESSION>.session which bot.py will reuse on subsequent runs.
+"""
 import asyncio
-import sys
-from telethon import TelegramClient
+
+from pyrogram import Client
+
 from config import TG_API_ID, TG_API_HASH, TG_SESSION
 
-async def main():
-    client = TelegramClient(TG_SESSION, TG_API_ID, TG_API_HASH)
-    phone = sys.argv[1] if len(sys.argv) > 1 else input('Phone: ')
-    await client.connect()
-    if not await client.is_user_authorized():
-        await client.send_code_request(phone)
-        code = sys.argv[2] if len(sys.argv) > 2 else input('Code: ')
-        try:
-            await client.sign_in(phone, code)
-        except Exception:
-            password = sys.argv[3] if len(sys.argv) > 3 else input('2FA Password: ')
-            await client.sign_in(password=password)
-    me = await client.get_me()
-    print(f'OK: {me.first_name} (@{me.username})')
-    await client.disconnect()
 
-asyncio.run(main())
+async def main() -> None:
+    async with Client(TG_SESSION, api_id=TG_API_ID, api_hash=TG_API_HASH) as app:
+        me = await app.get_me()
+        print(f'OK: {me.first_name} (@{me.username})')
+
+
+if __name__ == '__main__':
+    asyncio.run(main())
