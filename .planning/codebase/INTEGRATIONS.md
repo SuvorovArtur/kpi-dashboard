@@ -1,196 +1,199 @@
 # External Integrations
 
-**Analysis Date:** 2026-04-06
+**Analysis Date:** 2026-04-19
 
 ## APIs & External Services
 
-**Supabase (Database, Auth, Functions, RPC):**
-- Primary backend for all data operations
-  - SDK: `@supabase/supabase-js` 2.101.1
-  - Auth: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` (environment variables)
-  - Connection: `src/shared/lib/supabase.ts`
+**Supabase (Primary Backend):**
+- Database and authentication provider
+  - SDK/Client: `@supabase/supabase-js` 2.101.1
+  - Auth: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY (environment variables)
+  - Used in: `src/shared/lib/supabase.ts` (main client initialization)
+  - Real-time subscriptions for auth state changes
+  - RPC calls for aggregation: `get_chat_message_counts()`, `get_unanalyzed_messages()`
 
-**DeepSeek API (Message Analysis):**
-- Sentiment and message analysis for appeals and ISN data
-  - SDK: Raw HTTP via `httpx` (Python, in `tg-bot/analyzer.py`)
-  - Config: `DEEPSEEK_API_KEY`, `DEEPSEEK_MODEL` (from `tg-bot/config.py`)
-  - Model: Claude or compatible LLM for batch message analysis
-
-**Telegram (Social Media Monitoring):**
-- Message collection from monitored chats and channels
-  - SDK: `telethon` (Python Telegram client)
-  - Connection: `tg-bot/bot.py` - TelegramClient with API credentials
-  - Config: `TG_API_ID`, `TG_API_HASH`, `TG_SESSION` (from `tg-bot/config.py`)
+**Telegram API:**
+- Real-time message monitoring and analysis
+  - Client: Telethon (Python)
+  - Auth: TG_API_ID, TG_API_HASH from environment
+  - Session: TG_SESSION file-based token
   - Features:
-    - Listen to new messages in configured chats/channels
-    - Participant/subscriber count tracking
-    - Channel statistics collection
-    - Alert delivery to designated chat
+    - Incoming message listening via `@client.on(events.NewMessage)`
+    - Message metadata extraction (sender, date, reply_to)
+    - Participant/subscriber count fetching
+    - Proxy support (SOCKS5, HTTP, MTProto) configured via Supabase `app_settings`
+  - Location: `tg-bot/bot.py`
+  - Monitored chats loaded from `tg_chats` Supabase table
+  - Messages saved to `tg_messages` table via custom `db` module
 
-**Nominatim (Geocoding):**
-- EU-based geocoding service for address → coordinates
-  - Called via: Supabase Edge Function `geocode` (invoked from `src/shared/lib/geocode.ts`)
-  - Handles: GPS extraction from descriptions, address resolution (street + house + settlement)
-  - Batch processing: 50 appeals per batch
+**DeepSeek LLM:**
+- Message analysis and problem detection
+  - Endpoint: `https://api.deepseek.com/chat/completions`
+  - Auth: DEEPSEEK_API_KEY environment variable
+  - Model: DEEPSEEK_MODEL (configurable)
+  - Client: httpx (async HTTP)
+  - Purpose: Analyze Telegram messages for issues, threads, severity scoring, location detection
+  - Input: Formatted message batches with chat context
+  - Output: JSON with threads, issues, severity scores, alerts
+  - Used in: `tg-bot/analyzer.py`, part of periodic analysis job
+  - System prompt: Russian language, municipal issue detection for Mytishchi region
 
 ## Data Storage
 
 **Databases:**
-- PostgreSQL (via Supabase)
-  - Connection: Supabase client with anon key
-  - Tables:
-    - `kpi_definitions` - KPI metadata and targets (`src/shared/hooks/useKpiData.ts`)
-    - `kpi_values` - Time-series KPI data points
-    - `appeals` - Municipal appeals/requests with geocoding status (`src/shared/hooks/useAppeals.ts`)
-    - `user_profiles` - User accounts, roles, display names (`src/shared/hooks/useAuth.tsx`)
-    - `territories` - Geographic divisions/districts (`src/shared/hooks/useTerritories.ts`)
-    - `attendance_records` - Daily attendance fact values (`src/shared/hooks/useAttendance.ts`)
-    - `attendance_plans` - Monthly attendance targets
-    - `app_settings` - Configuration key-value store (`src/shared/hooks/useAppSettings.ts`)
-    - `staff` - Staff metrics (headcount, vacancies, turnover)
-    - `roadmap_items` - Initiative tracking and scheduling
-    - `tg_chats` - Monitored Telegram chats/channels
-    - `tg_messages` - Individual Telegram messages
-    - `tg_issues` - Extracted problems from message threads
-    - `tg_issue_messages` - Links between issues and messages
-    - `tg_news` - Extracted news/updates from channels
-    - `tg_analysis_log` - Bot analysis run history
-    - `tg_channel_stats` - Daily subscriber/post counts per channel
+- Supabase PostgreSQL
+  - Connection: Supabase client with `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`
+  - Client: `@supabase/supabase-js` (JavaScript/TypeScript frontend) + custom `db` module (Python backend)
+  - Tables used:
+    - `kpi_definitions` - KPI metadata (IDs, names, types)
+    - `kpi_values` - Time-series KPI data points (date, value, territory, notes)
+    - `appeals` - Municipal appeals/complaints (direction, status, sentiment, curator, executor)
+    - `user_profiles` - User roles and permissions (display_name, role)
+    - `tg_chats` - Monitored Telegram chats (chat_id, title, type, subscribers, is_active)
+    - `tg_messages` - Raw Telegram messages (chat_id, message_id, date, sender_name, text, reply_to_id)
+    - `tg_issues` - Detected issues from message analysis (title, summary, severity, status, message_count, location, direction)
+    - `tg_issue_messages` - Junction table linking issues to messages (issue_id, message_id)
+    - `tg_news` - Channel news summaries (chat_id, message_id, text, photo_url, summary, topic, location, severity, channel_name, post_url)
+    - `tg_channel_stats` - Channel growth tracking (chat_id, date, subscribers, posts_found)
+    - `tg_analysis_log` - Analysis job logs (started_at, finished_at, status, threads_found, alerts_found, queue_size)
+    - `app_settings` - Application settings including proxy config (key, value)
+    - `heatmap_data` - Geographic heatmap metrics (territory, latitude, longitude, metric_value)
+    - `staff_data` - Staff information and KPIs
+    - `territories` - Geographic territories/regions
+    - `roadmap_milestones` - Project roadmap items
 
 **File Storage:**
-- Not explicitly configured; file export handled client-side:
-  - Excel export via XLSX library (`src/shared/utils/export.ts`)
-  - PDF export via html2canvas + jsPDF (`src/shared/utils/export.ts`)
-  - No persistent file storage backend detected
+- Local filesystem only
+  - Frontend: Session files for Telethon (`.tg_session`)
+  - Export: Client-side PDF/image export via html2canvas + jsPDF
 
 **Caching:**
-- None detected - all queries direct to Supabase
+- None explicit (Supabase handles query caching at the database level)
+- React state management via hooks (useKpiData, useAppeals, useSocialMonitor, etc.)
+- In-memory chat counts cache in `useSocialMonitor` hook (Map<chatId, {total, today}>)
 
 ## Authentication & Identity
 
 **Auth Provider:**
-- Supabase Auth
-  - Implementation: Email + password authentication via `supabase.auth.signInWithPassword()`
-  - Session management: Browser localStorage (handled by Supabase client)
-  - Context: `src/shared/hooks/useAuth.tsx` - AuthProvider with session state
-  - User profile: Loaded from `user_profiles` table after signin
-  - Roles:
-    - `admin` - Full access (user management, KPI editing, settings)
-    - `editor` - Can edit data (KPI values, territories)
-    - `viewer` - Read-only access
+- Supabase Auth (built-in PostgreSQL auth)
+  - Implementation: Email + password
+  - Methods:
+    - `supabase.auth.signInWithPassword(email, password)` in `src/shared/hooks/useAuth.tsx`
+    - `supabase.auth.signOut()` for logout
+    - `supabase.auth.getSession()` on app load
+    - `supabase.auth.onAuthStateChange()` for listening to auth events
+  - User profiles loaded from `user_profiles` table
+  - Role-based access:
+    - `admin` - Full edit access
+    - `editor` - Edit access
+    - `viewer` - Read-only (default)
+  - Session persistence: Browser storage (Supabase SDK default)
+  - Provider: `src/shared/hooks/useAuth.tsx` (AuthContext + useAuth hook)
 
-**User Management:**
-- Supabase Edge Function `manage-user` (`src/pages/Settings/Settings.tsx`)
-  - Actions: `create` (new user with email/password), `delete` (remove user)
-  - Accessible to admin role only
-
-## RPC Functions (Server-Side Logic)
-
-**Supabase RPC Procedures:**
-- `get_chat_message_counts()` - Returns total and today message counts per monitored chat
-  - Called from: `src/shared/hooks/useSocialMonitor.ts`
-- `get_unanalyzed_messages(msg_limit: int)` - Retrieves messages pending sentiment analysis
-  - Called from: `src/shared/hooks/useSocialMonitor.ts`
-
-## Edge Functions (Serverless)
-
-**Geocoding Function:**
-- `geocode` - Batch geocoding of appeals
-  - Endpoint: Invoked via `supabase.functions.invoke('geocode', { body: { limit: 50 } })`
-  - Called from: `src/shared/lib/geocode.ts`
-  - Process: Handles GPS extraction from descriptions, then Nominatim resolution
-  - Returns: `{ geocoded: number, total: number }`
-
-**Sentiment Analysis Function:**
-- `analyze-sentiment` - Batch NLP sentiment scoring
-  - Endpoint: Invoked via `supabase.functions.invoke('analyze-sentiment', { body: { batch_size: N } })`
-  - Called from: `src/pages/Appeals/Appeals.tsx`, `src/pages/ISN/ISN.tsx`
-  - Returns: Analysis results (sentiment scores, classification)
-
-**User Management Function:**
-- `manage-user` - Create/delete users
-  - Endpoint: Invoked via `supabase.functions.invoke('manage-user', { body: { action, ... } })`
-  - Called from: `src/pages/Settings/Settings.tsx`
-  - Actions:
-    - `create`: `{ action: 'create', email, password, display_name, role }`
-    - `delete`: `{ action: 'delete', user_id }`
+**Authorization:**
+- Role-based access control (RBAC)
+  - `canEdit` flag: true for admin/editor roles
+  - `isAdmin` flag: true for admin only
+  - Frontend gates: useAuth().canEdit checks in edit forms
+  - Backend: RLS policies on Supabase tables
 
 ## Monitoring & Observability
 
 **Error Tracking:**
-- Not configured; errors logged to console
+- None detected (no Sentry, DataDog, or similar)
+- Console error logging in frontend hooks (catch blocks)
+- Python logging in bot/analyzer (print statements)
 
 **Logs:**
-- Supabase tables:
-  - `tg_analysis_log` - Bot analysis runs with status, threads found, alerts generated
-  - Application logs: Browser console only
+- Frontend: Browser console (development), no centralized logging
+- Backend: Stdout/stderr to systemd journal
+- Supabase: Built-in query logs, audit trails
+- Analysis jobs: `tg_analysis_log` table tracks execution (started_at, finished_at, status, threads_found, alerts_found)
 
 ## CI/CD & Deployment
 
 **Hosting:**
-- Static frontend deployment (Vite produces SPA)
-- Bot deployment: Standalone Python process (systemd or manual)
+- Frontend: Linux server (Nginx)
+  - Deploy mechanism: rsync via SSH
+  - Server: root@185.225.34.215:/var/www/kpi-dashboard/
+  - SSH key: ~/.ssh/id_ed25519
+  - Security headers configured via `config/nginx-security-headers.conf`
+- Backend (Telegram bot + analyzer): Linux server
+  - Managed via systemd (service restart loop for config reloads)
+  - Python services with env file: `tg-bot/.env`
 
 **CI Pipeline:**
-- Not configured in repo
+- None detected in codebase
+  - Manual builds: `npm run build` (TypeScript + Vite bundling)
+  - Manual tests/lint: `npm run lint`, `npm test` (no test setup found yet)
+
+## Environment Configuration
+
+**Required Environment Variables:**
+
+**Frontend (Vite):**
+- `VITE_SUPABASE_URL` - Supabase project URL
+- `VITE_SUPABASE_ANON_KEY` - Supabase anonymous API key
+
+**Python Bot/Backend:**
+- `TG_API_ID` - Telegram API ID (from my.telegram.org)
+- `TG_API_HASH` - Telegram API hash
+- `TG_SESSION` - Telethon session file name/path
+- `ANALYSIS_INTERVAL` - Interval (seconds) between analysis runs
+- `DEEPSEEK_API_KEY` - DeepSeek LLM API key
+- `DEEPSEEK_MODEL` - DeepSeek model identifier
+- `ALERT_CHAT_ID` - Telegram chat ID for alerts (from alerts module)
+- Supabase credentials: Passed via custom `db` module (likely from environment)
+
+**Dynamic Configuration (Supabase app_settings table):**
+- `tg_proxy_type` - Proxy type: mtproto, socks5, socks4, http
+- `tg_proxy_host` - Proxy hostname
+- `tg_proxy_port` - Proxy port number
+- `tg_proxy_secret` - MTProto secret
+- `tg_proxy_username` - Proxy username (optional)
+- `tg_proxy_password` - Proxy password (optional)
+- Picked up every ~60 seconds via systemd restart loop
+
+**Secrets Location:**
+- Frontend: `.env` file (not committed, Vite loads via import.meta.env)
+- Backend: `.env` files in root and `tg-bot/` (Python dotenv conventions)
+- Supabase: Stored as settings records in `app_settings` table (editable from Settings page)
 
 ## Webhooks & Callbacks
 
 **Incoming:**
-- Telegram event listeners (real-time message handling in bot)
-  - `@client.on(events.NewMessage(incoming=True))` in `tg-bot/bot.py`
-  - Triggers: Message saving, reply tracking, sender identification
+- Telegram webhooks: None detected (using polling/long-polling via Telethon)
+  - Real-time message handling via `@client.on(events.NewMessage)` decorator
 
 **Outgoing:**
-- Alert messages sent back to Telegram chat (`ALERT_CHAT_ID`)
-  - From: `tg-bot/bot.py` periodic analysis task
-  - Delivery: Parsed as markdown to designated chat
+- DeepSeek API calls: Async HTTP POST to `https://api.deepseek.com/chat/completions`
+- Telegram alerts: Sends analysis results to ALERT_CHAT_ID (optional outbound message)
+- Supabase: RPC calls for analytics
+  - `get_chat_message_counts()` - Aggregated message statistics
+  - `get_unanalyzed_messages(msg_limit)` - Queue for pending analysis
 
-## Data Exchange Patterns
+## Data Flow
 
-**Frontend → Supabase:**
-- Direct client queries via Supabase client library
-  - All CRUD on tables (select, insert, update, upsert, delete)
-  - Filtered queries by date range, direction, territory, status
-  - Example: `supabase.from('appeals').select('*').gte('date', dateFrom).lte('date', dateTo)`
+**KPI Dashboard Frontend:**
+1. User logs in via Supabase Auth
+2. App loads user profile from `user_profiles` table
+3. Hooks fetch data from Supabase:
+   - `useKpiData()` → `kpi_definitions` + `kpi_values`
+   - `useAppeals()` → `appeals` table (filtered by direction, status, date)
+   - `useSocialMonitor()` → `tg_chats`, `tg_issues`, `tg_news`, analysis logs
+4. Data displayed in interactive charts (Recharts), maps (Leaflet), tables
 
-**Bot → Supabase:**
-- Direct connection from Python process
-  - Message insertion: `db.save_message()`
-  - Bulk updates via `table().update().execute()`
-  - Analysis log recording: Status, thread count, alerts generated
-
-**Bot ← Telegram:**
-- Real-time listener pattern via `telethon`
-  - Event-driven message collection
-  - Periodic participant count updates (every 30 min)
-
-**Frontend → Edge Functions:**
-- Request/response over HTTP (Supabase SDK wraps)
-  - Geocoding, sentiment analysis, user management
-  - Async batch processing with progress feedback
-
-## Environment Configuration
-
-**Required env vars:**
-
-**Frontend (.env):**
-- `VITE_SUPABASE_URL` - Base URL of Supabase project
-- `VITE_SUPABASE_ANON_KEY` - Public key for client auth
-
-**Bot (tg-bot/.env):**
-- `SUPABASE_URL`, `SUPABASE_KEY` - Database connection
-- `TG_API_ID`, `TG_API_HASH` - Telegram app credentials
-- `TG_SESSION` - Session file name (persists login)
-- `ANALYSIS_INTERVAL` - Seconds between analysis runs (e.g., 1800 for 30 min)
-- `DEEPSEEK_API_KEY` - DeepSeek/LLM API authentication
-- `DEEPSEEK_MODEL` - Model identifier
-- `ALERT_CHAT_ID` - Telegram chat ID for alerts
-
-**Secrets location:**
-- `.env` files (local, not committed)
-- Supabase: RLS policies and auth tokens managed via dashboard
+**Telegram Monitoring Pipeline:**
+1. Python bot (Telethon client) listens to monitored chats from `tg_chats` table
+2. New messages → saved to `tg_messages` (handled in `on_message()` handler)
+3. Every ANALYSIS_INTERVAL, batch unanalyzed messages
+4. Send batch to DeepSeek API with system prompt (Russian, municipal context)
+5. Parse JSON response with detected issues, threads, severity
+6. Store/update in `tg_issues` table
+7. Update `tg_analysis_log` with execution stats
+8. Send high-severity alerts to ALERT_CHAT_ID (optional)
+9. Frontend `useSocialMonitor()` fetches and displays active issues
 
 ---
 
-*Integration audit: 2026-04-06*
+*Integration audit: 2026-04-19*

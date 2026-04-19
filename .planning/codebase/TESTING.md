@@ -1,323 +1,287 @@
 # Testing Patterns
 
-**Analysis Date:** 2026-04-06
+**Analysis Date:** 2026-04-19
 
-## Test Framework
+## Current State: NO TESTS
 
-**Current Status:**
-- **No test framework configured** - Project has no Jest, Vitest, or other test runner
-- **No test files detected** - Zero `.test.ts`, `.spec.ts`, `.test.tsx`, or `.spec.tsx` files in codebase
-- **Development environment**: Vite with React 19.2.4
+**Status:** The codebase contains **zero test files**. No testing framework is configured.
 
-**Recommended Setup (not yet implemented):**
-- Vitest recommended for Vite-based projects
-- @testing-library/react for component testing
-- TypeScript strict mode already enabled
+**Evidence:**
+- `package.json` contains no test-related scripts (`npm test`, `npm run test`, etc.)
+- No test files found in `src/` directory (search for `*.test.*` and `*.spec.*` found only node_modules)
+- No testing dependencies in `devDependencies`: No Jest, Vitest, React Testing Library, Cypress, Playwright, etc.
+- No test configuration files: No `jest.config.js`, `vitest.config.ts`, `playwright.config.ts`, etc.
 
-**Run Commands (future):**
-```bash
-npm run test              # Once configured
-npm run test:watch       # Watch mode
-npm run test:coverage    # Coverage report
-```
+## Implications
 
-## Test File Organization
+**Risk areas (untested):**
+- All hooks (`src/shared/hooks/`): `useKpiData.ts`, `useAppeals.ts`, `useAuth.tsx`, `useTerritories.ts`, `useAttendance.ts`, etc.
+- All UI components (`src/shared/ui/`): `Card.tsx`, `DataTable.tsx`, `Sidebar.tsx`, `Toast.tsx`, etc.
+- All utility functions (`src/shared/utils/`): `kpi-helpers.ts`, `calculateISN()`, `getKpiStatus()`, etc.
+- Complex business logic in pages: `Overview.tsx`, `Appeals.tsx`, `Attendance.tsx`, `SocialMonitor.tsx`
+- Supabase integration: Database queries, error handling, authentication flows
+- Data transformations: CSV export, date filtering, sorting, pagination
 
-**Current Pattern:**
-- No organized test structure exists
-- No `__tests__` directories
-- No separate `/tests` folder
+**Code that could break silently:**
+- Custom calculation functions like `calculateISN()` (weighted index formula)
+- Error boundary error handling in `src/app/App.tsx`
+- CSV export logic in `DataTable.tsx` (quote escaping, comma handling)
+- Role-based access control in `useAuth.tsx` (canEdit, isAdmin derivation)
+- Complex state management in hooks with multiple async operations
 
-**Recommended Pattern (not yet implemented):**
-- Co-locate tests with source files: `Component.tsx` + `Component.test.tsx`
-- Central test utilities in `src/shared/testing/` directory
-- Fixtures and test data in `src/shared/testing/fixtures/`
+## Recommended Testing Strategy
 
-## Test Structure
+### Phase 1: Unit Tests (Foundation)
 
-**No existing tests to document, but based on code patterns, tests would likely follow:**
+**Framework recommendation:** Vitest (lightweight, Vite-integrated, fast)
 
-**Hook Testing Pattern (for custom hooks):**
+**Priority areas:**
+1. **Utility functions** (`src/shared/utils/`)
+   - `calculateISN()` — complex formula, critical for KPI calculation
+   - `getKpiStatus()` — status determination logic
+   - `getProgressToTarget()` — percentage calculation
+   - `getTrend()`, `getTrendValue()` — trend analysis
+
+2. **Hook logic** (test in isolation with mocking)
+   - `useAppSettings()` — state management for app-wide settings
+   - `useToast()` — toast lifecycle and cleanup
+   - `useDateRange()` — date range state and updates
+
+3. **Business logic utilities**
+   - Date calculations in `Attendance.tsx` helpers
+   - Status grouping in `Appeals.tsx`
+   - Validation functions
+
+### Phase 2: Component Tests
+
+**Use:** React Testing Library with Vitest
+
+**Scope:**
+- Simple presentational components: `Card.tsx`, `Badge.tsx`, `ProgressBar.tsx`
+- Components with user interactions: `DataTable.tsx` (sorting, pagination), `Toast.tsx` (auto-dismiss)
+- Form components: `DateRangePicker.tsx`, `XlsxImport.tsx`
+
+**Approach:**
+- Test rendered output and user interactions
+- Mock child components in complex hierarchies
+- Test CSS class application via `clsx` utilities
+
+### Phase 3: Integration Tests
+
+**Scope:**
+- Hook + Supabase integration (mocked DB)
+- Multi-component page flows
+- Auth flow: login → authenticated state → logout
+
+**Setup:**
+- Mock Supabase client (`supabase` from `src/shared/lib/supabase.ts`)
+- Mock fetch calls
+- Verify data flows through hooks to components
+
+### Phase 4: E2E Tests (Future)
+
+**Framework:** Playwright or Cypress (not needed immediately)
+
+**Scope:**
+- Full user journeys: Login → Navigate → View Data → Export CSV
+- Cross-browser compatibility
+- Responsive design
+
+## Hook Testing Pattern (Template)
+
+Based on observed hook structure, tests would follow this pattern:
+
 ```typescript
-import { renderHook, act } from '@testing-library/react';
-import { useKpiData } from '../hooks/useKpiData';
+// Example: useKpiData.test.ts
+import { renderHook, waitFor } from '@testing-library/react';
+import { useKpiData } from './useKpiData';
+
+// Mock Supabase
+jest.mock('../lib/supabase', () => ({
+  supabase: {
+    from: jest.fn(() => ({
+      select: jest.fn().mockReturnValue({
+        data: mockData,
+        error: null,
+      }),
+    })),
+  },
+}));
 
 describe('useKpiData', () => {
-  it('should fetch KPI definitions and data', async () => {
-    const { result } = renderHook(() => useKpiData({ kpiId: 'kpi-1' }));
+  it('should fetch and return KPI data', async () => {
+    const { result } = renderHook(() => useKpiData());
     
+    // Initially loading
     expect(result.current.isLoading).toBe(true);
     
-    await act(async () => {
-      // Wait for data
-    });
-    
-    expect(result.current.data).toHaveLength(0); // or > 0
+    // After fetch completes
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    expect(result.current.data).toHaveLength(2);
     expect(result.current.error).toBeNull();
+  });
+
+  it('should handle fetch errors', async () => {
+    // Mock error scenario
+    // Assert error state and UI response
+  });
+
+  it('should filter by parameters', async () => {
+    const { result } = renderHook(() => 
+      useKpiData({ kpiId: 'test-id', territory: 'test-territory' })
+    );
+    
+    // Verify correct filters applied
+  });
+
+  it('should support refetch', async () => {
+    const { result } = renderHook(() => useKpiData());
+    result.current.refetch();
+    // Verify refetch triggers new fetch
   });
 });
 ```
 
-**Component Testing Pattern (for UI components):**
+## Utility Function Testing Pattern (Template)
+
 ```typescript
+// Example: kpi-helpers.test.ts
+import { calculateISN, getKpiStatus, getProgressToTarget } from './kpi-helpers';
+
+describe('calculateISN', () => {
+  it('should calculate weighted ISN correctly', () => {
+    const scores = [5, 6, 7, 8, 9];
+    const result = calculateISN(scores);
+    // ISN_w = Σ(s²) / Σ(s) = (25+36+49+64+81) / (5+6+7+8+9) = 255/35 = 7.3
+    expect(result).toBe(7.3);
+  });
+
+  it('should return 0 for empty scores', () => {
+    expect(calculateISN([])).toBe(0);
+  });
+
+  it('should handle single score', () => {
+    expect(calculateISN([5])).toBe(5);
+  });
+});
+
+describe('getKpiStatus', () => {
+  it('should return green when meeting target', () => {
+    expect(getKpiStatus(95, 100, 'higher')).toBe('green');
+  });
+
+  it('should return yellow at 70% of target', () => {
+    expect(getKpiStatus(70, 100, 'higher')).toBe('yellow');
+  });
+
+  it('should return red below 70% of target', () => {
+    expect(getKpiStatus(50, 100, 'higher')).toBe('red');
+  });
+});
+```
+
+## Component Testing Pattern (Template)
+
+```typescript
+// Example: Card.test.tsx
 import { render, screen } from '@testing-library/react';
-import { Card } from '../Card';
+import { Card } from './Card';
 
 describe('Card', () => {
-  it('should render with title', () => {
-    render(
-      <Card title="Test Title">
-        <div>Content</div>
-      </Card>
-    );
-    
+  it('should render children', () => {
+    render(<Card>Test content</Card>);
+    expect(screen.getByText('Test content')).toBeInTheDocument();
+  });
+
+  it('should render title when provided', () => {
+    render(<Card title="Test Title">Content</Card>);
     expect(screen.getByText('Test Title')).toBeInTheDocument();
   });
-  
+
   it('should apply accent class', () => {
-    const { container } = render(
-      <Card accent="teal">Content</Card>
-    );
-    
-    expect(container.querySelector('.accentTeal')).toBeInTheDocument();
+    const { container } = render(<Card accent="teal">Content</Card>);
+    expect(container.firstChild).toHaveClass('accentTeal');
+  });
+
+  it('should apply custom className', () => {
+    const { container } = render(<Card className="custom-class">Content</Card>);
+    expect(container.firstChild).toHaveClass('custom-class');
   });
 });
 ```
 
 ## Mocking Strategy
 
-**No mocking framework currently configured, but based on patterns:**
+**What to mock:**
+- Supabase client (`src/shared/lib/supabase.ts`)
+- Network requests (use MSW - Mock Service Worker)
+- React Router (useNavigate, useLocation)
+- Third-party libraries with side effects (Leaflet, Recharts)
 
-**Supabase Mocking (critical for data hooks):**
+**What NOT to mock:**
+- Internal utility functions (test directly)
+- React hooks from `react` (use actual hooks)
+- CSS Modules (import normally in tests)
+
+## Current Gaps
+
+**High priority to test:**
+1. `calculateISN()` — Complex mathematical formula, core to "ISN" KPI page
+2. `useKpiData()` — Fetches and transforms all KPI definitions and values
+3. `useAuth()` — Authentication state, role checking (canEdit, isAdmin)
+4. `useAppeals()` — Large data fetch with multiple nullable fields
+5. `DataTable.tsx` — Sorting logic, pagination, CSV export with quote escaping
+
+**Medium priority:**
+- Form validation (XlsxImport file parsing)
+- Date range calculations (Attendance page)
+- Geographic filtering and repeated address detection
+
+**Low priority (until needed):**
+- Visual regression testing
+- E2E user flows
+- Accessibility (a11y) testing
+
+## Configuration Recommendation
+
+**vitest.config.ts:**
 ```typescript
-jest.mock('../lib/supabase', () => ({
-  supabase: {
-    from: jest.fn().mockReturnThis(),
-    select: jest.fn().mockResolvedValue({
-      data: mockData,
-      error: null,
-    }),
-    eq: jest.fn().mockReturnThis(),
-    gte: jest.fn().mockReturnThis(),
-    lte: jest.fn().mockReturnThis(),
-    order: jest.fn().mockResolvedValue({
-      data: mockData,
-      error: null,
-    }),
-  },
-}));
-```
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
+import path from 'path';
 
-**Context Provider Mocking:**
-- `AuthProvider` would need mock setup with valid session/profile
-- Wrap test components with `<AuthProvider>` for tests requiring auth state
-
-**What to Mock:**
-- Supabase client calls (all database operations)
-- External API calls (DeepSeek/sentiment analysis)
-- Leaflet/map instances (expensive to initialize)
-- Firebase operations
-- Telethon Telegram client (in Python tests)
-
-**What NOT to Mock:**
-- Utility functions (`formatNumber`, `formatDate`, `formatPercent`)
-- Custom hooks when testing components that use them
-- React hooks (`useState`, `useContext`, `useCallback`)
-- CSS Module imports
-
-## Fixtures and Factories
-
-**No fixture files currently exist, but would follow patterns:**
-
-**Test Data Location:**
-- `src/shared/testing/fixtures/` (recommended)
-- Type-safe factories for common entities:
-
-```typescript
-// src/shared/testing/fixtures/appeal.ts
-import type { Appeal } from '../../types';
-
-export function createMockAppeal(overrides?: Partial<Appeal>): Appeal {
-  return {
-    id: 1,
-    ecur_number: 'TEST-001',
-    source_number: null,
-    date: '2026-04-06',
-    direction: 'incoming',
-    synth_group: null,
-    fact: null,
-    subtopic: null,
-    status: 'В работе',
-    curator: null,
-    executor: null,
-    omsu: null,
-    source: null,
-    is_spam: false,
-    message_type: null,
-    description: 'Test appeal',
-    address: null,
-    district: null,
-    settlement: null,
-    street: null,
-    house: null,
-    tu_to: null,
-    sector: null,
-    sentiment_score: null,
-    is_repeated: false,
-    lat: null,
-    lng: null,
-    ...overrides,
-  };
-}
-
-export function createMockKpiDefinition(overrides?: Partial<KpiDefinition>): KpiDefinition {
-  return {
-    id: 'kpi-1',
-    name: 'Test KPI',
-    unit: '%',
-    direction: 'higher',
-    formula: 'test',
-    source: 'test',
-    responsible: 'test',
-    frequency: 'monthly',
-    current: 50,
-    d90: 55,
-    d180: 60,
-    d360: 65,
-    base: 45,
-    ...overrides,
-  };
-}
-```
-
-## Coverage
-
-**Requirements:**
-- Not currently enforced (no coverage tooling configured)
-- Recommended minimum: 70% for business logic, 50% for components
-
-**View Coverage (future):**
-```bash
-npm run test:coverage
-# Or with Vitest:
-vitest run --coverage
-```
-
-**Key areas that should prioritize testing:**
-- Data transformation functions (`formatters.ts`, `kpi-helpers.ts`)
-- Custom hooks (`useAuth`, `useKpiData`, `useAppeals`)
-- Critical business logic (appeals analytics, status grouping)
-- Geocoding/address parsing logic
-
-## Test Types
-
-**Unit Tests:**
-- Scope: Individual functions, utilities, hooks
-- Approach: Test pure functions and hook behavior with mocked dependencies
-- Examples: `formatNumber()`, `useKpiData()`, `getStatusGroup()`
-
-**Integration Tests:**
-- Scope: Hook + component interactions, data flow through UI
-- Approach: Render component with real hook, mock API calls
-- Examples: Appeals page with filters, KPI cards with date range changes
-
-**E2E Tests:**
-- Framework: Not configured
-- Recommendation: Consider Playwright or Cypress for critical user flows
-- Candidates: Login flow, appeals filtering, export functionality
-
-**Python/Bot Testing (Telegram monitor):**
-- No test framework detected in `tg-bot/`
-- Would benefit from: Pytest + async test support (pytest-asyncio)
-- Coverage targets: Message saving flow, sentiment analysis, alert handling
-
-## Common Patterns
-
-**Async Testing:**
-```typescript
-it('should fetch data', async () => {
-  const { result } = renderHook(() => useKpiData());
-  
-  await act(async () => {
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
-    });
-  });
-  
-  expect(result.current.data).toBeDefined();
-});
-```
-
-**Error Testing:**
-```typescript
-it('should handle fetch errors', async () => {
-  jest.mock('../lib/supabase', () => ({
-    supabase: {
-      from: jest.fn().mockReturnThis(),
-      select: jest.fn().mockResolvedValue({
-        data: null,
-        error: new Error('DB error'),
-      }),
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: [],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: [
+        'node_modules/',
+        'src/main.tsx',
+      ],
     },
-  }));
-  
-  const { result } = renderHook(() => useKpiData());
-  
-  await act(async () => {
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
-    });
-  });
-  
-  expect(result.current.error).toEqual(new Error('DB error'));
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
 });
 ```
 
-**State Update Testing:**
-```typescript
-it('should toggle sidebar collapse state', () => {
-  render(<App />);
-  const collapseBtn = screen.getByRole('button', { name: /свернуть меню/i });
-  
-  fireEvent.click(collapseBtn);
-  
-  expect(container.querySelector('.layout')).toHaveClass('collapsed');
-});
+**package.json scripts to add:**
+```json
+{
+  "test": "vitest",
+  "test:ui": "vitest --ui",
+  "test:coverage": "vitest --coverage"
+}
 ```
-
-**Component Interaction Testing:**
-```typescript
-it('should filter appeals by direction', async () => {
-  const { data } = await renderComponent(<Appeals />);
-  
-  const directionFilter = screen.getByRole('combobox', { name: /направление/i });
-  fireEvent.change(directionFilter, { target: { value: 'incoming' } });
-  
-  await waitFor(() => {
-    expect(data).toHaveLength(/* expected count */);
-  });
-});
-```
-
-## Testing Gaps
-
-**Critical Areas Currently Untested:**
-1. **Authentication flow** (`useAuth` hook) - No login/logout tests
-2. **Data fetching** (`useKpiData`, `useAppeals`) - No mock Supabase tests
-3. **Date range filtering** (`useDateRange`) - No preset validation tests
-4. **Analytics calculations** (KPI computation, status grouping) - No logic tests
-5. **CSV export functionality** (`DataTable.tsx exportCsv`) - No export format tests
-6. **Sentiment analysis** (Appeals page analysis invocation) - No API call tests
-7. **Geolocation/heatmap** (HeatMap.tsx) - No geocoding or masking tests
-8. **Telegram bot** (tg-bot/) - No message handling or database tests
-
-**Recommendations:**
-- Start with utility function tests (highest ROI)
-- Add hook tests for data fetching logic
-- Add component tests for critical UI flows
-- Add Python tests for bot message handling and analysis
-- Establish testing standards before feature velocity increases
 
 ---
 
-*Testing analysis: 2026-04-06*
+*Testing analysis: 2026-04-19*

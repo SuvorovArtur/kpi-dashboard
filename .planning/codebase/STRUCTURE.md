@@ -1,234 +1,400 @@
 # Codebase Structure
 
-**Analysis Date:** 2026-04-06
+**Analysis Date:** 2026-04-19
 
 ## Directory Layout
 
 ```
 kpi-dashboard/
+├── index.html                    # HTML entry point, mounts React app
+├── package.json                  # Dependencies, build scripts
+├── tsconfig.json                 # TypeScript project references
+├── vite.config.ts                # Vite build config with manual chunks for react/charts/supabase
+│
 ├── src/
-│   ├── main.tsx                    # React app entry point, mounts to #root
-│   ├── index.css                   # Global styles: CSS custom properties for theme
+│   ├── main.tsx                  # React DOM root, renders App
+│   ├── index.css                 # Global styles, CSS variables (colors, fonts)
 │   ├── app/
-│   │   ├── App.tsx                 # Root component: routing, auth, layout
-│   │   ├── App.module.css          # Layout styles (sidebar, main)
-│   │   └── routes.tsx              # Route definitions (lazy-loaded pages)
-│   ├── pages/                      # Feature pages (one directory per page)
-│   │   ├── Overview/               # Dashboard with KPI cards
-│   │   ├── KpiDetail/              # KPI trends and targets
-│   │   ├── Appeals/                # Appeals table, geocoding, analysis
-│   │   ├── ISN/                    # Sentiment analysis (ИСН)
-│   │   ├── HeatMap/                # Geographic heatmap with Leaflet
-│   │   ├── SocialMonitor/          # Social media monitoring
-│   │   ├── Attendance/             # Yandex Vector attendance tracking
-│   │   ├── Staff/                  # Staff metrics (vacancies, turnover)
-│   │   ├── Territories/            # Territory management
-│   │   ├── Roadmap/                # Project roadmap timeline
-│   │   ├── Settings/               # Admin: KPI targets, users, territories
-│   │   └── Login/                  # Authentication page
+│   │   ├── App.tsx               # Root component: Router, AuthProvider, ErrorBoundary, AppLayout
+│   │   ├── App.module.css        # Layout grid (sidebar + main)
+│   │   └── routes.tsx            # Route definitions, lazy-loaded pages, Suspense boundary
+│   │
+│   ├── pages/                    # Route-level feature components
+│   │   ├── Overview/
+│   │   │   ├── Overview.tsx       # Dashboard home: KPI summary cards, appeals stats
+│   │   │   ├── Overview.module.css
+│   │   │   └── components/        # Page-specific subcomponents (if needed)
+│   │   ├── KpiDetail/
+│   │   │   ├── KpiDetail.tsx      # Detailed KPI tracking, territory breakdown
+│   │   │   ├── KpiDetail.module.css
+│   │   │   └── components/
+│   │   ├── Appeals/
+│   │   │   ├── Appeals.tsx        # Citizen complaints management, filtering, analysis
+│   │   │   ├── Appeals.module.css
+│   │   │   └── components/
+│   │   ├── SocialMonitor/         # NEW: Telegram bot monitoring (feature branch)
+│   │   │   ├── SocialMonitor.tsx  # Main page: tabs (issues/chats/channels), stats, filters
+│   │   │   ├── IssueCard.tsx      # Card component for displaying issue details
+│   │   │   ├── ChatCard.tsx       # Card component for chat entry
+│   │   │   ├── ChannelNewsCard.tsx # Channel news display
+│   │   │   ├── TgNewsCard.tsx     # Telegram news widget
+│   │   │   ├── social-monitor-helpers.ts  # Helpers (STATUS_LABELS, timeAgo, etc.)
+│   │   │   └── SocialMonitor.module.css
+│   │   ├── HeatMap/
+│   │   │   ├── HeatMap.tsx        # Geographic visualization using Leaflet + heatLayer
+│   │   │   └── HeatMap.module.css
+│   │   ├── ISN/
+│   │   │   ├── ISN.tsx            # Sentiment analysis dashboard (appeals-based)
+│   │   │   └── ISN.module.css
+│   │   ├── Attendance/
+│   │   │   ├── Attendance.tsx      # Yandex Vector attendance tracking
+│   │   │   └── Attendance.module.css
+│   │   ├── Territories/
+│   │   │   ├── Territories.tsx     # Territory-specific KPI breakdown
+│   │   │   └── Territories.module.css
+│   │   ├── Staff/
+│   │   │   ├── Staff.tsx           # Staff metrics (turnover, vacancies, salary)
+│   │   │   ├── Staff.module.css
+│   │   │   └── components/
+│   │   ├── Roadmap/
+│   │   │   ├── Roadmap.tsx         # Project roadmap (Gantt-like)
+│   │   │   ├── Roadmap.module.css
+│   │   │   └── components/
+│   │   ├── Settings/
+│   │   │   ├── Settings.tsx        # Admin panel: app settings, KPI edit, data import
+│   │   │   ├── Settings.module.css
+│   │   │   └── components/         # EditKpiModal, SettingsForm, etc.
+│   │   └── Login/
+│   │       ├── Login.tsx           # Phone/password form, brute-force lock
+│   │       └── Login.module.css
+│   │
 │   ├── shared/
-│   │   ├── hooks/                  # Custom data hooks (useKpiData, useAppeals, etc.)
-│   │   ├── ui/                     # Reusable UI components (design system)
-│   │   ├── types/                  # TypeScript type definitions
-│   │   ├── lib/                    # Library functions (Supabase, geocoding, etc.)
-│   │   ├── utils/                  # Utility functions (formatters, export, etc.)
-│   │   ├── config/                 # Static configuration (territories, thresholds)
-│   │   └── assets/                 # Static files (images, icons)
-│   ├── data/                       # Data fixtures or seed data (if any)
-│   └── scripts/                    # Build/utility scripts
+│   │   ├── ui/                     # Reusable UI components (headless, styled with CSS modules)
+│   │   │   ├── index.ts            # Barrel export of all UI components
+│   │   │   ├── Card/
+│   │   │   │   ├── Card.tsx        # Wrapper with shadow, padding, optional title
+│   │   │   │   ├── Card.module.css
+│   │   │   │   └── Card.test.tsx   # (if test files exist)
+│   │   │   ├── KpiCard/
+│   │   │   │   ├── KpiCard.tsx     # Status indicator, current value, target, trend
+│   │   │   │   └── KpiCard.module.css
+│   │   │   ├── Chart/
+│   │   │   │   ├── Chart.tsx       # Recharts wrapper (LineChart, BarChart, etc.)
+│   │   │   │   ├── Chart.module.css
+│   │   │   │   └── chart-theme.ts  # Recharts color config
+│   │   │   ├── DataTable/
+│   │   │   │   ├── DataTable.tsx   # Sortable, filterable table with Column definitions
+│   │   │   │   ├── DataTable.module.css
+│   │   │   │   └── types.ts        # Column<T> interface (exported in ui/index.ts)
+│   │   │   ├── DateRangePicker/
+│   │   │   │   ├── DateRangePicker.tsx  # From/To date inputs with preset buttons
+│   │   │   │   └── DateRangePicker.module.css
+│   │   │   ├── Sidebar/
+│   │   │   │   ├── Sidebar.tsx     # Navigation, user profile, sign out
+│   │   │   │   ├── Sidebar.module.css
+│   │   │   │   └── types.ts        # NavItem interface
+│   │   │   ├── Header/
+│   │   │   │   ├── Header.tsx      # Page title, optional action buttons
+│   │   │   │   └── Header.module.css
+│   │   │   ├── Toast/
+│   │   │   │   ├── Toast.tsx       # Success/error message popup
+│   │   │   │   └── Toast.module.css
+│   │   │   ├── Skeleton/
+│   │   │   │   ├── Skeleton.tsx    # Loading placeholder (variants: card, chart, row)
+│   │   │   │   └── Skeleton.module.css
+│   │   │   ├── EmptyState/
+│   │   │   │   ├── EmptyState.tsx  # "No data" / "Error" fallback UI
+│   │   │   │   └── EmptyState.module.css
+│   │   │   ├── SlideOver/
+│   │   │   │   ├── SlideOver.tsx   # Right-side panel for details/editing
+│   │   │   │   └── SlideOver.module.css
+│   │   │   ├── AppealDetail/       # NEW: Detail view for appeals
+│   │   │   │   ├── AppealDetail.tsx
+│   │   │   │   └── AppealDetail.module.css
+│   │   │   ├── Tooltip/
+│   │   │   │   ├── Tooltip.tsx     # Hover tooltip
+│   │   │   │   └── Tooltip.module.css
+│   │   │   ├── Badge/
+│   │   │   │   ├── Badge.tsx       # Label / tag
+│   │   │   │   └── Badge.module.css
+│   │   │   ├── ProgressBar/
+│   │   │   │   ├── ProgressBar.tsx # Linear progress indicator
+│   │   │   │   └── ProgressBar.module.css
+│   │   │   └── XlsxImport/
+│   │   │       ├── XlsxImport.tsx  # File upload, XLSX parsing
+│   │   │       └── XlsxImport.module.css
+│   │   │
+│   │   ├── hooks/                  # Data-fetching and state management hooks
+│   │   │   ├── index.ts            # Barrel export (useKpiData, useAppeals, etc.)
+│   │   │   ├── useAuth.tsx         # Auth context provider + hook (session, profile, signIn/Out)
+│   │   │   ├── useAppeals.ts       # Fetch appeals from supabase, cache, refetch
+│   │   │   ├── useKpiData.ts       # Fetch KPI definitions and values
+│   │   │   ├── useSocialMonitor.ts # Fetch chats, issues, analysis status from tg_* tables
+│   │   │   ├── useAppSettings.ts   # Read app_settings table (constants, config)
+│   │   │   ├── useTerritories.ts   # Territory list and data
+│   │   │   ├── useAttendance.ts    # Yandex Vector attendance data
+│   │   │   ├── useStaff.ts         # Staff metrics
+│   │   │   ├── useRoadmap.ts       # Project roadmap items
+│   │   │   ├── useDateRange.ts     # Local state for date range with presets
+│   │   │   ├── useHeatmapData.ts   # Fetch + geocode appeals for map visualization
+│   │   │   └── useToast.ts         # Toast notification state
+│   │   │
+│   │   ├── lib/                    # Infrastructure and utilities
+│   │   │   ├── supabase.ts         # Supabase client instantiation (uses VITE env vars)
+│   │   │   ├── geocode.ts          # Address → lat/lng conversion
+│   │   │   ├── chart-theme.ts      # Recharts color palette
+│   │   │   └── settlement-coords.ts # Hardcoded settlement coordinates (13KB)
+│   │   │
+│   │   ├── types/
+│   │   │   └── index.ts            # TypeScript interfaces: Appeal, KpiDefinition, KpiDataPoint, etc.
+│   │   │
+│   │   ├── utils/
+│   │   │   ├── formatters.ts       # formatNumber, formatPercent, formatDate (date-fns)
+│   │   │   ├── kpi-helpers.ts      # getKpiStatus, getTrend, calculateISN, copyToClipboard
+│   │   │   └── export.ts           # Excel export via xlsx package
+│   │   │
+│   │   └── config/
+│   │       ├── kpi-config.ts       # Territories, appeal categories, KPI thresholds (constants)
+│   │       └── theme.ts            # Color definitions for charts
+│   │
+│   ├── data/                       # Static data files (if any)
+│   ├── assets/                     # Images, SVGs, fonts
+│   └── scripts/                    # Utility scripts (migrations, seed data, etc.)
+│
+├── tg-bot/                         # Python Telegram monitor (separate from React)
+│   ├── bot.py                      # Main loop: listens to Telegram chats via Telethon
+│   ├── analyzer.py                 # DeepSeek integration: analyzes messages, groups into issues
+│   ├── db.py                       # Supabase client helper (not visible in git status)
+│   ├── config.py                   # TG_API_ID, TG_API_HASH, DEEPSEEK_API_KEY (not visible)
+│   ├── alerts.py                   # Alert logic (not visible)
+│   ├── .env                        # Environment variables (not committed)
+│   └── requirements.txt            # Python dependencies (not visible)
+│
+├── config/                         # Project configuration
+│   └── (Vite, TypeScript configs referenced from root)
+│
 ├── public/                         # Static assets served as-is
-├── vite.config.ts                  # Vite build configuration
-├── tsconfig.json                   # TypeScript base config
-├── tsconfig.app.json               # TypeScript app config (strict mode)
-├── tsconfig.node.json              # TypeScript config for Vite
-├── package.json                    # Dependencies: React 19, Vite, Supabase, Leaflet
-└── .eslintrc.cjs                   # ESLint config
+│   └── favicon.svg
+│
+├── docs/                           # Documentation
+└── dist/                           # Build output (generated by vite build)
 ```
 
 ## Directory Purposes
 
 **`src/app/`:**
-- Purpose: Application shell - routing, layout, and global providers
-- Contains: Root App component, route definitions, layout styling
-- Key files: `App.tsx` (auth gate + layout), `routes.tsx` (lazy-loaded page routes)
-- Does NOT contain: Page logic, feature components belong in `src/pages/`
+- Purpose: Application shell (routing, auth, error handling)
+- Contains: Root component, route definitions, global layout
+- Key files: `App.tsx` (renders Sidebar + main), `routes.tsx` (lazy-loaded pages)
 
 **`src/pages/`:**
-- Purpose: Feature pages, each self-contained with own state, hooks, and styles
-- Contains: One directory per page (e.g., Appeals/, Overview/, Settings/)
-- Each page directory contains:
-  - `[PageName].tsx`: Main page component
-  - `[PageName].module.css`: Page-specific styles
-  - `components/`: Sub-components used only by this page
-  - `utils.ts`: Page-specific utility functions (e.g., status grouping logic)
-- Pattern: Pages are composed from shared UI components + page-specific logic
-
-**`src/shared/hooks/`:**
-- Purpose: Data fetching and state management layer
-- Contains: One hook per data domain (useKpiData, useAppeals, useSocialMonitor, etc.)
-- Exports: `index.ts` barrels all hooks for re-export
-- Pattern: Each hook returns `{ data, isLoading, error, refetch }`
-- Dependencies: Supabase client, shared types
+- Purpose: Feature screens corresponding to router paths
+- Contains: Page components with layout, hooks, state management
+- Naming: PascalCase (Overview, Appeals, etc.), one dir per route
+- Key files: `[Page].tsx` (main component), `[Page].module.css` (styles), `components/` (sub-components)
 
 **`src/shared/ui/`:**
-- Purpose: Reusable presentational components (design system)
-- Contains: 16+ component directories (Card, KpiCard, Chart, DataTable, Sidebar, Header, etc.)
-- Each component:
-  - Has its own directory with `[Component].tsx` and `[Component].module.css`
-  - Exports via barrel: `src/shared/ui/index.ts`
-  - Is presentational (no data fetching, no side effects)
-  - Accepts data via props and callbacks
-- Pattern: All pages import from `shared/ui` barrel: `import { Card, KpiCard, Chart } from '../../shared/ui'`
+- Purpose: Reusable, framework-agnostic UI components
+- Contains: Buttons, cards, tables, forms, modals
+- Naming: PascalCase directories matching component name
+- Key pattern: Each component is `[Name]/[Name].tsx` + `[Name].module.css`
+- Exports: Barrel export in `index.ts` for convenience
 
-**`src/shared/types/`:**
-- Purpose: Centralized TypeScript type definitions
-- Key file: `index.ts` exports all types
-- Types:
-  - `KpiDefinition`: KPI metadata (id, name, unit, thresholds, frequency)
-  - `KpiDataPoint`: Single KPI measurement (date, value, territory)
-  - `Appeal`: Citizen appeal record (address, status, sentiment, metadata)
-  - `StaffMetrics`: HR data (vacancies, turnover, salary)
-  - `RoadmapItem`: Project task
-  - `Status`: Union type 'green' | 'yellow' | 'red' (for KPI status)
-  - `Trend`: Direction 'up' | 'down' | 'flat'
-  - `Column`: Generic DataTable column definition
+**`src/shared/hooks/`:**
+- Purpose: Data fetching, state management, side effects
+- Contains: Custom hooks that query Supabase
+- Naming: camelCase starting with `use` (useKpiData, useAppeals, etc.)
+- Key pattern: Each hook returns `{ data, isLoading, error, refetch? }`
 
 **`src/shared/lib/`:**
-- Purpose: Reusable library functions and client initialization
+- Purpose: Infrastructure and shared utilities
+- Contains: Supabase client, geocoding, chart theme, settlement data
 - Key files:
-  - `supabase.ts`: Initialize Supabase client (environment-based)
-  - `geocode.ts`: Convert address → [lat, lng] (external API call)
-  - `settlement-coords.ts`: Pre-computed settlement coordinates lookup
-  - `chart-theme.ts`: Recharts theme configuration
+  - `supabase.ts`: Singleton Supabase client
+  - `settlement-coords.ts`: Hardcoded coordinates for all settlements (large data, could be moved to DB)
+
+**`src/shared/types/`:**
+- Purpose: TypeScript interfaces and type definitions
+- Contains: Appeal, KpiDefinition, KpiDataPoint, StaffMetrics, RoadmapItem, Status, Trend
+- Key pattern: Exported from `index.ts`, imported throughout codebase for type safety
 
 **`src/shared/utils/`:**
-- Purpose: Utility functions for formatting, export, calculations
+- Purpose: Pure utility functions
+- Contains: Formatters (number, date), KPI calculations, export helpers
 - Key files:
-  - `formatters.ts`: formatNumber, formatPercent, formatDate (Russian locale)
-  - `export.ts`: exportToCsv, exportToPdf (html2canvas + jspdf)
-  - `kpi-helpers.ts`: KPI status/trend calculation logic
+  - `kpi-helpers.ts`: getKpiStatus, getTrend, calculateISN, copyToClipboard
+  - `formatters.ts`: formatNumber (1000 → '1 000'), formatDate (date-fns with locale)
 
 **`src/shared/config/`:**
-- Purpose: Application configuration constants
+- Purpose: Application constants and configuration
+- Contains: Territory list, appeal categories, KPI thresholds
 - Key files:
-  - `kpi-config.ts`: Territories list, appeal categories, KPI thresholds (green/yellow/red)
-  - `theme.ts`: Theme-related config (if any)
+  - `kpi-config.ts`: Territories (pirogovsky, fedoskino, total), appeal categories, threshold values
+  - `theme.ts`: Color constants for charts
 
-**`src/assets/`:**
-- Purpose: Static images, icons, or other media (if used; lucide-react is primary icon source)
+**`tg-bot/`:**
+- Purpose: Separate Python service for Telegram monitoring
+- Contains: bot.py (listener), analyzer.py (DeepSeek analysis)
+- Relationship: Writes to same Supabase database (tg_chats, tg_issues, tg_messages, tg_analysis_log)
+- Runs: Outside React environment; can be deployed to VPS/Docker separately
 
 ## Key File Locations
 
 **Entry Points:**
-- `src/main.tsx`: React app bootstrap, mounts to `#root` element
-- `src/index.css`: Global CSS variables (colors, fonts, reset styles)
-- `src/app/App.tsx`: Root component, contains Router, AuthProvider, layout structure
-- `src/app/routes.tsx`: All page routes with lazy loading and Suspense boundaries
+- `index.html`: Browser entry, mounts React app to `<div id="root">`
+- `src/main.tsx`: React root, imports App and index.css, calls createRoot
+- `src/app/App.tsx`: Application shell, wraps with BrowserRouter + AuthProvider
+- `src/app/routes.tsx`: Route definitions, lazy-loaded pages with Suspense
 
 **Configuration:**
-- `tsconfig.app.json`: Strict TypeScript settings, ES2023 target
-- `vite.config.ts`: Vite bundler config
-- `.eslintrc.cjs`: ESLint rules
-- `package.json`: React 19, Vite 8, TypeScript 5.9, Supabase, Leaflet, Recharts
+- `vite.config.ts`: Build config, defines manual chunks (vendor-react, vendor-charts, vendor-supabase)
+- `tsconfig.json`: TypeScript project references (app, node configs)
+- `tsconfig.app.json`: App-specific TypeScript settings (not visible)
+- `package.json`: Dependencies (react 19.2, react-router 7.14, recharts 3.8, leaflet 1.9, supabase-js 2.101)
+- `index.css`: Global styles, CSS variables (colors, fonts, resets)
 
 **Core Logic:**
-- `src/shared/hooks/useKpiData.ts`: Fetch KPI definitions and values with date/territory filters
-- `src/shared/hooks/useAppeals.ts`: Fetch appeal records with status/direction filters
-- `src/shared/hooks/useAuth.tsx`: Authentication context and session management
-- `src/shared/hooks/useDateRange.ts`: Date range picker state management
-- `src/shared/lib/supabase.ts`: Supabase client instantiation
+- `src/shared/lib/supabase.ts`: Supabase client (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY)
+- `src/shared/types/index.ts`: All TypeScript interfaces (Appeal, KpiDefinition, etc.)
+- `src/shared/utils/kpi-helpers.ts`: KPI calculations and status logic
+- `src/shared/hooks/useAuth.tsx`: Auth context, session management, role checking
 
 **Testing:**
-- No test files detected. No testing framework in dependencies.
+- No test files visible in current branch; coverage TBD
+- Test location pattern (if added): `src/**/*.test.tsx` or `tests/**/*.test.tsx`
 
 ## Naming Conventions
 
 **Files:**
-- Components: PascalCase (e.g., `Card.tsx`, `KpiCard.tsx`, `DateRangePicker.tsx`)
-- Hooks: camelCase with `use` prefix (e.g., `useKpiData.ts`, `useAppeals.ts`)
-- Utilities: camelCase (e.g., `formatters.ts`, `export.ts`)
-- Styles: [Component].module.css (CSS Modules, paired with component)
-- Pages: PascalCase (e.g., `Overview.tsx`, `Appeals.tsx`, `HeatMap.tsx`)
+- React components: PascalCase (Overview.tsx, KpiCard.tsx)
+- Utilities/hooks: camelCase (kpi-helpers.ts, useKpiData.ts)
+- Styles: [ComponentName].module.css (Overview.module.css)
+- Constants/config: kebab-case or camelCase (kpi-config.ts, settlement-coords.ts)
 
 **Directories:**
-- Feature pages: PascalCase (e.g., `src/pages/Appeals/`, `src/pages/Overview/`)
-- Shared domains: lowercase (e.g., `src/shared/ui/`, `src/shared/hooks/`)
-- Component directories: PascalCase matching component name (e.g., `src/shared/ui/Card/`)
+- Feature pages: PascalCase (Overview/, Appeals/, SocialMonitor/)
+- Shared layers: lowercase (ui/, hooks/, lib/, types/, utils/, config/)
+- Component subdirs: PascalCase (Card/, KpiCard/, DataTable/)
 
-**React Components:**
-- Exported as named exports: `export function Card(...) { }`
-- Props interfaces: `interface CardProps { ... }`
-- Exported from barrel files: `export { Card } from './Card/Card'`
+**Components:**
+- Exported as named exports: `export function Overview() {}`
+- Default exports in lazy-loaded pages: `export default function SocialMonitor() {}`
+- TypeScript props interfaces: `[ComponentName]Props` pattern (optional, not enforced)
 
-**Variables & Functions:**
-- camelCase: `const kpiValue = ...`, `function calculateStatus(...) { }`
-- Constants: UPPER_SNAKE_CASE only for truly immutable config (e.g., `const GRADIENT: Record<number, string> = { ... }`)
-- Booleans prefix with `is` or `has`: `isLoading`, `hasError`, `canEdit`
+**Hooks:**
+- Always start with `use`: useKpiData, useAppeals, useSocialMonitor, useAuth
+- Return interface pattern: `Use[Name]Result` (UseKpiDataResult, UseAppealsResult)
 
-**Types:**
-- PascalCase: `KpiDefinition`, `Appeal`, `StaffMetrics`
-- Union types: camelCase lowercase literals: `'green' | 'yellow' | 'red'`
-- Interfaces: Suffix with explicit type if needed (rarely used, prefer types)
+**Interfaces:**
+- Singular domain nouns: Appeal, KpiDefinition, KpiDataPoint, StaffMetrics, TgChat, TgIssue
+- Exported from `src/shared/types/index.ts`
+- Used throughout for type safety
 
 ## Where to Add New Code
 
-**New Feature Page:**
+**New Feature (Full Page):**
 1. Create directory: `src/pages/[FeatureName]/`
-2. Create component: `src/pages/[FeatureName]/[FeatureName].tsx`
-3. Create styles: `src/pages/[FeatureName]/[FeatureName].module.css`
-4. Optional sub-components: `src/pages/[FeatureName]/components/[ComponentName].tsx`
-5. Optional utilities: `src/pages/[FeatureName]/utils.ts`
-6. Add route to `src/app/routes.tsx` with lazy loading
-7. Add nav item to `src/app/App.tsx` in `navItems` array
+2. Add main component: `src/pages/[FeatureName]/[FeatureName].tsx`
+3. Add styles: `src/pages/[FeatureName]/[FeatureName].module.css`
+4. Optional subcomponents: `src/pages/[FeatureName]/components/[ComponentName].tsx`
+5. Add route in `src/app/routes.tsx`: lazy-load page, add Route definition
+6. Add nav item in `src/app/App.tsx` AppLayout navItems array
+7. If data fetching needed: Create hook in `src/shared/hooks/use[Feature].ts`
 
-**New Shared Hook (Data Fetching):**
-1. Create file: `src/shared/hooks/use[Domain].ts`
-2. Define interface: `Use[Domain]Params` and `Use[Domain]Result`
-3. Implement: useEffect + useState pattern with try/catch for Supabase query
-4. Export `refetch` function for manual re-query
-5. Add export to `src/shared/hooks/index.ts`
-6. Usage in pages: `const { data, isLoading, error, refetch } = use[Domain](params)`
+**New Component (Reusable):**
+1. Check if exists in `src/shared/ui/`; if yes, reuse
+2. If new: Create `src/shared/ui/[ComponentName]/[ComponentName].tsx`
+3. Add styles: `src/shared/ui/[ComponentName]/[ComponentName].module.css`
+4. Export from `src/shared/ui/index.ts`
+5. Use pattern: import { ComponentName } from '../../shared/ui'
 
-**New Shared UI Component:**
-1. Create directory: `src/shared/ui/[ComponentName]/`
-2. Create component: `src/shared/ui/[ComponentName]/[ComponentName].tsx`
-3. Create styles: `src/shared/ui/[ComponentName]/[ComponentName].module.css`
-4. Define props interface: `interface [ComponentName]Props { ... }`
-5. Add export to `src/shared/ui/index.ts`
-6. Usage in pages: `import { [ComponentName] } from '../../shared/ui'`
+**New Data Hook:**
+1. Create `src/shared/hooks/use[Feature].ts`
+2. Define interface for params and result (UseFeatureParams, UseFeatureResult)
+3. Fetch from Supabase: `const { data, error } = await supabase.from('table').select(...)`
+4. Return standard shape: `{ data, isLoading, error, refetch }`
+5. Export from `src/shared/hooks/index.ts`
 
 **New Utility Function:**
-- Shared formatters: Add to `src/shared/utils/formatters.ts`
-- Shared calculations: Create `src/shared/utils/[domain].ts` or add to `kpi-helpers.ts`
-- Shared constants: Add to `src/shared/config/[domain].ts`
+- Small/formatting: `src/shared/utils/formatters.ts`
+- Domain logic: `src/shared/utils/kpi-helpers.ts`
+- Pure functions, no side effects
 
-**New Type:**
+**New Type Definition:**
 - Add to `src/shared/types/index.ts`
-- Export from barrel for app-wide access
+- Export as named export
+- Document with JSDoc comment
+
+**New Configuration:**
+- Constants: `src/shared/config/kpi-config.ts`
+- Theme/colors: `src/shared/config/theme.ts`
+- Or create new file if large/focused (e.g., categories.ts)
+
+## Module Boundaries
+
+**`src/app/` ↔ `src/pages/`:**
+- App defines routes, pages are loaded lazily
+- Pages import components from shared/ui and shared/hooks
+- Pages do NOT import from each other
+
+**`src/pages/` ↔ `src/shared/`:**
+- Pages depend on shared/ui (components), shared/hooks (data), shared/utils (logic)
+- Pages do NOT define exports for other pages
+- If two pages need same component, move to shared/ui
+
+**`src/shared/hooks/` ↔ `src/shared/lib/`:**
+- Hooks use lib (e.g., useKpiData imports supabase from lib)
+- Lib does NOT import hooks
+- Lib is infrastructure, hooks are business logic
+
+**`src/shared/ui/` ↔ `src/shared/hooks/`:**
+- UI components are pure (props in, JSX out)
+- UI does NOT directly call hooks (pages do)
+- Exception: useToast is used in pages, which display Toast components
+
+**No Circular Imports:**
+- Pages → shared/ui, shared/hooks, shared/types, shared/utils (one direction)
+- Hooks → lib, types, utils (one direction)
+- UI → types, utils (no hooks)
 
 ## Special Directories
 
-**`src/shared/ui/`:**
-- Purpose: Design system components
-- Generated: No (hand-written)
+**`src/assets/`:**
+- Purpose: Static images, SVGs, fonts
+- Generated: No
 - Committed: Yes
-- Note: All components are presentational. No business logic. Styled with CSS Modules and CSS custom properties.
+- Usage: Imported in components via `import logo from '../../assets/logo.svg'`
+
+**`src/data/`:**
+- Purpose: Static data files (if any)
+- Generated: No
+- Committed: Yes
+- Note: Minimal usage currently; settlement coords in lib/settlement-coords.ts instead
+
+**`tg-bot/`:**
+- Purpose: Separate Python service, monitored separately
+- Generated: No (except __pycache__)
+- Committed: .py files yes, .env no
+- Relationship: Writes to shared Supabase (tg_chats, tg_issues, tg_messages, tg_analysis_log)
 
 **`public/`:**
-- Purpose: Static assets served as-is by Vite
+- Purpose: Static assets served without hashing
 - Generated: No
-- Committed: Yes (typically static files like favicon, manifest)
+- Committed: Yes (favicon, etc.)
+- Usage: favicon.svg linked in index.html
 
 **`dist/`:**
-- Purpose: Production build output
+- Purpose: Build output
 - Generated: Yes (by `npm run build`)
-- Committed: No (in .gitignore)
+- Committed: No (.gitignore)
+- Contents: Bundled JS, CSS, chunk files, sourcemaps
 
-**`node_modules/`:**
-- Purpose: Package dependencies
-- Generated: Yes (by npm install)
-- Committed: No
+**`.planning/codebase/`:**
+- Purpose: Architecture documentation (ARCHITECTURE.md, STRUCTURE.md, etc.)
+- Generated: No
+- Committed: Yes
+- Note: Created by GSD mapper CLI
 
 ---
 
-*Structure analysis: 2026-04-06*
+*Structure analysis: 2026-04-19*
