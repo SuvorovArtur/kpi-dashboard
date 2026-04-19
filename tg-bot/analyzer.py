@@ -39,6 +39,19 @@ SYSTEM_PROMPT = """Ты — аналитик потока сообщений и�
 ═══════════════════════════════════════
 
 Признаки одной ветки: реплаи, одно место, тема в пределах 10 минут, подтверждения.
+
+ВАЖНО — ПРАВИЛА ГРУППИРОВКИ ПО МЕСТУ:
+
+ОБЪЕДИНЯЙ ветки про ОДИН адрес/объект/ЖК в ОДНОМ населённом пункте:
+«проезд у ф15» + «склад у ф15» + «шум у ф15» = одна ветка «Проблемы у ф15 в Пироговском».
+
+РАЗДЕЛЯЙ ветки про РАЗНЫЕ населённые пункты — ВСЕГДА:
+Пироговский и Беляниново — это РАЗНЫЕ ветки, даже если тема похожа (критика администрации, экология).
+Мытищи и Пироговский — РАЗНЫЕ ветки.
+Никогда не объединяй сообщения из разных н.п. в одну ветку.
+
+НЕ ДУБЛИРУЙ одно и то же сообщение в нескольких ветках. Каждый message_id — в одной ветке.
+
 ЛИМИТ: Не более 7 веток. Мелкие (score 3-4) объединяй в «Прочие жалобы».
 Для каждой ветки ОБЯЗАТЕЛЬНО собери message_ids.
 
@@ -85,7 +98,12 @@ SYSTEM_PROMPT = """Ты — аналитик потока сообщений и�
 
 ТЕМА: дороги, благоустройство, мусор, вода, ЖКХ, экология, освещение, транспорт, безопасность, земля, энергетика, канализация, администрация, ЧП, другое
 
-ЛОКАЦИЯ: точный адрес → улица → район/ЖК → «не указана». НЕ ПРИДУМЫВАЙ адрес.
+ЛОКАЦИЯ: точный адрес → улица → населённый пункт → «не указана». НЕ ПРИДУМЫВАЙ адрес.
+
+НАСЕЛЁННЫЕ ПУНКТЫ г.о. Мытищи (это РАЗНЫЕ места, не путай):
+Мытищи (город), Пироговский (мкр.), Беляниново, Болтино, Вешки, Виноградово, Грибки, Долгиниха, Драчёво, Жостово, Здравница, Капустино, Коргашино, Красная Горка, Крюково, Манюхино, Марфино, Нагорное, Николо-Прозорово, Новоалександрово, Новогрязново, Новосельцево, Осташково, Пестово, Пирогово, Поведники, Подольниха, Протасово, Рождественно, Сгонники, Троицкое, Федоскино, Челобитьево, Чиверёво, Шолохово, Юдино и др.
+
+Каждый н.п. — ОТДЕЛЬНАЯ локация. Проблема в Беляниново ≠ проблема в Пироговском.
 
 ═══════════════════════════════════════
 ЗАЩИТА ОТ ОШИБОК
@@ -205,6 +223,95 @@ def analyze_messages(messages: list[dict], chat_name: str, chat_id: int, active_
         return None
 
 
+def format_alert(emoji: str, title: str, score: int, location: str, topic: str,
+                  summary: str, msg_ids: list[int], chat_id: int, msg_count: int) -> str:
+    """Format a rich Telegram alert with quotes and message links."""
+    # Build header
+    lines = [
+        f"{emoji} {title}",
+        f"Острота: {score}/10",
+        "",
+        f"Где: {location}",
+        f"Тема: {topic}",
+        "",
+    ]
+
+    # Summary (trimmed cleanly)
+    trimmed = summary[:500].rsplit(' ', 1)[0] + ('...' if len(summary) > 500 else '')
+    lines.append(trimmed)
+    lines.append("")
+
+    # Fetch real messages for quotes + links
+    try:
+        res = db.get_client().table('tg_messages').select('chat_id, message_id, text').in_('id', msg_ids).order('date', desc=True).limit(3).execute()
+        msgs = res.data or []
+        for m in msgs:
+            text = (m.get('text') or '')[:80]
+            if len(m.get('text', '')) > 80:
+                text = text.rsplit(' ', 1)[0] + '…'
+            # t.me/c/{channel_id}/{msg_id} — channel_id = abs(chat_id) without -100 prefix
+            ch_id = str(abs(m['chat_id']))
+            if ch_id.startswith('100'):
+                ch_id = ch_id[3:]
+            link = f"https://t.me/c/{ch_id}/{m['message_id']}"
+            lines.append(f'— [{text}]({link})')
+    except Exception as e:
+        print(f"[analyzer] Alert quotes error: {e}")
+
+    lines.append("")
+    lines.append(f"{msg_count} сообщ. · SocPulse")
+
+    return "\n".join(lines)
+
+
+def merge_overlapping_threads(threads: list[dict]) -> list[dict]:
+    """Merge threads that share message_ids or same location into one."""
+    if len(threads) <= 1:
+        return threads
+
+    merged = []
+    used = set()
+
+    for i, t1 in enumerate(threads):
+        if i in used:
+            continue
+        ids1 = set(t1.get('message_ids', []))
+        loc1 = (t1.get('location') or '').lower().strip()
+
+        for j in range(i + 1, len(threads)):
+            if j in used:
+                continue
+            t2 = threads[j]
+            ids2 = set(t2.get('message_ids', []))
+            loc2 = (t2.get('location') or '').lower().strip()
+
+            overlap = ids1 & ids2
+            same_location = loc1 and loc2 and loc1 != 'не указана' and loc2 != 'не указана' and (loc1 in loc2 or loc2 in loc1)
+
+            if overlap or same_location:
+                # Merge t2 into t1: keep higher score, combine messages
+                ids1 |= ids2
+                t1['message_ids'] = list(ids1)
+                t1['score'] = max(t1.get('score', 0), t2.get('score', 0))
+                t1['participants'] = max(t1.get('participants', 1), t2.get('participants', 1))
+                if t2.get('is_alert'):
+                    t1['is_alert'] = True
+                # Append summary
+                s2 = t2.get('summary', '')
+                if s2 and s2 not in t1.get('summary', ''):
+                    t1['summary'] = t1.get('summary', '') + ' ' + s2
+                # Merge quotes
+                q1 = t1.get('key_quotes', [])
+                q2 = t2.get('key_quotes', [])
+                t1['key_quotes'] = list(dict.fromkeys(q1 + q2))
+                used.add(j)
+                print(f"[analyzer] 🔗 Merged: '{t2.get('title', '')[:40]}' → '{t1.get('title', '')[:40]}'")
+
+        merged.append(t1)
+
+    return merged
+
+
 def process_batch():
     """Main analysis pipeline: fetch unanalyzed messages, analyze PER CHAT, save issues."""
     messages = db.get_unanalyzed_messages(200)
@@ -215,7 +322,7 @@ def process_batch():
             'messages_analyzed': 0, 'threads_found': 0, 'alerts_found': 0,
             'chats_processed': 0, 'status': 'done',
         }).execute()
-        return 0
+        return 0, []
 
     # Log start
     log_entry = db.get_client().table('tg_analysis_log').insert({
@@ -238,6 +345,7 @@ def process_batch():
 
     total_threads = 0
     total_alerts = 0
+    pending_alerts: list[str] = []
 
     # Load active issues ONCE for deduplication
     active_issues = db.get_active_issues()
@@ -246,12 +354,17 @@ def process_batch():
         chat_name = chats_map.get(chat_id, f'Chat {chat_id}')
         print(f"[analyzer] --- {chat_name}: {len(chat_msgs)} messages ---")
 
+        # Mark ALL messages as analyzed regardless of outcome
+        all_msg_ids = [m['id'] for m in chat_msgs if 'id' in m]
+        db.mark_analyzed(all_msg_ids)
+
         result = analyze_messages(chat_msgs, chat_name, chat_id, active_issues)
         if not result:
             continue
 
         stats = result.get('stats', {})
         threads = result.get('threads', [])
+        threads = merge_overlapping_threads(threads)
         alerts = result.get('alerts', [])
 
         print(f"[analyzer] {chat_name}: {stats.get('threads_found', 0)} threads, {stats.get('alerts', 0)} alerts, {stats.get('filtered_noise', 0)} noise")
@@ -266,9 +379,9 @@ def process_batch():
             msg_ids = thread.get('message_ids', [])
             participants = thread.get('participants', 1)
 
-            # Skip too thin threads (unless critical)
-            if len(msg_ids) < 3 and participants < 2 and score < 8:
-                print(f"[analyzer] Skipped (thin): {thread.get('title', '')[:40]} ({len(msg_ids)} msgs)")
+            # Skip thin threads: need 2+ participants OR 3+ messages, unless score >= 7
+            if participants < 2 and len(msg_ids) < 3 and score < 7:
+                print(f"[analyzer] Skipped (thin): {thread.get('title', '')[:40]} ({len(msg_ids)} msgs, {participants} ppl, score {score})")
                 continue
 
             summary = thread.get('summary', '')
@@ -317,6 +430,17 @@ def process_batch():
                     emoji = '🚨' if thread.get('is_alert') else '⚠️' if score >= 7 else '📋'
                     print(f"[analyzer] {emoji} New #{issue_id}: {title[:60]} (score {score})")
 
+                    # Collect alerts for Telegram notification (score >= 7)
+                    if score >= 7:
+                        alert_text = format_alert(
+                            emoji, title, score,
+                            thread.get('location', 'не указана'),
+                            thread.get('topic', ''),
+                            summary, msg_ids, chat_id,
+                            len(msg_ids),
+                        )
+                        pending_alerts.append(alert_text)
+
                     for a in alerts:
                         if a.get('thread_id') == thread.get('id'):
                             print(f"[analyzer] 🚨 ALERT: {a.get('urgency', '')}")
@@ -340,4 +464,4 @@ def process_batch():
         }).eq('id', log_id).execute()
 
     print(f"[analyzer] Total: {total_threads} threads across all chats")
-    return total_threads
+    return total_threads, pending_alerts

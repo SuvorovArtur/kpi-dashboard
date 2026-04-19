@@ -20,6 +20,7 @@ dist-ssr
 *.session-journal
 tg-bot/.env
 tg-bot/*.session
+tg-bot/config.py
 
 # Local tool configs
 .mcp.json
