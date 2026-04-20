@@ -4,3 +4,109 @@
   gap: var(--space-5);
   padding: 0 0 var(--space-7);
 }
+
+.kpiRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+}
+
+@media (max-width: 768px) {
+  .kpiRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+.filterRow {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+}
+
+.skelList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.incidentRow {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--surface-1);
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.incidentRow:hover {
+  background: var(--surface-2);
+  border-color: var(--border-strong);
+}
+
+.incidentBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.incidentTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.incidentTopic {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.incidentDot {
+  color: var(--text-tertiary);
+}
+
+.incidentAddress {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.incidentSummary {
+  font-size: 13px;
+  color: var(--text-primary);
+  line-height: 1.4;
+  margin-bottom: 6px;
+}
+
+.incidentMeta {
+  display: flex;
+  gap: 16px;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.incidentTime {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.incidentConfirmations {
+  color: var(--brand-primary);
+  font-weight: 600;
+}
+
+.incidentAuthor {
+  color: var(--text-tertiary);
+}
