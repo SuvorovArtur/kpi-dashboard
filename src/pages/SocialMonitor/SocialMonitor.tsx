@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Card, Header, Skeleton, Toast, Chart } from '../../shared/ui';
+import { Card, Header, Skeleton, Toast, Chart, EscalationBanner } from '../../shared/ui';
 import { useSocialMonitor, type TgIssue } from '../../shared/hooks/useSocialMonitor';
 import styles from './SocialMonitor.module.css';
 
@@ -114,11 +114,23 @@ export function SocialMonitor() {
       <Header title="Мониторинг соцсетей" />
 
       {/* ISS: Индекс социальных сетей */}
-      {stats.analyzed > 0 && (
-        <div className={`${styles.issBlock} ${styles[`iss_${stats.issStatus}`]}`}>
-          <div className={styles.issSignal}>
-            {stats.issStatus === 'green' ? '✓' : stats.issStatus === 'yellow' ? '⚠' : '!'}
-          </div>
+      {stats.analyzed > 0 && stats.issStatus !== 'green' && (
+        <EscalationBanner
+          tone={stats.issStatus === 'red' ? 'danger' : 'warning'}
+          title={stats.issLabel}
+          description={
+            <span>
+              ИСС <span className="tnum">{stats.issWeighted}</span> · Острых{' '}
+              <span className="tnum">{stats.acutePct}%</span> ·{' '}
+              <span className="tnum">{stats.analyzed}</span> проблем ·{' '}
+              <span className="tnum">{stats.chats}</span> чатов
+            </span>
+          }
+        />
+      )}
+      {stats.analyzed > 0 && stats.issStatus === 'green' && (
+        <div className={`${styles.issBlock} ${styles.iss_green}`}>
+          <div className={styles.issSignal}>✓</div>
           <div className={styles.issInfo}>
             <div className={styles.issTitle}>{stats.issLabel}</div>
             <div className={styles.issSub}>
