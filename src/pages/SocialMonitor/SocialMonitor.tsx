@@ -35,6 +35,24 @@ function timeAgo(dateStr: string): string {
   return `${days}д назад`;
 }
 
+function timeUntil(dateStr: string): string {
+  const diff = new Date(dateStr).getTime() - Date.now();
+  if (diff < 0) {
+    const mins = Math.floor(-diff / 60000);
+    if (mins < 1) return 'сейчас';
+    if (mins < 60) return `просрочен на ${mins}м`;
+    const hrs = Math.floor(mins / 60);
+    return `просрочен на ${hrs}ч`;
+  }
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'сейчас';
+  if (mins < 60) return `через ${mins}м`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `через ${hrs}ч`;
+  const days = Math.floor(hrs / 24);
+  return `через ${days}д`;
+}
+
 type Tab = 'issues' | 'chats' | 'channels';
 
 export function SocialMonitor() {
@@ -144,7 +162,7 @@ export function SocialMonitor() {
           <span className={styles.analysisItem}>Последний: {timeAgo(analysisStatus.lastRun)}</span>
         )}
         {analysisStatus.nextRun && (
-          <span className={styles.analysisItem}>Следующий: {timeAgo(analysisStatus.nextRun)}</span>
+          <span className={styles.analysisItem}>Следующий: {timeUntil(analysisStatus.nextRun)}</span>
         )}
         <span className={styles.analysisItem}>В очереди: {analysisStatus.queueSize}</span>
         {analysisStatus.lastThreads > 0 && (

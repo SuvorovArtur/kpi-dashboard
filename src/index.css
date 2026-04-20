@@ -8,9 +8,17 @@
   --color-border: #E5E7EB;
   --color-text-primary: #1F2937;
   --color-text-secondary: #6B7280;
+  --color-text-tertiary: #9CA3AF;
   --color-status-green: #16A34A;
   --color-status-yellow: #EAB308;
   --color-status-red: #DC2626;
+
+  /* Brand primary — aliases teal so components that reference
+     --color-primary render in brand color instead of a CSS
+     default fallback (was blue on Settings/Roadmap). */
+  --color-primary: var(--color-teal);
+  --color-surface: var(--color-card-bg);
+  --color-bg-hover: #EFF2F7;
   --font-heading: 'Bebas Neue', sans-serif;
   --font-body: 'Lato', 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;

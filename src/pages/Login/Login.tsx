@@ -2,9 +2,19 @@ import { useState, type FormEvent } from 'react';
 import { useAuth } from '../../shared/hooks/useAuth';
 import styles from './Login.module.css';
 
+// Accept either a full email or a Russian phone number. If the input
+// has no `@`, normalize as `<digits>@socpulse.ru` — matches the auth
+// accounts provisioned for МБУ МТХ staff.
+function normalizeIdentifier(raw: string): string {
+  const trimmed = raw.trim();
+  if (trimmed.includes('@')) return trimmed;
+  const digits = trimmed.replace(/\D/g, '');
+  return digits ? `${digits}@socpulse.ru` : trimmed;
+}
+
 export default function Login() {
   const { signIn } = useAuth();
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -14,9 +24,9 @@ export default function Login() {
     setError('');
     setSubmitting(true);
 
-    const err = await signIn(email, password);
+    const err = await signIn(normalizeIdentifier(identifier), password);
     if (err) {
-      setError(err === 'Invalid login credentials' ? 'Неверный email или пароль' : err);
+      setError(err === 'Invalid login credentials' ? 'Неверный логин или пароль' : err);
     }
     setSubmitting(false);
   }
@@ -37,14 +47,16 @@ export default function Login() {
         {error && <div className={styles.error}>{error}</div>}
 
         <label className={styles.label}>
-          Email
+          Телефон или email
           <input
             className={styles.input}
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            inputMode="email"
+            value={identifier}
+            onChange={(e) => setIdentifier(e.target.value)}
             required
-            autoComplete="email"
+            autoComplete="username"
+            placeholder="+7XXXXXXXXXX или user@socpulse.ru"
             autoFocus
           />
         </label>

@@ -21,9 +21,12 @@ function AppLayout() {
       ...(get('show_kpi_detail') === 'true' ? [{ key: 'kpi', label: 'KPI подробно', icon: 'Target', path: '/kpi' }] : []),
       { key: 'appeals', label: 'Обращения', icon: 'MessageSquare', path: '/appeals' },
       { key: 'isn', label: 'ИСН', icon: 'Activity', path: '/isn' },
-      { key: 'attendance', label: 'Яндекс Вектор', icon: 'Users', path: '/attendance' },
+      { key: 'attendance', label: 'Яндекс Вектор', icon: 'Calendar', path: '/attendance' },
       { key: 'social', label: 'Соцсети', icon: 'MessageSquare', path: '/social' },
       { key: 'map', label: 'Карта', icon: 'Map', path: '/map' },
+      { key: 'staff', label: 'Кадры', icon: 'Users', path: '/staff' },
+      { key: 'territories', label: 'Территории', icon: 'Map', path: '/territories' },
+      { key: 'roadmap', label: 'Дорожная карта', icon: 'Target', path: '/roadmap' },
       { key: 'settings', label: 'Настройки', icon: 'Settings', path: '/settings' },
     ];
     return items;

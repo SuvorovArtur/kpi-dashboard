@@ -235,11 +235,11 @@ export function ISN() {
       <Header title="Индекс социального напряжения" subtitle="Анализ эмоционального окраса обращений граждан">
         {unanalyzed > 0 ? (
           <button className={styles.analyzeBtn} onClick={() => handleAnalyze(false)} disabled={analyzing}>
-            {analyzing ? analyzeProgress : `Анализировать (${unanalyzed})`}
+            {analyzing ? (analyzeProgress || 'Анализ…') : `Анализировать (${unanalyzed})`}
           </button>
         ) : (
           <button className={styles.analyzeBtn} onClick={() => handleAnalyze(true)} disabled={analyzing}>
-            {analyzing ? analyzeProgress : 'Переанализировать все'}
+            {analyzing ? (analyzeProgress || 'Анализ…') : 'Переанализировать все'}
           </button>
         )}
         <DateRangePicker value={range} onChange={setRange} />

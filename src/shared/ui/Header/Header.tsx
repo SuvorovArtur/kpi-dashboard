@@ -8,12 +8,15 @@ interface HeaderProps {
 }
 
 function formatDateRu(date: Date): string {
-  return date.toLocaleDateString('ru-RU', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+  // Drop the archaic "г." suffix that ru-RU locale appends by default.
+  return date
+    .toLocaleDateString('ru-RU', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+    .replace(/\s*г\.?\s*$/u, '');
 }
 
 export function Header({ title, subtitle, children }: HeaderProps) {

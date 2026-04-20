@@ -186,7 +186,7 @@ export function Overview() {
 
   return (
     <div className={styles.page}>
-      <Header title="Дашборд управления по развитию сельскими территориями">
+      <Header title="Обзор" subtitle="Дашборд развития сельских территорий г.о. Мытищи">
         <DateRangePicker value={range} onChange={setRange} />
       </Header>
 

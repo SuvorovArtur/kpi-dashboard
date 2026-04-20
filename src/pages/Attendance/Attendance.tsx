@@ -139,13 +139,13 @@ function InputTab({ curMonthRecs, curPlan, selYear, selMonth, today, getMonthAvg
           {editingPlan ? (
             <div className={styles.planEditRow}>
               <input type="number" value={tempPlan} onChange={e => setTempPlan(e.target.value)} className={styles.planInput} />
-              <button onClick={() => { savePlan(selYear, selMonth, Number(tempPlan)); setEditingPlan(false); }} className={styles.planSaveBtn}>OK</button>
-              <button onClick={() => setEditingPlan(false)} className={styles.planCancelBtn}>x</button>
+              <button onClick={() => { savePlan(selYear, selMonth, Number(tempPlan)); setEditingPlan(false); }} className={styles.planSaveBtn}>Сохранить</button>
+              <button onClick={() => setEditingPlan(false)} className={styles.planCancelBtn} aria-label="Отменить изменение плана">Отмена</button>
             </div>
           ) : (
             <div className={styles.planDisplay}>
               <strong>{curPlan}</strong>
-              <button onClick={() => { setTempPlan(String(curPlan)); setEditingPlan(true); }} className={styles.planEditBtn}>Изм.</button>
+              <button onClick={() => { setTempPlan(String(curPlan)); setEditingPlan(true); }} className={styles.planEditBtn} aria-label="Изменить план">Изменить</button>
             </div>
           )}
         </div>
@@ -178,9 +178,19 @@ function InputTab({ curMonthRecs, curPlan, selYear, selMonth, today, getMonthAvg
         <PctBadge val={curPct} />
         <div className={styles.factActions}>
           <button onClick={handleSave} disabled={saving || inputFact === ''} className={styles.saveBtn}>
-            {saving ? '...' : 'OK'}
+            {saving ? '…' : 'Сохранить'}
           </button>
-          {curRec && <button onClick={handleDelete} disabled={saving} className={styles.deleteBtn}>x</button>}
+          {curRec && (
+            <button
+              onClick={handleDelete}
+              disabled={saving}
+              className={styles.deleteBtn}
+              aria-label="Удалить запись за этот день"
+              title="Удалить запись за этот день"
+            >
+              Удалить
+            </button>
+          )}
         </div>
       </div>
 

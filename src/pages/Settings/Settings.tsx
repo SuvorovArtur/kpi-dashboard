@@ -152,9 +152,9 @@ export function Settings() {
             <thead>
               <tr>
                 <th>KPI</th>
-                <th>D90</th>
-                <th>D180</th>
-                <th>D360</th>
+                <th title="Цель на горизонте 90 дней">90 дней</th>
+                <th title="Цель на горизонте 180 дней">180 дней</th>
+                <th title="Цель на горизонте 360 дней">360 дней</th>
                 <th></th>
               </tr>
             </thead>

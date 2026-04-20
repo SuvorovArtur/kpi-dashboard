@@ -41,6 +41,13 @@ export function KpiCard({
 }: KpiCardProps) {
   const TrendIcon = trendIcons[trend];
 
+  // Strip trailing unit from pre-formatted string values (e.g. "27%" with unit="%")
+  // so we don't render "27% %". Numeric values pass through unchanged.
+  const displayValue =
+    typeof value === 'string' && unit && value.endsWith(unit)
+      ? value.slice(0, -unit.length).trimEnd()
+      : value;
+
   return (
     <Card>
       <div className={styles.wrapper}>
@@ -50,7 +57,7 @@ export function KpiCard({
         </div>
 
         <div className={styles.valueRow}>
-          <span className={styles.value}>{value}</span>
+          <span className={styles.value}>{displayValue}</span>
           <span className={styles.unit}>{unit}</span>
         </div>
 
