@@ -216,12 +216,19 @@ Spacing (4px/8px шкала, обязательно явная):
 
 ## 7. Страница за страницей — что должен сделать дизайнер
 
+> **Скриншоты текущего состояния** лежат в `dogfood/screenshots/` (относительно этого файла). Снято с прод `socpulse.ru` при догфуд-тесте 2026-04-20, **до** тактических фиксов. Некоторые UX-баги с этих скринов уже починены в коммитах `0e4ce38` / `6a218a4`, но композиция/иерархия/типо — всё ещё исходные.
+
 ### 7.1 Login
+![Login — current](dogfood/screenshots/landing.png)
+
 - Приём `+79XXXXXXXXXX` или email — placeholder нормализации готов
 - Минималистичный: логотип + одна форма + пояснение "для сотрудников МБУ МТХ"
 - Error-state визуально распознаваемый (сейчас просто красный текст)
 
 ### 7.2 Overview — главная
+![Overview — current](dogfood/screenshots/overview.png)
+![Overview — after tactical fixes](dogfood/screenshots/after-fix-overview-v2.png)
+
 **Сейчас:** 5 KPI-карточек → 3 больших графика → список "Горячих адресов".
 **Надо:**
 - Иерархия: самый важный элемент должен читаться за 1 секунду ("что сегодня самое плохое?")
@@ -231,6 +238,8 @@ Spacing (4px/8px шкала, обязательно явная):
 - Чёткие entry points в остальные разделы
 
 ### 7.3 Appeals
+![Appeals — current](dogfood/screenshots/appeals.png)
+
 **Сейчас:** 2 CTA (Анализ ИСН + XLSX import), KPI-ряд, 2 графика, таблица с фильтрами.
 **Надо:**
 - Фильтры направления компактнее (сейчас занимают много вертикали на HeatMap)
@@ -239,6 +248,8 @@ Spacing (4px/8px шкала, обязательно явная):
 - Возможность bulk-actions (отметить как проверенные)
 
 ### 7.4 KpiDetail
+_Скриншот не сделан в dogfood-проходе (страница доступна drill-down кликом с Overview)._
+
 **Сейчас:** Выбор KPI + график + таблица значений.
 **Надо:**
 - Period comparator (этот период vs прошлый)
@@ -246,6 +257,8 @@ Spacing (4px/8px шкала, обязательно явная):
 - Annotations (интервенции / события)
 
 ### 7.5 ISN
+![ISN — current](dogfood/screenshots/isn.png)
+
 **Сейчас:** Traffic-light banner + 3 KPI-карточки + распределение баллов + топ-обращения по баллу.
 **Надо:**
 - Distribution histogram как якорь страницы
@@ -253,6 +266,8 @@ Spacing (4px/8px шкала, обязательно явная):
 - Weekly trend chart — проще читается
 
 ### 7.6 Attendance (Яндекс Вектор)
+![Attendance — current](dogfood/screenshots/attendance.png)
+
 **Сейчас:** Calendar grid с inline edit + chart снизу.
 **Надо:**
 - Calendar с tooltip по дням (не только цвет)
@@ -260,6 +275,8 @@ Spacing (4px/8px шкала, обязательно явная):
 - Plan / факт comparison виднее
 
 ### 7.7 SocialMonitor
+![SocialMonitor — current](dogfood/screenshots/social.png)
+
 **Сейчас:** Escalation banner + 4 карточки + статус анализатора + 3 таба (Проблемы/Чаты/Каналы).
 **Надо:**
 - Статус анализатора как нормальный health-indicator (сейчас просто текст)
@@ -268,6 +285,8 @@ Spacing (4px/8px шкала, обязательно явная):
 - Action "Копировать для Telegram" — primary CTA на каждом острой проблеме
 
 ### 7.8 HeatMap
+![HeatMap — current](dogfood/screenshots/heatmap.png)
+
 **Сейчас:** KPI-ряд + filter pills + Leaflet map + Export PNG.
 **Надо:**
 - Filter pills → collapsed multi-select
@@ -276,6 +295,9 @@ Spacing (4px/8px шкала, обязательно явная):
 - Hotspot list сбоку синхронизирован с картой (hover на item → panning на карте)
 
 ### 7.9 Settings
+![Settings — current](dogfood/screenshots/settings.png)
+![Settings — after tactical fixes](dogfood/screenshots/after-fix-settings.png)
+
 **Сейчас:** Table с KPI-целями + список Telegram-чатов + feature flags.
 **Надо:**
 - Разделить на таб/секции (KPI / Чаты / Флаги / Прокси для бота)
