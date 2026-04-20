@@ -105,12 +105,98 @@ def load_chats():
     print(f"[bot] Monitoring {len(monitored_chat_ids)} chats: {monitored_chat_ids}")
 
 
-@app.on_message(filters.incoming)
-async def on_message(client: Client, message):
-    """Handle incoming messages from monitored chats."""
-    chat_id = message.chat.id
+@app.on_raw_update()
+async def on_raw(client, update, users, chats):
+    """Extract messages directly from raw MTProto updates.
+
+    pyrotgfork's on_message dispatcher doesn't fire reliably for channel
+    messages, so we decode the raw update ourselves. Covers the two types
+    Telegram pushes for supergroup/channel posts.
+    """
+    from pyrogram.raw.types import UpdateNewChannelMessage, UpdateNewMessage, Message as RawMessage, MessageEmpty, MessageService
+
+    if not isinstance(update, (UpdateNewChannelMessage, UpdateNewMessage)):
+        return
+
+    msg = update.message
+    if isinstance(msg, (MessageEmpty, MessageService)):
+        return
+
+    # Extract channel/chat id from peer
+    peer = getattr(msg, 'peer_id', None)
+    if peer is None:
+        return
+    # Telegram peer types: PeerChannel, PeerChat, PeerUser
+    channel_id = getattr(peer, 'channel_id', None)
+    chat_id_raw = getattr(peer, 'chat_id', None)
+    user_id = getattr(peer, 'user_id', None)
+    if channel_id is not None:
+        # Supergroup / channel — store with -100 prefix (Telegram native format)
+        chat_id = -(1000000000000 + channel_id)
+    elif chat_id_raw is not None:
+        chat_id = -chat_id_raw
+    elif user_id is not None:
+        chat_id = user_id
+    else:
+        return
 
     if chat_id not in monitored_chat_ids:
+        return
+
+    # Skip our own (outgoing) messages — match old Telethon incoming=True semantics
+    if getattr(msg, 'out', False):
+        return
+
+    text = getattr(msg, 'message', None) or ''
+    if len(text.strip()) < 5:
+        return
+
+    # Resolve sender name from users dict (raw updates include this)
+    sender_name = None
+    from_id = getattr(msg, 'from_id', None)
+    sender_uid = getattr(from_id, 'user_id', None) if from_id else None
+    if sender_uid and users and sender_uid in users:
+        u = users[sender_uid]
+        first = getattr(u, 'first_name', '') or ''
+        last = getattr(u, 'last_name', '') or ''
+        sender_name = f"{first} {last}".strip() or getattr(u, 'username', None)
+
+    reply_to = getattr(msg, 'reply_to', None)
+    reply_to_id = getattr(reply_to, 'reply_to_msg_id', None) if reply_to else None
+
+    date_ts = getattr(msg, 'date', None)
+    if date_ts:
+        date_str = datetime.utcfromtimestamp(date_ts).isoformat()
+    else:
+        date_str = datetime.utcnow().isoformat()
+
+    try:
+        db.save_message(
+            chat_id=chat_id,
+            message_id=msg.id,
+            date=date_str,
+            sender_name=sender_name,
+            text=text[:2000],
+            reply_to_id=reply_to_id,
+        )
+        print(f"[bot] MSG {chat_id}: {text[:60]}")
+    except Exception as e:
+        print(f"[bot] Save error: {e}")
+
+
+@app.on_message()
+async def on_message(client: Client, message):
+    """Handle incoming messages from monitored chats."""
+    chat_id = message.chat.id if message.chat else None
+    # Debug: log EVERY dispatched update to know if handler fires at all
+    print(f"[bot] DISPATCH chat={chat_id} monitored={chat_id in monitored_chat_ids} "
+          f"outgoing={message.outgoing} has_text={bool(message.text or message.caption)}")
+
+    if chat_id not in monitored_chat_ids:
+        return
+
+    if message.outgoing:
+        # Our own message — skip saving (matches old Telethon incoming=True behavior)
         return
 
     text = message.text or message.caption
@@ -223,13 +309,18 @@ async def main():
     me = await app.get_me()
     print(f"[bot] Logged in as: {me.first_name} (@{me.username})")
 
-    # Prime Pyrogram's peer cache: without this, get_chat and update resolvers
-    # fail with CHANNEL_INVALID for chats not yet "seen" by this session.
-    # Telethon does this implicitly; Pyrogram requires an explicit dialog walk.
-    primed = 0
-    async for _ in app.get_dialogs():
-        primed += 1
-    print(f"[bot] Peer cache primed: {primed} dialogs")
+    # Prime peer cache via raw getDialogs (bypasses fork bug where Dialog._parse
+    # reads wrong attribute name for unread_poll_votes_count).
+    try:
+        from pyrogram.raw.functions.messages import GetDialogs
+        from pyrogram.raw.types import InputPeerEmpty
+        r = await app.invoke(GetDialogs(
+            offset_date=0, offset_id=0, offset_peer=InputPeerEmpty(),
+            limit=200, hash=0,
+        ))
+        print(f"[bot] Peer cache primed: {len(getattr(r, 'dialogs', []))} dialogs")
+    except Exception as e:
+        print(f"[bot] Peer cache prime failed: {type(e).__name__}: {e}")
 
     load_chats()
     await update_chat_participants()
