@@ -7,6 +7,7 @@ import {
   Users,
   Calendar,
   Settings,
+  Bot,
   LogOut,
   type LucideIcon,
 } from 'lucide-react';
@@ -38,6 +39,7 @@ const iconMap: Record<string, LucideIcon> = {
   Users,
   Calendar,
   Settings,
+  Bot,
 };
 
 export function Sidebar({

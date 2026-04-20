@@ -23,6 +23,7 @@ function AppLayout() {
       { key: 'isn', label: 'ИСН', icon: 'Activity', path: '/isn' },
       { key: 'attendance', label: 'Яндекс Вектор', icon: 'Calendar', path: '/attendance' },
       { key: 'social', label: 'Соцсети', icon: 'MessageSquare', path: '/social' },
+      { key: 'octobot', label: 'Octobot', icon: 'Bot', path: '/octobot' },
       { key: 'map', label: 'Карта', icon: 'Map', path: '/map' },
       { key: 'settings', label: 'Настройки', icon: 'Settings', path: '/settings' },
     ];
