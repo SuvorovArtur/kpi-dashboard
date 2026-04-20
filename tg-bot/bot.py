@@ -223,6 +223,14 @@ async def main():
     me = await app.get_me()
     print(f"[bot] Logged in as: {me.first_name} (@{me.username})")
 
+    # Prime Pyrogram's peer cache: without this, get_chat and update resolvers
+    # fail with CHANNEL_INVALID for chats not yet "seen" by this session.
+    # Telethon does this implicitly; Pyrogram requires an explicit dialog walk.
+    primed = 0
+    async for _ in app.get_dialogs():
+        primed += 1
+    print(f"[bot] Peer cache primed: {primed} dialogs")
+
     load_chats()
     await update_chat_participants()
 
