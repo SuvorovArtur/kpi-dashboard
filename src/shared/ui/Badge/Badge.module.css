@@ -1,52 +1,39 @@
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  border-radius: 999px;
+  gap: 4px;
+  border-radius: var(--radius-sm);
   font-family: var(--font-body);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
   white-space: nowrap;
 }
 
-.sm {
-  padding: 2px 8px;
-  font-size: 11px;
-}
-
-.md {
-  padding: 4px 12px;
-  font-size: 13px;
-}
+.sm { padding: 2px 6px; font-size: 11px; }
+.md { padding: 3px 8px; font-size: 12px; }
 
 .dot {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
 .green {
-  background: rgba(22, 163, 74, 0.1);
-  color: var(--color-status-green);
+  background: var(--sem-success-soft);
+  color: var(--sem-success);
 }
-
-.green .dot {
-  background: var(--color-status-green);
-}
+.green .dot { background: var(--sem-success); }
 
 .yellow {
-  background: rgba(234, 179, 8, 0.1);
-  color: var(--color-status-yellow);
+  background: var(--sem-warning-soft);
+  color: #A16207;
 }
-
-.yellow .dot {
-  background: var(--color-status-yellow);
-}
+.yellow .dot { background: var(--sem-warning); }
 
 .red {
-  background: rgba(220, 38, 38, 0.1);
-  color: var(--color-status-red);
+  background: var(--sem-danger-soft);
+  color: var(--sem-danger);
 }
-
-.red .dot {
-  background: var(--color-status-red);
-}
+.red .dot { background: var(--sem-danger); }
