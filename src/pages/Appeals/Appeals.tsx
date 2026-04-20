@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
-import { Card, KpiCard, Chart, DataTable, Header, DateRangePicker, EmptyState, Skeleton, Toast, XlsxImport, SlideOver } from '../../shared/ui';
+import { Card, KpiCard, Chart, DataTable, Header, DateRangePicker, EmptyState, Skeleton, Toast, XlsxImport, SlideOver, Pill } from '../../shared/ui';
 import { useAppeals, useDateRange, useAppSettings } from '../../shared/hooks';
 import { supabase } from '../../shared/lib/supabase';
 import { formatNumber, formatPercent, formatDate } from '../../shared/utils/formatters';
@@ -286,20 +286,17 @@ export function Appeals() {
           <div className={styles.filterGroup}>
             <span className={styles.filterLabel}>Направление:</span>
             <div className={styles.filterButtons}>
-              <button
-                className={`${styles.filterBtn} ${directionFilter === 'all' ? styles.filterBtnActive : ''}`}
-                onClick={() => setDirectionFilter('all')}
-              >
+              <Pill active={directionFilter === 'all'} onClick={() => setDirectionFilter('all')}>
                 Все
-              </button>
+              </Pill>
               {directions.map(d => (
-                <button
+                <Pill
                   key={d}
-                  className={`${styles.filterBtn} ${directionFilter === d ? styles.filterBtnActive : ''}`}
+                  active={directionFilter === d}
                   onClick={() => setDirectionFilter(d)}
                 >
                   {d}
-                </button>
+                </Pill>
               ))}
             </div>
           </div>

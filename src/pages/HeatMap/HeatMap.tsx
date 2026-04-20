@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.heat';
-import { Header, Card, DateRangePicker } from '../../shared/ui';
+import { Header, Card, DateRangePicker, Pill } from '../../shared/ui';
 import { useDateRange } from '../../shared/hooks';
 import { useHeatmapData } from '../../shared/hooks/useHeatmapData';
 import { MapPin, Flame, Navigation, Download } from 'lucide-react';
@@ -462,13 +462,13 @@ export default function HeatMap() {
           <div className={styles.filterGroup}>
             <span className={styles.filterLabel}>Направление:</span>
             {availableDirections.map(d => (
-              <button
+              <Pill
                 key={d}
-                className={clsx(styles.filterBtn, direction === d && styles.filterBtnActive)}
+                active={direction === d}
                 onClick={() => setDirection(d)}
               >
                 {d}
-              </button>
+              </Pill>
             ))}
           </div>
 
