@@ -4,10 +4,7 @@ import { Skeleton } from '../shared/ui';
 
 const Overview = lazy(() => import('../pages/Overview/Overview'));
 const KpiDetail = lazy(() => import('../pages/KpiDetail/KpiDetail'));
-const Territories = lazy(() => import('../pages/Territories/Territories'));
 const Appeals = lazy(() => import('../pages/Appeals/Appeals'));
-const Staff = lazy(() => import('../pages/Staff/Staff'));
-const Roadmap = lazy(() => import('../pages/Roadmap/Roadmap'));
 const ISN = lazy(() => import('../pages/ISN/ISN'));
 const Settings = lazy(() => import('../pages/Settings/Settings'));
 const Attendance = lazy(() => import('../pages/Attendance/Attendance'));
@@ -28,11 +25,8 @@ export function AppRoutes() {
       <Routes>
         <Route path="/" element={<Overview />} />
         <Route path="/kpi" element={<KpiDetail />} />
-        <Route path="/territories" element={<Territories />} />
         <Route path="/appeals" element={<Appeals />} />
-        <Route path="/staff" element={<Staff />} />
         <Route path="/isn" element={<ISN />} />
-        <Route path="/roadmap" element={<Roadmap />} />
         <Route path="/attendance" element={<Attendance />} />
         <Route path="/social" element={<SocialMonitor />} />
         <Route path="/map" element={<HeatMap />} />
