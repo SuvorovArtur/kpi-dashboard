@@ -25,6 +25,7 @@ from config import TG_API_ID, TG_API_HASH, TG_SESSION, ANALYSIS_INTERVAL
 import db
 import analyzer
 from alerts import ALERT_CHAT_ID
+import octobot_moderator
 
 
 # Keys stored in Supabase app_settings
@@ -182,6 +183,26 @@ async def on_raw(client, update, users, chats):
         print(f"[bot] MSG {chat_id}: {text[:60]}")
     except Exception as e:
         print(f"[bot] Save error: {e}")
+
+    # Hand off to Octobot pipeline — fire-and-forget so MTProto event loop
+    # stays responsive. Errors are logged inside the moderator.
+    try:
+        from_id = getattr(msg, 'from_id', None)
+        author_tg_id = getattr(from_id, 'user_id', None) if from_id else None
+        sent_at_dt = datetime.utcfromtimestamp(date_ts) if date_ts else None
+        incoming = octobot_moderator.IncomingMessage(
+            chat_id=chat_id,
+            message_id=msg.id,
+            text=text,
+            author=sender_name,
+            author_tg_id=author_tg_id,
+            reply_to_id=reply_to_id,
+            sent_at=sent_at_dt,
+            source='telegram',
+        )
+        asyncio.create_task(octobot_moderator.process_message(incoming))
+    except Exception as e:
+        print(f"[octobot] hook error: {e}")
 
 
 @app.on_message()
