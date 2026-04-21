@@ -1,8 +1,35 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Bot, Clock, Check, EyeOff, Play } from 'lucide-react';
-import { Card, Header, EmptyState, Pill, ScoreCircle, Skeleton, KpiCard, Badge } from '../../shared/ui';
+import { Bot, Clock, Check, EyeOff, Play, CheckCircle2, Copy, ExternalLink, MapPin } from 'lucide-react';
+import { Card, Header, EmptyState, Pill, ScoreCircle, Skeleton, KpiCard, Badge, SlideOver } from '../../shared/ui';
 import { supabase } from '../../shared/lib/supabase';
+import { copyToClipboard } from '../../shared/utils/kpi-helpers';
 import styles from './Octobot.module.css';
+
+/** Convert a Telegram chat_id (-100XXXXXXXXXX) to t.me/c/{stripped}/{msg_id} link. */
+function tgMessageLink(chatId: number, messageId: number): string {
+  const raw = Math.abs(chatId);
+  const stripped = raw > 1_000_000_000_000 ? raw - 1_000_000_000_000 : raw;
+  return `https://t.me/c/${stripped}/${messageId}`;
+}
+
+/** Format an incident as a copyable Telegram card. */
+function formatTelegramCard(i: Incident, confirmations: Confirmation[]): string {
+  const emoji = i.priority >= 9 ? '🆘🆘' : i.priority >= 7 ? '🆘' : i.priority >= 5 ? '🟡' : '🟢';
+  const lines = [
+    `${emoji} Инцидент INC-${String(i.id).padStart(5, '0')} · приоритет ${i.priority}/10`,
+    '',
+    `📋 ${i.topic.toUpperCase()}`,
+  ];
+  if (i.address) lines.push(`📍 ${i.address}`);
+  lines.push('', i.summary, '');
+  lines.push(`⚠️ Эскалация: ${ESCALATE_LABELS[i.escalate_to]}`);
+  if (i.first_author) lines.push(`👤 Первое сообщение от: ${i.first_author}`);
+  if (confirmations.length > 0) {
+    lines.push(`✅ Подтверждений: ${confirmations.length} (${confirmations.map(c => c.author || 'аноним').slice(0, 5).join(', ')}${confirmations.length > 5 ? '…' : ''})`);
+  }
+  lines.push(`🕒 Создан: ${new Date(i.created_at).toLocaleString('ru-RU')}`);
+  return lines.join('\n');
+}
 
 type IncidentStatus = 'open' | 'in_progress' | 'watching' | 'resolved' | 'stale' | 'dismissed';
 type EscalateTo = 'emergency' | 'head' | 'department' | 'log_only';
@@ -24,6 +51,9 @@ interface Incident {
   assigned_at: string | null;
   dismissed_by: string | null;
   dismissed_at: string | null;
+  resolved_at: string | null;
+  resolved_by: string | null;
+  resolution_note: string | null;
 }
 
 type StatusFilter = 'active' | 'resolved' | 'dismissed' | 'stale' | 'all';
@@ -71,6 +101,7 @@ export function Octobot() {
   const [error, setError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('active');
   const [busyId, setBusyId] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
   const reload = useCallback(async () => {
     const { data, error } = await supabase
@@ -243,11 +274,29 @@ export function Octobot() {
                 incident={i}
                 busy={busyId === i.id}
                 onTransition={(s) => updateStatus(i.id, s, null)}
+                onOpen={() => setSelectedId(i.id)}
               />
             ))}
           </div>
         )}
       </Card>
+
+      <SlideOver
+        open={selectedId !== null}
+        onClose={() => setSelectedId(null)}
+        title={selectedId !== null ? `INC-${String(selectedId).padStart(5, '0')}` : ''}
+      >
+        {selectedId !== null && (
+          <IncidentDetail
+            incident={incidents.find(i => i.id === selectedId) || null}
+            onTransition={(s) => {
+              updateStatus(selectedId, s, null);
+              // Leave panel open so the new status/badge is visible
+            }}
+            busy={busyId === selectedId}
+          />
+        )}
+      </SlideOver>
     </div>
   );
 }
@@ -256,14 +305,21 @@ interface RowProps {
   incident: Incident;
   busy: boolean;
   onTransition: (next: IncidentStatus) => void;
+  onOpen: () => void;
 }
 
-function IncidentRow({ incident: i, busy, onTransition }: RowProps) {
+function IncidentRow({ incident: i, busy, onTransition, onOpen }: RowProps) {
   const dimmed = i.status === 'dismissed' || i.status === 'stale';
   const badge = STATUS_BADGE[i.status];
 
   return (
-    <div className={`${styles.incidentRow} ${dimmed ? styles.incidentDimmed : ''}`}>
+    <div
+      className={`${styles.incidentRow} ${dimmed ? styles.incidentDimmed : ''}`}
+      onClick={onOpen}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(); } }}
+    >
       <ScoreCircle score={i.priority} />
       <div className={styles.incidentBody}>
         <div className={styles.incidentTitle}>
@@ -301,9 +357,9 @@ function IncidentRow({ incident: i, busy, onTransition }: RowProps) {
         </div>
       </div>
 
-      {/* Actions — only when actionable */}
+      {/* Actions — only when actionable. stopPropagation so click doesn't open panel. */}
       {ACTIVE_STATUSES.includes(i.status) && (
-        <div className={styles.incidentActions}>
+        <div className={styles.incidentActions} onClick={(e) => e.stopPropagation()}>
           <button
             type="button"
             className={styles.actionBtn}
@@ -336,6 +392,245 @@ function IncidentRow({ incident: i, busy, onTransition }: RowProps) {
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+
+/* ============================ Detail slide-over ============================ */
+
+interface Confirmation {
+  id: number;
+  author: string | null;
+  message_text: string | null;
+  similarity: number | null;
+  matched_by: string;
+  created_at: string;
+}
+
+interface RawMessageRef {
+  id: number;
+  chat_id: number;
+  message_id: number;
+  author: string | null;
+  text: string | null;
+  verdict: string | null;
+  processed_at: string;
+}
+
+function IncidentDetail({
+  incident: i,
+  busy,
+  onTransition,
+}: {
+  incident: Incident | null;
+  busy: boolean;
+  onTransition: (next: IncidentStatus) => void;
+}) {
+  const [confirmations, setConfirmations] = useState<Confirmation[]>([]);
+  const [messages, setMessages] = useState<RawMessageRef[]>([]);
+  const [loadingDetail, setLoadingDetail] = useState(true);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!i) return;
+    let cancelled = false;
+    (async () => {
+      setLoadingDetail(true);
+      const [confRes, msgRes] = await Promise.all([
+        supabase
+          .from('octobot_confirmations')
+          .select('id, author, message_text, similarity, matched_by, created_at')
+          .eq('incident_id', i.id)
+          .order('created_at', { ascending: true }),
+        supabase
+          .from('octobot_messages')
+          .select('id, chat_id, message_id, author, text, verdict, processed_at')
+          .eq('incident_id', i.id)
+          .order('processed_at', { ascending: true })
+          .limit(50),
+      ]);
+      if (!cancelled) {
+        setConfirmations((confRes.data || []) as Confirmation[]);
+        setMessages((msgRes.data || []) as RawMessageRef[]);
+        setLoadingDetail(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [i]);
+
+  if (!i) return null;
+  const badge = STATUS_BADGE[i.status];
+
+  return (
+    <div className={styles.detail}>
+      <div className={styles.detailHeader}>
+        <ScoreCircle score={i.priority} size={48} />
+        <div className={styles.detailHeaderBody}>
+          <div className={styles.detailTopic}>{i.topic}</div>
+          {i.address && (
+            <div className={styles.detailAddress}>
+              <MapPin size={13} /> {i.address}
+            </div>
+          )}
+          <div className={styles.detailBadges}>
+            <Badge
+              status={i.escalate_to === 'emergency' || i.escalate_to === 'head' ? 'red' : i.escalate_to === 'department' ? 'yellow' : 'green'}
+              label={ESCALATE_LABELS[i.escalate_to]}
+              size="sm"
+            />
+            {badge && <Badge status={badge.tone} label={badge.label} size="sm" />}
+          </div>
+        </div>
+        <button
+          type="button"
+          className={styles.detailCopyBtn}
+          onClick={() => {
+            copyToClipboard(formatTelegramCard(i, confirmations));
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+          }}
+          title="Скопировать как карточку для Telegram"
+        >
+          <Copy size={14} /> {copied ? 'Скопировано' : 'В Telegram'}
+        </button>
+      </div>
+
+      <section className={styles.detailSection}>
+        <h4 className={styles.detailSectionTitle}>Описание</h4>
+        <p className={styles.detailSummary}>{i.summary}</p>
+      </section>
+
+      <section className={styles.detailSection}>
+        <h4 className={styles.detailSectionTitle}>История</h4>
+        <dl className={styles.detailMeta}>
+          <dt>Создан</dt>
+          <dd>{new Date(i.created_at).toLocaleString('ru-RU')}</dd>
+          {i.first_author && (<><dt>Автор</dt><dd>{i.first_author}</dd></>)}
+          {i.assigned_to && (
+            <>
+              <dt>Взят в работу</dt>
+              <dd>{i.assigned_to}{i.assigned_at ? ` · ${new Date(i.assigned_at).toLocaleString('ru-RU')}` : ''}</dd>
+            </>
+          )}
+          {i.resolved_at && (
+            <>
+              <dt>Закрыт</dt>
+              <dd>{new Date(i.resolved_at).toLocaleString('ru-RU')}</dd>
+            </>
+          )}
+          {i.dismissed_at && (
+            <>
+              <dt>Пропущен</dt>
+              <dd>{new Date(i.dismissed_at).toLocaleString('ru-RU')}</dd>
+            </>
+          )}
+          <dt>Приоритет</dt>
+          <dd>{i.priority}/10 → {ESCALATE_LABELS[i.escalate_to]}</dd>
+        </dl>
+      </section>
+
+      <section className={styles.detailSection}>
+        <h4 className={styles.detailSectionTitle}>
+          Подтверждения <span className={styles.countBadge}>{confirmations.length}</span>
+        </h4>
+        {loadingDetail ? (
+          <Skeleton variant="card" height={60} />
+        ) : confirmations.length === 0 ? (
+          <div className={styles.detailEmpty}>Пока никто не подтверждал эту проблему.</div>
+        ) : (
+          <ul className={styles.confirmationList}>
+            {confirmations.map(c => (
+              <li key={c.id} className={styles.confirmationItem}>
+                <div className={styles.confirmationHead}>
+                  <strong>{c.author || 'аноним'}</strong>
+                  <span className={styles.confirmationMeta}>
+                    {new Date(c.created_at).toLocaleString('ru-RU')}
+                    {c.similarity != null && <> · sim {c.similarity.toFixed(2)}</>}
+                    <> · {c.matched_by}</>
+                  </span>
+                </div>
+                {c.message_text && <div className={styles.confirmationText}>{c.message_text}</div>}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      {messages.length > 0 && (
+        <section className={styles.detailSection}>
+          <h4 className={styles.detailSectionTitle}>
+            Исходные сообщения <span className={styles.countBadge}>{messages.length}</span>
+          </h4>
+          <ul className={styles.messageList}>
+            {messages.map(m => (
+              <li key={m.id} className={styles.messageItem}>
+                <div className={styles.messageHead}>
+                  <strong>{m.author || 'аноним'}</strong>
+                  <span className={styles.messageMeta}>
+                    {new Date(m.processed_at).toLocaleString('ru-RU')}
+                    {m.verdict && <> · {m.verdict}</>}
+                  </span>
+                  <a
+                    className={styles.messageLink}
+                    href={tgMessageLink(m.chat_id, m.message_id)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Открыть в Telegram"
+                  >
+                    <ExternalLink size={12} /> Telegram
+                  </a>
+                </div>
+                {m.text && <div className={styles.messageText}>{m.text}</div>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* Actions at footer */}
+      <div className={styles.detailFooter}>
+        {ACTIVE_STATUSES.includes(i.status) ? (
+          <>
+            <button
+              type="button"
+              className={styles.detailActionBtn}
+              disabled={busy || i.status === 'in_progress'}
+              onClick={() => onTransition('in_progress')}
+            >
+              <Play size={14} /> В работе
+            </button>
+            <button
+              type="button"
+              className={styles.detailActionBtn}
+              disabled={busy || i.status === 'watching'}
+              onClick={() => onTransition('watching')}
+            >
+              <Check size={14} /> На контроле
+            </button>
+            <button
+              type="button"
+              className={`${styles.detailActionBtn} ${styles.detailActionResolve}`}
+              disabled={busy}
+              onClick={() => onTransition('resolved')}
+            >
+              <CheckCircle2 size={14} /> Закрыть
+            </button>
+            <button
+              type="button"
+              className={`${styles.detailActionBtn} ${styles.detailActionDismiss}`}
+              disabled={busy}
+              onClick={() => onTransition('dismissed')}
+            >
+              <EyeOff size={14} /> Пропустить
+            </button>
+          </>
+        ) : (
+          <div className={styles.detailFooterInfo}>
+            Инцидент в статусе «{badge?.label ?? i.status}». Действия недоступны.
+          </div>
+        )}
+      </div>
     </div>
   );
 }
