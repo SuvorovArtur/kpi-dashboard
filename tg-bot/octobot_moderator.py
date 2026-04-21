@@ -145,23 +145,55 @@ class Similar:
 # ==============================================================================
 
 _http: httpx.AsyncClient | None = None
+_http_slow: httpx.AsyncClient | None = None
 
 def _get_http() -> httpx.AsyncClient:
+    """Default client — fast timeout, for OpenAI embeddings."""
     global _http
     if _http is None:
         _http = httpx.AsyncClient(timeout=httpx.Timeout(30.0, connect=10.0))
     return _http
 
 
+def _get_http_slow() -> httpx.AsyncClient:
+    """Longer-timeout client for Grok classification calls (can take 30-60s)."""
+    global _http_slow
+    if _http_slow is None:
+        _http_slow = httpx.AsyncClient(timeout=httpx.Timeout(90.0, connect=15.0))
+    return _http_slow
+
+
+async def _retry_post(client: httpx.AsyncClient, url: str, *, headers: dict, json_body: dict,
+                       max_attempts: int = 3, label: str = "http") -> httpx.Response:
+    """Post with retries on timeout or 5xx, exponential backoff."""
+    last_exc: Exception | None = None
+    for attempt in range(1, max_attempts + 1):
+        try:
+            r = await client.post(url, headers=headers, json=json_body)
+            if r.status_code < 500:
+                return r
+            # 5xx → retry
+            last_exc = RuntimeError(f"{label} {r.status_code}: {r.text[:160]}")
+        except (httpx.ReadTimeout, httpx.ConnectTimeout, httpx.RemoteProtocolError) as e:
+            last_exc = e
+        if attempt < max_attempts:
+            delay = 1.5 ** attempt
+            print(f"[octobot] {label} attempt {attempt} failed ({type(last_exc).__name__}); retrying in {delay:.1f}s")
+            await asyncio.sleep(delay)
+    assert last_exc is not None
+    raise last_exc
+
+
 async def openai_embed(text: str) -> list[float]:
     """Return a vector(1536) embedding for the given text."""
     if not OPENAI_API_KEY:
         raise RuntimeError("OPENAI_API_KEY not set")
-    client = _get_http()
-    r = await client.post(
+    r = await _retry_post(
+        _get_http(),
         OPENAI_URL,
         headers={"Authorization": f"Bearer {OPENAI_API_KEY}", "Content-Type": "application/json"},
-        json={"model": EMBED_MODEL, "input": text[:8000]},
+        json_body={"model": EMBED_MODEL, "input": text[:8000]},
+        label="openai-embed",
     )
     r.raise_for_status()
     return r.json()["data"][0]["embedding"]
@@ -194,11 +226,11 @@ async def grok_classify(msg: IncomingMessage, open_incidents: list[Similar]) -> 
     }
     prompt = GROK_PROMPT_TEMPLATE.format(input_json=json.dumps(input_payload, ensure_ascii=False, indent=2))
 
-    client = _get_http()
-    r = await client.post(
+    r = await _retry_post(
+        _get_http_slow(),
         XAI_URL,
         headers={"Authorization": f"Bearer {XAI_API_KEY}", "Content-Type": "application/json"},
-        json={
+        json_body={
             "model": GROK_MODEL,
             "messages": [
                 {"role": "system", "content": GROK_SYSTEM},
@@ -207,6 +239,7 @@ async def grok_classify(msg: IncomingMessage, open_incidents: list[Similar]) -> 
             "temperature": 0.1,
             "response_format": {"type": "json_object"},
         },
+        label="grok",
     )
     r.raise_for_status()
     content = r.json()["choices"][0]["message"]["content"]
