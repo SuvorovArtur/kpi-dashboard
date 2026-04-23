@@ -1,0 +1,199 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+.primaryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid var(--accent-primary);
+  background: var(--accent-primary);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.primaryBtn:disabled { opacity: 0.6; cursor: wait; }
+
+.ghostBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.ghostBtn:hover:not(:disabled) { background: var(--surface-2); }
+
+.dangerBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border: 1px solid #dc2626;
+  background: transparent;
+  color: #dc2626;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.dangerBtn:hover:not(:disabled) { background: color-mix(in oklab, #dc2626 10%, transparent); }
+
+.formCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: var(--space-4);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 720px) {
+  .formGrid { grid-template-columns: 1fr; }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.field input[type="text"] {
+  padding: 8px 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.fieldRow {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.formActions {
+  display: flex;
+  gap: 8px;
+}
+
+.error {
+  color: #dc2626;
+  font-size: 13px;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+}
+
+.hint code {
+  background: var(--surface-2);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 11px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.rowIcon {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  background: color-mix(in oklab, var(--accent-primary) 12%, transparent);
+  color: var(--accent-primary);
+  border-radius: var(--radius-sm);
+}
+
+.rowBody {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.rowTitleLine {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rowLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.rowMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.rowMeta code {
+  background: var(--surface-2);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 11px;
+}
+
+.rowActions {
+  display: flex;
+  gap: 6px;
+}
+
+.activeOn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: #16a34a;
+  font-size: 11px;
+  font-weight: 500;
+}
+.activeOff {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  font-weight: 500;
+}

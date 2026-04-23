@@ -23,7 +23,7 @@ export function statusColor(val: number | null): 'green' | 'yellow' | 'red' | 'g
   return 'red';
 }
 
-// Month average from records map
+// Month average from records map. Sundays (getDay() === 0) are excluded.
 export function monthAvg(
   monthRecords: Map<number, { fact: number; plan: number }>,
   plan: number,
@@ -33,6 +33,7 @@ export function monthAvg(
   const days = daysInMonth(year, month);
   const pcts: (number | null)[] = [];
   for (let d = 1; d <= days; d++) {
+    if (new Date(year, month, d).getDay() === 0) continue;
     const rec = monthRecords.get(d);
     pcts.push(rec ? pct(rec.fact, plan) : null);
   }

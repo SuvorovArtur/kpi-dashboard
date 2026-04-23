@@ -9,6 +9,18 @@ export interface TgChat {
   isActive: boolean;
   type: 'chat' | 'channel';
   subscribers: number;
+  userbotId: number | null;
+}
+
+export interface TgUserbot {
+  id: number;
+  label: string;
+  sessionName: string;
+  phone: string | null;
+  apiIdHint: string | null;
+  isActive: boolean;
+  lastSeenAt: string | null;
+  createdAt: string;
 }
 
 export interface TgMessage {
@@ -36,6 +48,7 @@ export interface TgIssue {
 
 export function useSocialMonitor() {
   const [chats, setChats] = useState<TgChat[]>([]);
+  const [userbots, setUserbots] = useState<TgUserbot[]>([]);
   const [messages, setMessages] = useState<TgMessage[]>([]);
   const [issues, setIssues] = useState<TgIssue[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -52,13 +65,14 @@ export function useSocialMonitor() {
 
   const fetchData = useCallback(async () => {
     setIsLoading(true);
-    const [chatsRes, msgsRes, issuesRes, countsRes, logRes, queueRes] = await Promise.all([
+    const [chatsRes, msgsRes, issuesRes, countsRes, logRes, queueRes, userbotsRes] = await Promise.all([
       supabase.from('tg_chats').select('*').eq('is_active', true),
       supabase.from('tg_messages').select('*').order('date', { ascending: false }).limit(10),
       supabase.from('tg_issues').select('*').order('last_seen', { ascending: false }),
       supabase.rpc('get_chat_message_counts'),
       supabase.from('tg_analysis_log').select('*').order('started_at', { ascending: false }).limit(1),
       supabase.rpc('get_unanalyzed_messages', { msg_limit: 1 }),
+      supabase.from('tg_userbots').select('*').order('created_at', { ascending: true }),
     ]);
 
     // Analysis status
@@ -87,6 +101,11 @@ export function useSocialMonitor() {
 
     if (chatsRes.data) setChats(chatsRes.data.map((c: any) => ({
       id: c.id, chatId: c.chat_id, title: c.title, username: c.username, isActive: c.is_active, type: c.type ?? 'chat', subscribers: c.subscribers ?? 0,
+      userbotId: c.userbot_id ?? null,
+    })));
+    if (userbotsRes.data) setUserbots(userbotsRes.data.map((u: any) => ({
+      id: u.id, label: u.label, sessionName: u.session_name, phone: u.phone,
+      apiIdHint: u.api_id_hint, isActive: u.is_active, lastSeenAt: u.last_seen_at, createdAt: u.created_at,
     })));
     if (msgsRes.data) setMessages(msgsRes.data.map((m: any) => ({
       id: m.id, chatId: m.chat_id, messageId: m.message_id, date: m.date,
@@ -108,9 +127,34 @@ export function useSocialMonitor() {
     await fetchData();
   }, [fetchData]);
 
-  const addChat = useCallback(async (chatId: number, title: string, username?: string, type: 'chat' | 'channel' = 'chat') => {
-    await supabase.from('tg_chats').upsert({ chat_id: chatId, title, username, type }, { onConflict: 'chat_id' });
+  const addChat = useCallback(async (chatId: number, title: string, username?: string, type: 'chat' | 'channel' = 'chat', userbotId: number | null = null) => {
+    await supabase.from('tg_chats').upsert({ chat_id: chatId, title, username, type, userbot_id: userbotId }, { onConflict: 'chat_id' });
     await fetchData();
+  }, [fetchData]);
+
+  const setChatUserbot = useCallback(async (chatId: number, userbotId: number | null) => {
+    await supabase.from('tg_chats').update({ userbot_id: userbotId }).eq('chat_id', chatId);
+    await fetchData();
+  }, [fetchData]);
+
+  const saveUserbot = useCallback(async (payload: { id?: number; label: string; sessionName: string; phone?: string | null; apiIdHint?: string | null; isActive?: boolean }) => {
+    const row: Record<string, unknown> = {
+      label: payload.label,
+      session_name: payload.sessionName,
+      phone: payload.phone ?? null,
+      api_id_hint: payload.apiIdHint ?? null,
+      is_active: payload.isActive ?? true,
+    };
+    if (payload.id) row.id = payload.id;
+    const { error } = await supabase.from('tg_userbots').upsert(row, { onConflict: payload.id ? 'id' : 'session_name' });
+    await fetchData();
+    if (error) throw error;
+  }, [fetchData]);
+
+  const deleteUserbot = useCallback(async (id: number) => {
+    const { error } = await supabase.from('tg_userbots').delete().eq('id', id);
+    await fetchData();
+    if (error) throw error;
   }, [fetchData]);
 
   const removeChat = useCallback(async (chatId: number) => {
@@ -228,5 +272,5 @@ export function useSocialMonitor() {
     }));
   }, []);
 
-  return { chats, messages, issues, isLoading, chatCounts, analysisStatus, refetch: fetchData, updateIssueStatus, addChat, removeChat, updateChatId, fetchChatStats, fetchIssueMessages, fetchChannelNews, fetchChannelStats };
+  return { chats, userbots, messages, issues, isLoading, chatCounts, analysisStatus, refetch: fetchData, updateIssueStatus, addChat, removeChat, updateChatId, fetchChatStats, fetchIssueMessages, fetchChannelNews, fetchChannelStats, setChatUserbot, saveUserbot, deleteUserbot };
 }

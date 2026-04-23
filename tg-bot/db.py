@@ -92,3 +92,35 @@ def mark_analyzed(message_ids: list[int]):
     if not message_ids:
         return
     get_client().table('tg_messages').update({'analyzed_at': 'now()'}).in_('id', message_ids).execute()
+
+
+def register_userbot(session_name: str, label: str, phone: str | None, api_id_hint: str | None) -> int | None:
+    """Upsert this userbot's row in tg_userbots and return its id. Called at startup."""
+    res = get_client().table('tg_userbots').upsert({
+        'session_name': session_name,
+        'label': label,
+        'phone': phone,
+        'api_id_hint': api_id_hint,
+        'is_active': True,
+        'last_seen_at': 'now()',
+    }, on_conflict='session_name').execute()
+    if res.data:
+        return res.data[0]['id']
+    sel = get_client().table('tg_userbots').select('id').eq('session_name', session_name).maybeSingle().execute()
+    return sel.data['id'] if sel.data else None
+
+
+def heartbeat_userbot(userbot_id: int):
+    """Update last_seen_at — called once a minute from periodic_tasks."""
+    if not userbot_id:
+        return
+    get_client().table('tg_userbots').update({'last_seen_at': 'now()'}).eq('id', userbot_id).execute()
+
+
+def claim_untagged_chats(userbot_id: int, chat_ids: list[int]):
+    """For chats monitored by this bot that still have userbot_id IS NULL, set it to us.
+    Does NOT overwrite chats already tagged to a different bot — those are someone else's."""
+    if not userbot_id or not chat_ids:
+        return
+    get_client().table('tg_chats').update({'userbot_id': userbot_id}) \
+        .in_('chat_id', chat_ids).is_('userbot_id', 'null').execute()

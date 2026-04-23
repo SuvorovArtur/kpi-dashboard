@@ -8,6 +8,7 @@ import {
   Calendar,
   Settings,
   Bot,
+  Radio,
   LogOut,
   type LucideIcon,
 } from 'lucide-react';
@@ -40,6 +41,7 @@ const iconMap: Record<string, LucideIcon> = {
   Calendar,
   Settings,
   Bot,
+  Radio,
 };
 
 export function Sidebar({

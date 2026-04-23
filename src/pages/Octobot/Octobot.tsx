@@ -12,8 +12,19 @@ function tgMessageLink(chatId: number, messageId: number): string {
   return `https://t.me/c/${stripped}/${messageId}`;
 }
 
+/** Collapse whitespace + trim to make a one-line quote snippet. */
+function snippet(text: string | null | undefined, maxLen = 120): string {
+  if (!text) return '';
+  const collapsed = text.replace(/\s+/g, ' ').trim();
+  return collapsed.length > maxLen ? `${collapsed.slice(0, maxLen)}…` : collapsed;
+}
+
 /** Format an incident as a copyable Telegram card. */
-function formatTelegramCard(i: Incident, confirmations: Confirmation[]): string {
+function formatTelegramCard(
+  i: Incident,
+  confirmations: Confirmation[],
+  messages: RawMessageRef[],
+): string {
   const emoji = i.priority >= 9 ? '🆘🆘' : i.priority >= 7 ? '🆘' : i.priority >= 5 ? '🟡' : '🟢';
   const lines = [
     `${emoji} Инцидент INC-${String(i.id).padStart(5, '0')} · приоритет ${i.priority}/10`,
@@ -28,6 +39,29 @@ function formatTelegramCard(i: Incident, confirmations: Confirmation[]): string 
     lines.push(`✅ Подтверждений: ${confirmations.length} (${confirmations.map(c => c.author || 'аноним').slice(0, 5).join(', ')}${confirmations.length > 5 ? '…' : ''})`);
   }
   lines.push(`🕒 Создан: ${new Date(i.created_at).toLocaleString('ru-RU')}`);
+
+  // Quotes block: first message + up to 2 confirmations, each as a quoted snippet
+  // followed by a Telegram link. Telegram auto-linkifies raw URLs on paste.
+  type Quote = { author: string | null; text: string | null; chatId: number; messageId: number };
+  const quotes: Quote[] = [];
+  const firstMsg = messages.find(m => m.verdict === 'new_incident') ?? messages[0];
+  if (firstMsg?.text) {
+    quotes.push({ author: firstMsg.author, text: firstMsg.text, chatId: firstMsg.chat_id, messageId: firstMsg.message_id });
+  }
+  for (const c of confirmations) {
+    if (!c.source_chat_id || !c.source_message_id || !c.message_text) continue;
+    if (quotes.length >= 3) break;
+    quotes.push({ author: c.author, text: c.message_text, chatId: c.source_chat_id, messageId: c.source_message_id });
+  }
+  if (quotes.length > 0) {
+    lines.push('', '💬 Цитаты:');
+    for (const q of quotes) {
+      const author = q.author || 'аноним';
+      const link = tgMessageLink(q.chatId, q.messageId);
+      lines.push(`— ${author}: «${snippet(q.text)}»`, `  ${link}`);
+    }
+  }
+
   return lines.join('\n');
 }
 
@@ -406,6 +440,8 @@ interface Confirmation {
   similarity: number | null;
   matched_by: string;
   created_at: string;
+  source_chat_id: number | null;
+  source_message_id: number | null;
 }
 
 interface RawMessageRef {
@@ -440,15 +476,16 @@ function IncidentDetail({
       const [confRes, msgRes] = await Promise.all([
         supabase
           .from('octobot_confirmations')
-          .select('id, author, message_text, similarity, matched_by, created_at')
+          .select('id, author, message_text, similarity, matched_by, created_at, source_chat_id, source_message_id')
           .eq('incident_id', i.id)
           .order('created_at', { ascending: true }),
         supabase
           .from('octobot_messages')
           .select('id, chat_id, message_id, author, text, verdict, processed_at')
           .eq('incident_id', i.id)
+          .eq('verdict', 'new_incident')
           .order('processed_at', { ascending: true })
-          .limit(50),
+          .limit(10),
       ]);
       if (!cancelled) {
         setConfirmations((confRes.data || []) as Confirmation[]);
@@ -486,7 +523,7 @@ function IncidentDetail({
           type="button"
           className={styles.detailCopyBtn}
           onClick={() => {
-            copyToClipboard(formatTelegramCard(i, confirmations));
+            copyToClipboard(formatTelegramCard(i, confirmations, messages));
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
           }}

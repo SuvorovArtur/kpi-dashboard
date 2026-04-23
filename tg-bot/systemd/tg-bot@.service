@@ -1,0 +1,19 @@
+[Unit]
+Description=SocPulse Telegram userbot (%i)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/tg-bot
+EnvironmentFile=/etc/tg-bot/%i.env
+Environment=TG_SESSION=%i
+ExecStart=/opt/tg-bot/venv/bin/python /opt/tg-bot/bot.py
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

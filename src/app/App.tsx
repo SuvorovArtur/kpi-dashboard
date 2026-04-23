@@ -24,6 +24,8 @@ function AppLayout() {
       { key: 'attendance', label: 'Яндекс Вектор', icon: 'Calendar', path: '/attendance' },
       { key: 'social', label: 'Соцсети', icon: 'MessageSquare', path: '/social' },
       { key: 'octobot', label: 'Octobot', icon: 'Bot', path: '/octobot' },
+      { key: 'sources', label: 'Источники', icon: 'Radio', path: '/sources' },
+      { key: 'userbots', label: 'Userbots', icon: 'Bot', path: '/userbots' },
       { key: 'map', label: 'Карта', icon: 'Map', path: '/map' },
       { key: 'settings', label: 'Настройки', icon: 'Settings', path: '/settings' },
     ];

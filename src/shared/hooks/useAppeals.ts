@@ -25,16 +25,23 @@ export function useAppeals(params: UseAppealsParams = {}): UseAppealsResult {
     setIsLoading(true);
     setError(null);
     try {
-      let query = supabase.from('appeals').select('*');
-      if (params.direction) query = query.eq('direction', params.direction);
-      if (params.status) query = query.eq('status', params.status);
-      if (params.dateFrom) query = query.gte('date', params.dateFrom);
-      if (params.dateTo) query = query.lte('date', params.dateTo);
-      query = query.order('date', { ascending: false });
+      const CHUNK = 1000;
+      const acc: Appeal[] = [];
+      for (let offset = 0; ; offset += CHUNK) {
+        let query = supabase.from('appeals').select('*');
+        if (params.direction) query = query.eq('direction', params.direction);
+        if (params.status) query = query.eq('status', params.status);
+        if (params.dateFrom) query = query.gte('date', params.dateFrom);
+        if (params.dateTo) query = query.lte('date', params.dateTo);
+        query = query.order('date', { ascending: false }).range(offset, offset + CHUNK - 1);
 
-      const { data: rows, error: err } = await query;
-      if (err) throw err;
-      setData((rows ?? []) as Appeal[]);
+        const { data: rows, error: err } = await query;
+        if (err) throw err;
+        const chunk = (rows ?? []) as Appeal[];
+        acc.push(...chunk);
+        if (chunk.length < CHUNK) break;
+      }
+      setData(acc);
     } catch (err) {
       setError(err instanceof Error ? err : new Error(String(err)));
     } finally {

@@ -34,15 +34,22 @@ export function useHeatmapData(params: {
     setIsLoading(true);
     setError(null);
     try {
-      let query = supabase.from('appeals').select('*');
-      if (params.dateFrom) query = query.gte('date', params.dateFrom);
-      if (params.dateTo) query = query.lte('date', params.dateTo);
-      if (params.direction) query = query.eq('direction', params.direction);
-      query = query.order('date', { ascending: false });
+      const CHUNK = 1000;
+      const acc: Appeal[] = [];
+      for (let offset = 0; ; offset += CHUNK) {
+        let query = supabase.from('appeals').select('*');
+        if (params.dateFrom) query = query.gte('date', params.dateFrom);
+        if (params.dateTo) query = query.lte('date', params.dateTo);
+        if (params.direction) query = query.eq('direction', params.direction);
+        query = query.order('date', { ascending: false }).range(offset, offset + CHUNK - 1);
 
-      const { data, error: err } = await query;
-      if (err) throw err;
-      setAllAppeals((data ?? []) as Appeal[]);
+        const { data, error: err } = await query;
+        if (err) throw err;
+        const chunk = (data ?? []) as Appeal[];
+        acc.push(...chunk);
+        if (chunk.length < CHUNK) break;
+      }
+      setAllAppeals(acc);
     } catch (err) {
       setError(err instanceof Error ? err : new Error(String(err)));
     } finally {

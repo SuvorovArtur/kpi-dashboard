@@ -31,7 +31,10 @@ import db
 # ==============================================================================
 
 THRESHOLD_DUPLICATE = float(os.getenv("OCTOBOT_THRESHOLD_DUPLICATE", "0.88"))
-THRESHOLD_CANDIDATE = float(os.getenv("OCTOBOT_THRESHOLD_CANDIDATE", "0.72"))
+THRESHOLD_CANDIDATE = float(os.getenv("OCTOBOT_THRESHOLD_CANDIDATE", "0.62"))
+# Post-verdict dedup: normalized(new)↔normalized(existing) check just before INSERT.
+# Catches duplicates that slipped through the raw↔normalized first pass.
+THRESHOLD_POSTCHECK = float(os.getenv("OCTOBOT_THRESHOLD_POSTCHECK", "0.82"))
 OPEN_WINDOW_DAYS    = int(os.getenv("OCTOBOT_OPEN_WINDOW_DAYS", "7"))
 MIN_TEXT_LEN        = int(os.getenv("OCTOBOT_MIN_TEXT_LEN", "10"))
 
@@ -47,6 +50,25 @@ TRIVIAL_PATTERNS = re.compile(
     r"^\s*(\+\d*|ok|ок|da|да|no|нет|\W+|[а-яa-z]{1,3})\s*$",
     re.IGNORECASE,
 )
+
+# Topic families: one infrastructure failure (boiler/grid outage) surfaces as
+# multiple symptom topics — heat, water, electricity. For locality-level dedup
+# we treat them as one group so the outage is represented by a single incident,
+# not three parallel ones.
+TOPIC_FAMILIES: dict[str, str] = {
+    "ЖКХ-тепло":   "ЖКХ",
+    "ЖКХ-вода":    "ЖКХ",
+    "ЖКХ-электро": "ЖКХ",
+}
+
+
+def topic_family_members(topic: str) -> list[str]:
+    """Return all topics that share a family with `topic` (including itself).
+    For topics without a family, returns just [topic]."""
+    fam = TOPIC_FAMILIES.get(topic)
+    if not fam:
+        return [topic]
+    return sorted(t for t, f in TOPIC_FAMILIES.items() if f == fam)
 
 
 # ==============================================================================
@@ -71,12 +93,22 @@ GROK_PROMPT_TEMPLATE = """\
           освещение | транспорт | животные | безопасность | парки | школы |
           медицина | прочее
    address: нормализованный адрес (улица + дом) или null
+   locality_hint: ЖК / микрорайон / деревня / улица без дома, если упомянуто (иначе null).
+                  Пример: "ЖК Скандинавский", "д. Бородино", "мкр. Сходня".
    urgency_markers: список явных маркеров срочности
    affected_scale: "один житель" | "подъезд/дом" | "квартал" | "район"
 3. Сопоставление с open_incidents.
-   match если: (a) topic совпадает ТОЧНО И (b) адрес совпадает (тот же дом) И
-   (c) суть совпадает по смыслу.
+   match если: (a) topic совпадает ТОЧНО И
+               (b) локации совпадают по ЛЮБОМУ из вариантов:
+                   — одинаковый нормализованный адрес (тот же дом); ИЛИ
+                   — у обоих address=null, но упомянут один и тот же ЖК/микрорайон/
+                     деревня/улица (проверяй по summary и тексту); ИЛИ
+                   — один адрес null, у другого дом — и этот дом явно в пределах
+                     упомянутого ЖК/микрорайона; И
+               (c) суть совпадает по смыслу.
    Если match → verdict="match", верни incident_id самого свежего подходящего.
+   ВАЖНО: четыре жалобы из одного чата про один ЖК/деревню с одной темой — это
+   ВСЕГДА один инцидент с подтверждениями, а не четыре отдельных.
 4. Приоритет 1-10 только для new_incident:
    10 ЧС · 9 массовая авария · 8 авария дома · 7 сбой >24ч · 6 локальная ·
    5 стандартная ЖКХ · 4 мелкая · 3 запрос · 2 предложение · 1 благодарность.
@@ -94,17 +126,18 @@ GROK_PROMPT_TEMPLATE = """\
 
 Новый инцидент:
 {{"verdict": "new_incident", "category": "complaint|request|suggestion",
-  "topic": "<из списка>", "address": "<или null>",
+  "topic": "<из списка>", "address": "<или null>", "locality_hint": "<или null>",
   "urgency_markers": ["..."], "affected_scale": "<или null>",
   "priority": <1-10>, "escalate_to": "emergency|head|department|log_only",
-  "summary": "<1 предложение от 3-го лица, деловым языком>",
+  "summary": "<1 предложение от 3-го лица, деловым языком; ЕСЛИ адрес null — явно упомяни ЖК/микрорайон/деревню в summary>",
   "confidence": 0.0-1.0}}
 
 # ПРАВИЛА
 - Только JSON. Никаких обёрток.
-- При сомнении между match и new_incident → match, если match_confidence >= 0.75.
+- При сомнении между match и new_incident → match, если match_confidence >= 0.70.
 - Нормализуй адрес: "Силикатная 25" / "ул. Силикатная, д. 25" → "ул. Силикатная, 25".
 - Не выдумывай адрес. Нет в тексте — null.
+- Если адрес null, но в тексте есть ЖК/микрорайон/деревня — заполни locality_hint и явно включи его в summary.
 
 # ВХОД
 {input_json}
@@ -138,6 +171,20 @@ class Similar:
     created_at: str
     confirmations_count: int
     sim: float
+
+
+@dataclass
+class LocalityMatch:
+    id: int
+    topic: str
+    address: str | None
+    locality: str | None
+    summary: str
+    priority: int
+    status: str
+    created_at: str
+    confirmations_count: int
+    locality_sim: float
 
 
 # ==============================================================================
@@ -264,6 +311,33 @@ def find_similar_sync(embedding: list[float], top_k: int = 3, window_days: int =
     return [Similar(**row) for row in (res.data or [])]
 
 
+def find_locality_match_sync(
+    topics: list[str],
+    locality: str,
+    window_days: int = OPEN_WINDOW_DAYS,
+    trgm_threshold: float = 0.45,
+) -> list[LocalityMatch]:
+    """Find open incidents matching ANY of `topics` with a similar locality.
+
+    Uses pg_trgm similarity on lower(locality). Accepts a list of topics so
+    related-topic families (e.g. all ЖКХ symptoms from one boiler outage) can
+    be deduped together.
+    """
+    if not locality or not topics:
+        return []
+    res = _db().rpc(
+        "octobot_find_locality_match",
+        {
+            "p_topics": topics,
+            "p_locality": locality,
+            "p_window_days": window_days,
+            "p_trgm_threshold": trgm_threshold,
+            "p_top_k": 3,
+        },
+    ).execute()
+    return [LocalityMatch(**row) for row in (res.data or [])]
+
+
 def log_message_sync(msg: IncomingMessage, verdict: str, incident_id: int | None = None,
                      category: str | None = None, cost_usd: float = 0.0) -> None:
     _db().table("octobot_messages").upsert({
@@ -306,6 +380,7 @@ def insert_incident_sync(result: dict[str, Any], embedding: list[float], embeddi
     res = _db().table("octobot_incidents").insert({
         "topic": result["topic"],
         "address": result.get("address"),
+        "locality": result.get("locality_hint"),
         "summary": result["summary"],
         "priority": int(result["priority"]),
         "escalate_to": result["escalate_to"],
@@ -388,16 +463,67 @@ async def process_message(msg: IncomingMessage) -> str:
             await asyncio.to_thread(log_message_sync, msg, "error", None, "unexpected_verdict", cost)
             return "error"
 
-        # 6. New incident: embed normalized text and insert
-        normalized = f"{verdict['topic']} | {verdict.get('address') or 'без адреса'} | {verdict['summary']}"
+        # 5a. Low-signal filter: log-only information queries, low-priority suggestions,
+        # and "thank you" type messages should be recorded but NOT surface as incidents.
+        # Operators only want to act on real problems/requests (priority ≥ 4).
+        if verdict.get("escalate_to") == "log_only" or int(verdict.get("priority", 0)) <= 3:
+            await asyncio.to_thread(
+                log_message_sync, msg, "log_only", None, verdict.get("category"), cost
+            )
+            print(f"[octobot] LOG-ONLY skip: priority={verdict.get('priority')} "
+                  f"category={verdict.get('category')} topic={verdict.get('topic')}")
+            return "log_only"
+
+        # 6. New incident: embed normalized text
+        locality = verdict.get("locality_hint")
+        address_part = verdict.get("address") or (f"локация: {locality}" if locality else "без адреса")
+        normalized = f"{verdict['topic']} | {address_part} | {verdict['summary']}"
+
+        # 6a. Locality match — same topic-family + same ЖК/микрорайон/деревня in window
+        # → treat as duplicate even if address or exact symptom differs (e.g. one
+        # boiler outage manifests as separate ЖКХ-тепло / ЖКХ-вода / ЖКХ-электро
+        # complaints from neighbouring buildings of one ЖК). Uses pg_trgm on locality
+        # and the TOPIC_FAMILIES group.
+        if locality:
+            topics = topic_family_members(verdict["topic"])
+            loc_matches = await asyncio.to_thread(
+                find_locality_match_sync, topics, locality, OPEN_WINDOW_DAYS
+            )
+            if loc_matches:
+                top_loc = loc_matches[0]
+                await asyncio.to_thread(
+                    add_confirmation_sync, top_loc.id, msg, float(top_loc.locality_sim), "locality_match"
+                )
+                await asyncio.to_thread(
+                    log_message_sync, msg, "match", top_loc.id, verdict.get("category"), cost
+                )
+                print(f"[octobot] LOCALITY match: incident {top_loc.id} "
+                      f"(topic={verdict['topic']}, locality='{locality}', "
+                      f"sim={top_loc.locality_sim:.2f})")
+                return "match"
+
         inc_embedding = await openai_embed(normalized)
         cost += cost_embed
+
+        # 6b. Post-verdict dedup check — normalized(new) ↔ normalized(existing).
+        # First pass compared RAW inbound text to NORMALIZED incidents (different "styles"),
+        # which loses signal when the raw post is long/emotional. This second pass catches
+        # duplicates that slipped through, filtered to same topic for safety.
+        postcheck = await asyncio.to_thread(find_similar_sync, inc_embedding, 5, OPEN_WINDOW_DAYS)
+        same_topic = [s for s in postcheck if s.topic == verdict["topic"]]
+        if same_topic and same_topic[0].sim >= THRESHOLD_POSTCHECK:
+            top_match = same_topic[0]
+            await asyncio.to_thread(add_confirmation_sync, top_match.id, msg, top_match.sim, "post_dedup")
+            await asyncio.to_thread(log_message_sync, msg, "match", top_match.id, verdict.get("category"), cost)
+            print(f"[octobot] POST-DEDUP match: incident {top_match.id} "
+                  f"(sim={top_match.sim:.3f}, topic={verdict['topic']})")
+            return "match"
 
         inc_id = await asyncio.to_thread(insert_incident_sync, verdict, inc_embedding, normalized, msg)
         await asyncio.to_thread(log_message_sync, msg, "new_incident", inc_id, verdict.get("category"), cost)
 
         print(f"[octobot] NEW incident {inc_id}: {verdict['topic']} · "
-              f"{verdict.get('address', '—')} · priority {verdict['priority']} · {verdict['escalate_to']}")
+              f"{verdict.get('address') or locality or '—'} · priority {verdict['priority']} · {verdict['escalate_to']}")
         return "new_incident"
 
     except Exception as e:

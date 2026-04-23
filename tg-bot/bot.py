@@ -96,6 +96,7 @@ def proxy_config_changed() -> bool:
 
 app = build_client()
 monitored_chat_ids: set[int] = set()
+current_userbot_id: int | None = None
 
 
 def load_chats():
@@ -104,6 +105,13 @@ def load_chats():
     chats = db.get_active_chats()
     monitored_chat_ids = {c['chat_id'] for c in chats}
     print(f"[bot] Monitoring {len(monitored_chat_ids)} chats: {monitored_chat_ids}")
+
+    # Tag chats that still have no userbot_id as ours.
+    if current_userbot_id:
+        try:
+            db.claim_untagged_chats(current_userbot_id, list(monitored_chat_ids))
+        except Exception as e:
+            print(f"[bot] claim_untagged_chats error: {e}")
 
 
 @app.on_raw_update()
@@ -249,6 +257,31 @@ async def on_message(client: Client, message):
         print(f"[bot] Save error: {e}")
 
 
+async def auto_join_public_channels():
+    """Join public channels (those with a @username) so MTProto pushes updates.
+
+    Reason: user-session receives channel posts only for channels it's subscribed to.
+    If a channel is in tg_chats but the session isn't a member, Telegram returns
+    CHANNEL_INVALID on get_chat and never emits UpdateNewChannelMessage.
+    """
+    chats = db.get_active_chats()
+    pending = [c for c in chats if c.get('type') == 'channel' and c.get('username')]
+    if not pending:
+        return
+    print(f"[bot] Auto-join check for {len(pending)} public channels...")
+    for c in pending:
+        uname = c['username']
+        try:
+            await app.join_chat(uname)
+            print(f"[bot] Joined @{uname} ({c['title']})")
+        except Exception as e:
+            msg = str(e).lower()
+            if 'already' in msg or 'participant' in msg or 'user_already' in msg:
+                # already subscribed — fine
+                continue
+            print(f"[bot] Join @{uname} error: {type(e).__name__}: {e}")
+
+
 async def update_chat_participants():
     """Fetch participant/subscriber counts from Telegram and update DB."""
     chats = db.get_active_chats()
@@ -287,6 +320,12 @@ async def periodic_tasks():
             load_chats()
         except Exception as e:
             print(f"[bot] Reload error: {e}")
+
+        if current_userbot_id:
+            try:
+                db.heartbeat_userbot(current_userbot_id)
+            except Exception as e:
+                print(f"[bot] heartbeat error: {e}")
 
         # Hot-reload proxy: if UI saved new settings, exit so systemd restarts us with them.
         try:
@@ -330,6 +369,18 @@ async def main():
     me = await app.get_me()
     print(f"[bot] Logged in as: {me.first_name} (@{me.username})")
 
+    # Register this userbot session so the dashboard knows who's listening.
+    global current_userbot_id
+    try:
+        label_parts = [p for p in [me.first_name, me.last_name] if p]
+        label = " ".join(label_parts) or f"@{me.username}" if me.username else TG_SESSION
+        phone = getattr(me, 'phone_number', None)
+        api_hint = str(TG_API_ID)[-4:] if TG_API_ID else None
+        current_userbot_id = db.register_userbot(TG_SESSION, label, phone, api_hint)
+        print(f"[bot] Registered userbot '{label}' (session={TG_SESSION}, id={current_userbot_id})")
+    except Exception as e:
+        print(f"[bot] register_userbot failed: {type(e).__name__}: {e}")
+
     # Prime peer cache via raw getDialogs (bypasses fork bug where Dialog._parse
     # reads wrong attribute name for unread_poll_votes_count).
     try:
@@ -344,6 +395,7 @@ async def main():
         print(f"[bot] Peer cache prime failed: {type(e).__name__}: {e}")
 
     load_chats()
+    await auto_join_public_channels()
     await update_chat_participants()
 
     asyncio.create_task(periodic_tasks())
