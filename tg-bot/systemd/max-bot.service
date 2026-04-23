@@ -1,0 +1,19 @@
+[Unit]
+Description=MAX Team Bot — Octobot incidents → MAX messenger
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/tg-bot
+EnvironmentFile=/etc/tg-bot/max.env
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/tg-bot/venv/bin/python -u /opt/tg-bot/max_bot.py
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

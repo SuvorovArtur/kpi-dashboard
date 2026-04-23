@@ -23,6 +23,18 @@ export interface TgUserbot {
   createdAt: string;
 }
 
+export interface TgUserbotDraft {
+  id: number;
+  label: string;
+  sessionName: string;
+  apiId: number;
+  phone: string;
+  status: 'pending' | 'authorized' | 'failed';
+  error: string | null;
+  createdAt: string;
+  authorizedAt: string | null;
+}
+
 export interface TgMessage {
   id: number;
   chatId: number;
@@ -49,6 +61,7 @@ export interface TgIssue {
 export function useSocialMonitor() {
   const [chats, setChats] = useState<TgChat[]>([]);
   const [userbots, setUserbots] = useState<TgUserbot[]>([]);
+  const [userbotDrafts, setUserbotDrafts] = useState<TgUserbotDraft[]>([]);
   const [messages, setMessages] = useState<TgMessage[]>([]);
   const [issues, setIssues] = useState<TgIssue[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -65,7 +78,7 @@ export function useSocialMonitor() {
 
   const fetchData = useCallback(async () => {
     setIsLoading(true);
-    const [chatsRes, msgsRes, issuesRes, countsRes, logRes, queueRes, userbotsRes] = await Promise.all([
+    const [chatsRes, msgsRes, issuesRes, countsRes, logRes, queueRes, userbotsRes, draftsRes] = await Promise.all([
       supabase.from('tg_chats').select('*').eq('is_active', true),
       supabase.from('tg_messages').select('*').order('date', { ascending: false }).limit(10),
       supabase.from('tg_issues').select('*').order('last_seen', { ascending: false }),
@@ -73,6 +86,7 @@ export function useSocialMonitor() {
       supabase.from('tg_analysis_log').select('*').order('started_at', { ascending: false }).limit(1),
       supabase.rpc('get_unanalyzed_messages', { msg_limit: 1 }),
       supabase.from('tg_userbots').select('*').order('created_at', { ascending: true }),
+      supabase.from('tg_userbot_drafts').select('*').order('created_at', { ascending: false }),
     ]);
 
     // Analysis status
@@ -106,6 +120,10 @@ export function useSocialMonitor() {
     if (userbotsRes.data) setUserbots(userbotsRes.data.map((u: any) => ({
       id: u.id, label: u.label, sessionName: u.session_name, phone: u.phone,
       apiIdHint: u.api_id_hint, isActive: u.is_active, lastSeenAt: u.last_seen_at, createdAt: u.created_at,
+    })));
+    if (draftsRes.data) setUserbotDrafts(draftsRes.data.map((d: any) => ({
+      id: d.id, label: d.label, sessionName: d.session_name, apiId: d.api_id, phone: d.phone,
+      status: d.status, error: d.error, createdAt: d.created_at, authorizedAt: d.authorized_at,
     })));
     if (msgsRes.data) setMessages(msgsRes.data.map((m: any) => ({
       id: m.id, chatId: m.chat_id, messageId: m.message_id, date: m.date,
@@ -153,6 +171,27 @@ export function useSocialMonitor() {
 
   const deleteUserbot = useCallback(async (id: number) => {
     const { error } = await supabase.from('tg_userbots').delete().eq('id', id);
+    await fetchData();
+    if (error) throw error;
+  }, [fetchData]);
+
+  const createUserbotDraft = useCallback(async (payload: {
+    label: string; sessionName: string; apiId: number; apiHash: string; phone: string;
+  }) => {
+    const { error } = await supabase.from('tg_userbot_drafts').insert({
+      label: payload.label,
+      session_name: payload.sessionName,
+      api_id: payload.apiId,
+      api_hash: payload.apiHash,
+      phone: payload.phone,
+      status: 'pending',
+    });
+    await fetchData();
+    if (error) throw error;
+  }, [fetchData]);
+
+  const deleteUserbotDraft = useCallback(async (id: number) => {
+    const { error } = await supabase.from('tg_userbot_drafts').delete().eq('id', id);
     await fetchData();
     if (error) throw error;
   }, [fetchData]);
@@ -272,5 +311,5 @@ export function useSocialMonitor() {
     }));
   }, []);
 
-  return { chats, userbots, messages, issues, isLoading, chatCounts, analysisStatus, refetch: fetchData, updateIssueStatus, addChat, removeChat, updateChatId, fetchChatStats, fetchIssueMessages, fetchChannelNews, fetchChannelStats, setChatUserbot, saveUserbot, deleteUserbot };
+  return { chats, userbots, userbotDrafts, messages, issues, isLoading, chatCounts, analysisStatus, refetch: fetchData, updateIssueStatus, addChat, removeChat, updateChatId, fetchChatStats, fetchIssueMessages, fetchChannelNews, fetchChannelStats, setChatUserbot, saveUserbot, deleteUserbot, createUserbotDraft, deleteUserbotDraft };
 }
