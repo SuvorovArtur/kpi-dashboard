@@ -24,6 +24,11 @@ tg-bot/config.py
 
 # Local tool configs
 .mcp.json
+.claude/
+.claude-flow/
+tg-bot/.claude-flow/
+tg-bot/__pycache__/
+supabase/.temp/
 
 # Editor directories and files
 .vscode/*
