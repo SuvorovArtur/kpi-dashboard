@@ -1,0 +1,102 @@
+.page {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  padding: 16px;
+}
+
+.card {
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-teal);
+  margin-bottom: 4px;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: 32px;
+  letter-spacing: 1px;
+  color: var(--color-teal);
+}
+
+.subtitle {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 28px;
+  line-height: 1.4;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: 16px;
+}
+
+.input {
+  padding: 10px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: var(--font-body);
+  color: var(--color-text-primary);
+  background: var(--color-card-bg);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.input:focus {
+  border-color: var(--color-teal);
+  box-shadow: 0 0 0 3px rgba(14, 92, 93, 0.1);
+}
+
+.button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  background: var(--color-teal);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.button:hover {
+  background: #0a4a4b;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error {
+  background: #fef2f2;
+  color: var(--color-red);
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}

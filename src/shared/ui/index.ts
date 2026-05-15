@@ -15,3 +15,8 @@ export { EmptyState } from './EmptyState/EmptyState';
 export { Toast } from './Toast/Toast';
 export { XlsxImport } from './XlsxImport/XlsxImport';
 export { SlideOver } from './SlideOver/SlideOver';
+export { Pill } from './Pill/Pill';
+export { ScoreCircle } from './ScoreCircle/ScoreCircle';
+export { EscalationBanner } from './EscalationBanner/EscalationBanner';
+export { Metric } from './Metric/Metric';
+export { Sparkline } from './Sparkline/Sparkline';

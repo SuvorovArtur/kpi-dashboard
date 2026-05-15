@@ -1,0 +1,15 @@
+.circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 700;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.success { background: var(--sem-success); }
+.brand   { background: var(--brand-primary); }
+.warning { background: var(--sem-warning); color: #4a3402; }
+.danger  { background: var(--sem-danger); }

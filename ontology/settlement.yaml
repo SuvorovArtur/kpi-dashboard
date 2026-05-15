@@ -1,0 +1,97 @@
+# Населённый пункт — второй объект онтологии.
+#
+# Справочник. Сейчас Мытищи (городской округ) — единственный root, всё
+# остальное (деревни/сёла/посёлки/микрорайоны) подвешивается к нему через
+# parent_id. Глубокая иерархия не предусмотрена — только 2 уровня в v0.1.
+
+version: 0.1.0
+object: settlement
+schema: ontology
+table: settlements
+label_ru: Населённый пункт
+label_ru_plural: Населённые пункты
+
+properties:
+  id:
+    type: uuid
+    primary_key: true
+    default: gen_random_uuid()
+    nullable: false
+  seq:
+    type: bigserial
+    unique: true
+    nullable: false
+  code:
+    type: text
+    generated: "'МЫТ-НП-' || lpad(seq::text, 4, '0')"
+    label_ru: Код
+    comment: Автогенерируется из seq.
+  name:
+    type: text
+    nullable: false
+    label_ru: Название
+    comment: Без префикса. «Беляниново», «Пироговский», «Мытищи».
+  type:
+    type: text
+    nullable: false
+    label_ru: Тип
+    comment: городской_округ / мкр / деревня / село / посёлок (UI рендерит префикс)
+  parent_id:
+    type: uuid
+    nullable: true
+    label_ru: Входит в состав
+    fk: ontology.settlements(id)
+    on_delete: SET NULL
+  center:
+    type: geometry
+    subtype: Point
+    srid: 4326
+    nullable: false
+    label_ru: Центр
+    index: gist
+  bounds:
+    type: geometry
+    subtype: Polygon
+    srid: 4326
+    nullable: true
+    label_ru: Границы
+    comment: Зарезервировано для будущего импорта из OSM/Росреестра.
+  population:
+    type: integer
+    nullable: true
+    label_ru: Население
+    comment: Для derived-метрик per1k.
+  notes:
+    type: text
+    nullable: true
+    label_ru: Примечания
+  created_at: { type: timestamptz, default: now(), nullable: false }
+  updated_at: { type: timestamptz, default: now(), nullable: false }
+
+indexes:
+  - { name: idx_settlement_name,   columns: [name] }
+  - { name: idx_settlement_parent, columns: [parent_id], where: "parent_id IS NOT NULL" }
+
+actions:
+  create:        { kind: rpc, name: ontology_settlement_create,        roles: [editor, admin], args: [name, type, parent_id, lat, lng] }
+  rename:        { kind: rpc, name: ontology_settlement_rename,        roles: [editor, admin], args: [id, name] }
+  set_type:      { kind: rpc, name: ontology_settlement_set_type,      roles: [editor, admin], args: [id, type] }
+  set_parent:    { kind: rpc, name: ontology_settlement_set_parent,    roles: [editor, admin], args: [id, parent_id] }
+  set_center:    { kind: rpc, name: ontology_settlement_set_center,    roles: [editor, admin], args: [id, lat, lng] }
+  set_population:{ kind: rpc, name: ontology_settlement_set_population,roles: [editor, admin], args: [id, population] }
+  set_notes:     { kind: rpc, name: ontology_settlement_set_notes,     roles: [editor, admin], args: [id, notes] }
+  delete:        { kind: rpc, name: ontology_settlement_delete,        roles: [admin],         args: [id] }
+
+rls:
+  enable: true
+  policies:
+    - { name: read_all_authenticated, op: SELECT, roles: [authenticated], using: "true" }
+
+events:
+  enable: true
+
+# Связь с КП (FK): добавляем колонку kp.settlement_id → settlements.id
+links:
+  - object: kp
+    fk_column: settlement_id
+    on_delete: SET NULL

@@ -1,0 +1,19 @@
+[Unit]
+Description=Telegram userbot auth API (feeds the /userbots wizard)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/tg-bot
+EnvironmentFile=/etc/tg-bot/auth_api.env
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/tg-bot/venv/bin/python -u /opt/tg-bot/auth_api.py
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

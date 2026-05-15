@@ -1,0 +1,446 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+.primaryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid var(--color-teal);
+  background: var(--color-teal);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.primaryBtn:disabled { opacity: 0.6; cursor: wait; }
+
+.ghostBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.ghostBtn:hover:not(:disabled) { background: var(--surface-2); }
+
+.dangerBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border: 1px solid #dc2626;
+  background: transparent;
+  color: #dc2626;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.dangerBtn:hover:not(:disabled) { background: color-mix(in oklab, #dc2626 10%, transparent); }
+
+.formCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: var(--space-4);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 720px) {
+  .formGrid { grid-template-columns: 1fr; }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.field input[type="text"] {
+  padding: 8px 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.fieldRow {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.formActions {
+  display: flex;
+  gap: 8px;
+}
+
+.error {
+  color: #dc2626;
+  font-size: 13px;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+}
+
+.hint code {
+  background: var(--surface-2);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 11px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.rowIcon {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  background: color-mix(in oklab, var(--color-teal) 12%, transparent);
+  color: var(--color-teal);
+  border-radius: var(--radius-sm);
+}
+
+.rowBody {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.rowTitleLine {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rowLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.rowMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.rowMeta code {
+  background: var(--surface-2);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 11px;
+}
+
+.rowActions {
+  display: flex;
+  gap: 6px;
+}
+
+.activeOn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: #16a34a;
+  font-size: 11px;
+  font-weight: 500;
+}
+.activeOff {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.formTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.fieldWide {
+  grid-column: 1 / -1;
+}
+
+.sectionTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 8px 0 6px;
+}
+
+.errorInline {
+  font-size: 12px;
+  color: #dc2626;
+}
+
+.cmdLine {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  margin-top: 6px;
+}
+
+.cmdLine code {
+  font-size: 12px;
+  color: var(--text-primary);
+  flex: 1;
+  word-break: break-all;
+}
+
+.row[data-status="failed"] {
+  border-color: #dc2626;
+  background: color-mix(in oklab, #dc2626 6%, var(--surface-1));
+}
+
+.row[data-status="pending"] {
+  border-color: color-mix(in oklab, #d97706 40%, var(--border));
+}
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: grid;
+  place-items: center;
+  z-index: 1000;
+  padding: var(--space-3);
+}
+
+.modalCard {
+  width: 100%;
+  max-width: 480px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+}
+
+.modalHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.modalHead span { flex: 1; }
+
+.modalClose {
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  padding: 4px;
+  border-radius: 4px;
+}
+.modalClose:hover:not(:disabled) { background: var(--surface-2); color: var(--text-primary); }
+.modalClose:disabled { opacity: 0.4; cursor: default; }
+
+.modalBody {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+}
+
+.modalStep {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.modalStep code {
+  background: var(--surface-2);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 11px;
+}
+
+.modalSuccess {
+  color: #16a34a;
+}
+
+.modalInput {
+  padding: 10px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 18px;
+  letter-spacing: 0.1em;
+  color: var(--text-primary);
+  font-family: inherit;
+}
+.modalInput:focus {
+  border-color: var(--color-teal);
+  outline: none;
+}
+
+.userbotBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.rowIconBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px;
+  background: color-mix(in oklab, var(--color-teal) 12%, transparent);
+  color: var(--color-teal);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.rowIconBtn:hover { background: color-mix(in oklab, var(--color-teal) 20%, transparent); }
+
+.expansion {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  margin-top: -1px;
+  background: var(--surface-0);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+}
+
+.expansionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.expansionActions {
+  display: flex;
+  gap: 6px;
+}
+
+.srcForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.chatList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.chatRow {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.chatIcon {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  background: color-mix(in oklab, var(--color-teal) 10%, transparent);
+  color: var(--color-teal);
+  border-radius: var(--radius-sm);
+}
+
+.chatBody { display: flex; flex-direction: column; gap: 2px; }
+
+.chatTitle { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+
+.chatMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.chatMeta code {
+  background: var(--surface-2);
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 10px;
+}
+
+.detailEmpty {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  padding: 12px;
+  text-align: center;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+}

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { Card, Header, Skeleton, Toast } from '../../shared/ui';
+import { Card, Header, Skeleton, Toast, Pill } from '../../shared/ui';
 import { useKpiData, useTerritories, useAppSettings } from '../../shared/hooks';
 import { formatNumber } from '../../shared/utils/formatters';
 import { exportToCsv, exportToPdf } from '../../shared/utils/export';
@@ -144,6 +144,12 @@ export function Settings() {
     <div className={styles.page}>
       <Header title="Настройки" />
 
+      {/* Appearance — live design-system tweaks */}
+      <Card>
+        <h3 className={styles.sectionTitle}>Внешний вид</h3>
+        <AppearancePanel />
+      </Card>
+
       {/* KPI Targets */}
       <Card>
         <h3 className={styles.sectionTitle}>Целевые значения KPI</h3>
@@ -152,9 +158,9 @@ export function Settings() {
             <thead>
               <tr>
                 <th>KPI</th>
-                <th>D90</th>
-                <th>D180</th>
-                <th>D360</th>
+                <th title="Цель на горизонте 90 дней">90 дней</th>
+                <th title="Цель на горизонте 180 дней">180 дней</th>
+                <th title="Цель на горизонте 360 дней">360 дней</th>
                 <th></th>
               </tr>
             </thead>
@@ -318,3 +324,64 @@ export function Settings() {
 }
 
 export default Settings;
+
+
+/* ---------------- Appearance panel ---------------- */
+
+type Theme = 'light' | 'dark';
+type Density = 'compact' | 'default' | 'airy';
+type CardStyle = 'shadow' | 'outlined' | 'flat';
+
+const LS_KEY = 'socpulse-appearance';
+
+function readAppearance() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (raw) return JSON.parse(raw) as { theme: Theme; density: Density; cardStyle: CardStyle };
+  } catch { /* ignore */ }
+  return { theme: 'light' as Theme, density: 'default' as Density, cardStyle: 'shadow' as CardStyle };
+}
+
+function applyAppearance(a: { theme: Theme; density: Density; cardStyle: CardStyle }) {
+  const html = document.documentElement;
+  html.setAttribute('data-theme', a.theme);
+  html.setAttribute('data-density', a.density);
+  html.setAttribute('data-card', a.cardStyle);
+  localStorage.setItem(LS_KEY, JSON.stringify(a));
+}
+
+function AppearancePanel() {
+  const [theme, setTheme] = useState<Theme>(() => readAppearance().theme);
+  const [density, setDensity] = useState<Density>(() => readAppearance().density);
+  const [cardStyle, setCardStyle] = useState<CardStyle>(() => readAppearance().cardStyle);
+
+  useEffect(() => { applyAppearance({ theme, density, cardStyle }); }, [theme, density, cardStyle]);
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+      <div>
+        <div className={styles.appearanceLabel}>Тема</div>
+        <div className={styles.appearanceRow}>
+          <Pill active={theme === 'light'} onClick={() => setTheme('light')}>Светлая</Pill>
+          <Pill active={theme === 'dark'} onClick={() => setTheme('dark')}>Тёмная</Pill>
+        </div>
+      </div>
+      <div>
+        <div className={styles.appearanceLabel}>Плотность</div>
+        <div className={styles.appearanceRow}>
+          <Pill active={density === 'compact'} onClick={() => setDensity('compact')}>Компактно</Pill>
+          <Pill active={density === 'default'} onClick={() => setDensity('default')}>Обычно</Pill>
+          <Pill active={density === 'airy'} onClick={() => setDensity('airy')}>Просторно</Pill>
+        </div>
+      </div>
+      <div>
+        <div className={styles.appearanceLabel}>Карточки</div>
+        <div className={styles.appearanceRow}>
+          <Pill active={cardStyle === 'shadow'} onClick={() => setCardStyle('shadow')}>С тенью</Pill>
+          <Pill active={cardStyle === 'outlined'} onClick={() => setCardStyle('outlined')}>Контур</Pill>
+          <Pill active={cardStyle === 'flat'} onClick={() => setCardStyle('flat')}>Плоские</Pill>
+        </div>
+      </div>
+    </div>
+  );
+}

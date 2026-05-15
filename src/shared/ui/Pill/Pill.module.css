@@ -1,0 +1,51 @@
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 12px;
+  background: var(--surface-1);
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all 0.12s ease;
+  white-space: nowrap;
+}
+
+.pill:hover:not(:disabled) {
+  background: var(--surface-2);
+}
+
+.pill:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.active {
+  background: var(--brand-primary);
+  color: var(--text-on-brand);
+  border-color: var(--brand-primary);
+}
+
+.active:hover:not(:disabled) {
+  background: var(--brand-primary-hover);
+}
+
+.count {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.active .count {
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.95);
+}

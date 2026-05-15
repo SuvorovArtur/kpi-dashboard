@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
-import { Card, KpiCard, Chart, DataTable, Header, DateRangePicker, EmptyState, Skeleton, Toast, XlsxImport, SlideOver } from '../../shared/ui';
+import { Card, KpiCard, Chart, DataTable, Header, DateRangePicker, EmptyState, Skeleton, Toast, XlsxImport, SlideOver, Pill } from '../../shared/ui';
 import { useAppeals, useDateRange, useAppSettings } from '../../shared/hooks';
 import { supabase } from '../../shared/lib/supabase';
 import { formatNumber, formatPercent, formatDate } from '../../shared/utils/formatters';
@@ -230,7 +230,7 @@ export function Appeals() {
             trend={kpis.per1k <= 20 ? 'down' : 'up'}
             status={kpis.per1k <= 20 ? 'green' : kpis.per1k <= 30 ? 'yellow' : 'red'}
             progress={Math.max(0, Math.min(100, ((40 - kpis.per1k) / 40) * 100))}
-            targetLabel="Цель: <= 20"
+            targetLabel="Цель: ≤ 20"
           />
           <KpiCard
             label="Отложенные"
@@ -240,7 +240,7 @@ export function Appeals() {
             trend={kpis.delayedPercent <= 10 ? 'down' : 'up'}
             status={kpis.delayedPercent <= 10 ? 'green' : kpis.delayedPercent <= 20 ? 'yellow' : 'red'}
             progress={Math.max(0, Math.min(100, ((30 - kpis.delayedPercent) / 30) * 100))}
-            targetLabel="Цель: <= 10%"
+            targetLabel="Цель: ≤ 10%"
           />
           <KpiCard
             label="ИСН (напряжение)"
@@ -260,7 +260,7 @@ export function Appeals() {
             trend={kpis.repeatedPercent <= 5 ? 'down' : 'up'}
             status={kpis.repeatedPercent <= 5 ? 'green' : kpis.repeatedPercent <= 10 ? 'yellow' : 'red'}
             progress={Math.max(0, Math.min(100, ((15 - kpis.repeatedPercent) / 15) * 100))}
-            targetLabel="Цель: <= 5%"
+            targetLabel="Цель: ≤ 5%"
           />
         </div>
       )}
@@ -286,20 +286,17 @@ export function Appeals() {
           <div className={styles.filterGroup}>
             <span className={styles.filterLabel}>Направление:</span>
             <div className={styles.filterButtons}>
-              <button
-                className={`${styles.filterBtn} ${directionFilter === 'all' ? styles.filterBtnActive : ''}`}
-                onClick={() => setDirectionFilter('all')}
-              >
+              <Pill active={directionFilter === 'all'} onClick={() => setDirectionFilter('all')}>
                 Все
-              </button>
+              </Pill>
               {directions.map(d => (
-                <button
+                <Pill
                   key={d}
-                  className={`${styles.filterBtn} ${directionFilter === d ? styles.filterBtnActive : ''}`}
+                  active={directionFilter === d}
                   onClick={() => setDirectionFilter(d)}
                 >
                   {d}
-                </button>
+                </Pill>
               ))}
             </div>
           </div>

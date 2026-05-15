@@ -1,5 +1,5 @@
 import { useMemo, useState, useCallback, useEffect, useRef } from 'react';
-import { Card, KpiCard, Chart, Header, DateRangePicker, Skeleton, Toast, SlideOver } from '../../shared/ui';
+import { Card, KpiCard, Chart, Header, DateRangePicker, Skeleton, Toast, SlideOver, EscalationBanner } from '../../shared/ui';
 import { useAppeals, useDateRange } from '../../shared/hooks';
 import type { Appeal } from '../../shared/types';
 import { formatNumber, formatDate } from '../../shared/utils/formatters';
@@ -235,11 +235,11 @@ export function ISN() {
       <Header title="Индекс социального напряжения" subtitle="Анализ эмоционального окраса обращений граждан">
         {unanalyzed > 0 ? (
           <button className={styles.analyzeBtn} onClick={() => handleAnalyze(false)} disabled={analyzing}>
-            {analyzing ? analyzeProgress : `Анализировать (${unanalyzed})`}
+            {analyzing ? (analyzeProgress || 'Анализ…') : `Анализировать (${unanalyzed})`}
           </button>
         ) : (
           <button className={styles.analyzeBtn} onClick={() => handleAnalyze(true)} disabled={analyzing}>
-            {analyzing ? analyzeProgress : 'Переанализировать все'}
+            {analyzing ? (analyzeProgress || 'Анализ…') : 'Переанализировать все'}
           </button>
         )}
         <DateRangePicker value={range} onChange={setRange} />
@@ -248,17 +248,29 @@ export function ISN() {
       {/* Traffic light + KPIs */}
       {metrics ? (
         <>
-          <div className={`${styles.trafficCard} ${styles[metrics.traffic.status]}`}>
-            <div className={styles.trafficSignal}>
-              {metrics.traffic.status === 'green' ? '✓' : metrics.traffic.status === 'yellow' ? '⚠' : '!'}
-            </div>
-            <div className={styles.trafficInfo}>
-              <div className={styles.trafficLabel}>{metrics.traffic.label}</div>
-              <div className={styles.trafficSub}>
-                ИСН {metrics.isnWeighted} · Острых {metrics.acutePct}% · {metrics.total} обращений проанализировано
+          {metrics.traffic.status !== 'green' ? (
+            <EscalationBanner
+              tone={metrics.traffic.status === 'red' ? 'danger' : 'warning'}
+              title={metrics.traffic.label}
+              description={
+                <span>
+                  ИСН <span className="tnum">{metrics.isnWeighted}</span> · Острых{' '}
+                  <span className="tnum">{metrics.acutePct}%</span> ·{' '}
+                  <span className="tnum">{metrics.total}</span> обращений проанализировано
+                </span>
+              }
+            />
+          ) : (
+            <div className={`${styles.trafficCard} ${styles.green}`}>
+              <div className={styles.trafficSignal}>✓</div>
+              <div className={styles.trafficInfo}>
+                <div className={styles.trafficLabel}>{metrics.traffic.label}</div>
+                <div className={styles.trafficSub}>
+                  ИСН {metrics.isnWeighted} · Острых {metrics.acutePct}% · {metrics.total} обращений проанализировано
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           <div className={styles.kpiRow}>
             <KpiCard

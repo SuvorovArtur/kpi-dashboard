@@ -465,3 +465,227 @@
   color: var(--color-text-secondary, #6b7280);
   font-size: 15px;
 }
+
+.emptyBanner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-orange);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.emptyBanner strong {
+  color: var(--color-text-primary);
+  margin-right: 4px;
+}
+
+/* Summary banner — single-row situational snapshot */
+.summaryBanner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 16px 20px;
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  flex-wrap: wrap;
+}
+
+.summaryItem {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.summaryLabel {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-secondary);
+}
+
+.summaryValue {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.summaryUnit {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.summaryDelta {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.summaryDeltaMuted {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-text-tertiary, #94a3b8);
+}
+
+.summaryDivider {
+  width: 1px;
+  height: 32px;
+  background: var(--color-border);
+}
+
+.deltaUp { color: var(--color-red, #dc2626); }
+.deltaDown { color: var(--color-status-green, #16a34a); }
+
+/* Top problem locations table */
+.tlHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.tlHint {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-text-tertiary, #94a3b8);
+}
+
+.tlTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: 13px;
+}
+
+.tlTable thead th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-secondary);
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.tlNumCol {
+  text-align: right !important;
+}
+
+.tlRow {
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.tlRow:hover {
+  background: var(--color-bg);
+}
+
+.tlRow td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.tlRowActive {
+  background: var(--color-bg);
+}
+
+.tlAddr {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tlHouses {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-tertiary, #94a3b8);
+}
+
+.tlDir {
+  color: var(--color-text-secondary);
+}
+
+.tlNum {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.tlMuted {
+  color: var(--color-text-tertiary, #94a3b8);
+  font-weight: 500;
+}
+
+.isnGreen { color: var(--color-status-green, #16a34a); }
+.isnYellow { color: var(--color-orange, #d97706); }
+.isnRed { color: var(--color-red, #dc2626); }
+
+.tlDetailRow td {
+  background: var(--color-bg);
+  padding: 8px 12px 12px !important;
+}
+
+.tlDetailList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 12px;
+}
+
+.tlDetailItem {
+  display: grid;
+  grid-template-columns: 90px 90px 1fr 16px;
+  gap: 12px;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.tlDetailItem:hover {
+  background: var(--color-card-bg);
+  color: var(--color-text-primary);
+}
+
+.tlDetailDate {
+  font-variant-numeric: tabular-nums;
+}
+
+.tlDetailEcur {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  color: var(--color-text-tertiary, #94a3b8);
+}
+
+.tlDetailStatus {
+  color: var(--color-text-secondary);
+}
+
+.tlDetailArrow {
+  color: var(--color-text-tertiary, #94a3b8);
+  font-size: 14px;
+}

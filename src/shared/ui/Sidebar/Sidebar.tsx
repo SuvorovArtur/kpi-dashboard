@@ -1,4 +1,5 @@
 import {
+  Activity,
   BarChart3,
   Target,
   Map,
@@ -6,6 +7,9 @@ import {
   Users,
   Calendar,
   Settings,
+  Bot,
+  Radio,
+  LogOut,
   type LucideIcon,
 } from 'lucide-react';
 import clsx from 'clsx';
@@ -23,9 +27,12 @@ interface SidebarProps {
   activeKey: string;
   onNavigate: (path: string) => void;
   collapsed?: boolean;
+  userName?: string;
+  onSignOut?: () => void;
 }
 
 const iconMap: Record<string, LucideIcon> = {
+  Activity,
   BarChart3,
   Target,
   Map,
@@ -33,6 +40,8 @@ const iconMap: Record<string, LucideIcon> = {
   Users,
   Calendar,
   Settings,
+  Bot,
+  Radio,
 };
 
 export function Sidebar({
@@ -40,12 +49,14 @@ export function Sidebar({
   activeKey,
   onNavigate,
   collapsed = false,
+  userName,
+  onSignOut,
 }: SidebarProps) {
   return (
     <aside className={clsx(styles.sidebar, collapsed ? styles.collapsed : styles.expanded)}>
       <div className={styles.logo}>
         <BarChart3 size={24} />
-        {!collapsed && <span>Суворов А.О.</span>}
+        {!collapsed && <span>SocPulse</span>}
       </div>
 
       <nav className={styles.nav}>
@@ -70,11 +81,21 @@ export function Sidebar({
         })}
       </nav>
 
-      {!collapsed && (
-        <div className={styles.userBlock}>
-          <span className={styles.userName}>Суворов А.О.</span>
-        </div>
-      )}
+      <div className={styles.userBlock}>
+        {!collapsed && (
+          <span className={styles.userName}>{userName || 'Пользователь'}</span>
+        )}
+        {onSignOut && (
+          <button
+            className={styles.signOutBtn}
+            onClick={onSignOut}
+            type="button"
+            title="Выйти"
+          >
+            <LogOut size={collapsed ? 20 : 16} />
+          </button>
+        )}
+      </div>
     </aside>
   );
 }

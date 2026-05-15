@@ -40,3 +40,22 @@ export function getStatusColor(status: Status): string {
     case 'red': return '#DC2626';
   }
 }
+
+export function copyToClipboard(text: string): Promise<void> {
+  if (navigator.clipboard && window.isSecureContext) {
+    return navigator.clipboard.writeText(text);
+  }
+  // Fallback for non-secure contexts
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand('copy');
+  } finally {
+    document.body.removeChild(ta);
+  }
+  return Promise.resolve();
+}

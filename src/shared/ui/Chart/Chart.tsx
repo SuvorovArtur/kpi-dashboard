@@ -128,7 +128,8 @@ export function Chart({
           angle={ChartComponent === BarChart ? -30 : 0}
           textAnchor={ChartComponent === BarChart ? 'end' : 'middle'}
           height={ChartComponent === BarChart ? 80 : 30}
-          interval={0}
+          interval={ChartComponent === BarChart ? 0 : 'preserveStartEnd'}
+          minTickGap={ChartComponent === BarChart ? 0 : 24}
         />
         <YAxis
           tick={{ fontSize: 12, fill: 'var(--color-text-secondary)' }}
@@ -259,15 +260,15 @@ export function Chart({
                 const { x, y, payload } = tickProps;
                 const item = data.find((d: any) => d.subject === payload.value);
                 const fact = item?.displayValue ?? '';
-                const pct = item?.value ?? 0;
-                const factColor = pct >= 70 ? '#16a34a' : pct >= 40 ? '#d97706' : '#dc2626';
+                const pctVal = Number(item?.value ?? 0);
+                const factColor = pctVal >= 70 ? '#16a34a' : pctVal >= 40 ? '#d97706' : '#dc2626';
                 return (
                   <g>
                     <text x={x} y={y - 2} textAnchor="middle" fontSize={12} fontWeight={600} fill="var(--color-text-primary)">
                       {payload.value}
                     </text>
                     <text x={x} y={y + 14} textAnchor="middle" fontSize={14} fontWeight={700} fill={factColor}>
-                      {fact}
+                      {String(fact)}
                     </text>
                   </g>
                 );

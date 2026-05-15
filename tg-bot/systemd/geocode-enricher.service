@@ -1,0 +1,19 @@
+[Unit]
+Description=Geocode enricher — tags octobot_incidents with lat/lon and in_mytishi flag
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/tg-bot
+EnvironmentFile=/etc/tg-bot/geocode_enricher.env
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/tg-bot/venv/bin/python -u /opt/tg-bot/geocode_enricher.py
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

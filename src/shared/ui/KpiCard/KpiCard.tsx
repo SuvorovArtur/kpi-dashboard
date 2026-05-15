@@ -14,6 +14,7 @@ interface KpiCardProps {
   status: 'green' | 'yellow' | 'red';
   progress: number;
   targetLabel?: string;
+  targetSubLabel?: string;
 }
 
 const trendIcons = {
@@ -38,8 +39,16 @@ export function KpiCard({
   status,
   progress,
   targetLabel,
+  targetSubLabel,
 }: KpiCardProps) {
   const TrendIcon = trendIcons[trend];
+
+  // Strip trailing unit from pre-formatted string values (e.g. "27%" with unit="%")
+  // so we don't render "27% %". Numeric values pass through unchanged.
+  const displayValue =
+    typeof value === 'string' && unit && value.endsWith(unit)
+      ? value.slice(0, -unit.length).trimEnd()
+      : value;
 
   return (
     <Card>
@@ -50,7 +59,7 @@ export function KpiCard({
         </div>
 
         <div className={styles.valueRow}>
-          <span className={styles.value}>{value}</span>
+          <span className={styles.value}>{displayValue}</span>
           <span className={styles.unit}>{unit}</span>
         </div>
 
@@ -65,9 +74,14 @@ export function KpiCard({
         </div>
 
         <div className={styles.targetRow}>
-          <span className={styles.targetLabel}>
-            {targetLabel ?? `Цель: ${target} ${unit}`}
-          </span>
+          <div className={styles.targetStack}>
+            <span className={styles.targetLabel}>
+              {targetLabel ?? `Цель: ${target} ${unit}`}
+            </span>
+            {targetSubLabel && (
+              <span className={styles.targetSubLabel}>{targetSubLabel}</span>
+            )}
+          </div>
         </div>
 
         <div className={styles.progressWrapper}>
