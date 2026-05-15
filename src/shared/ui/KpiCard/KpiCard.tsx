@@ -14,6 +14,7 @@ interface KpiCardProps {
   status: 'green' | 'yellow' | 'red';
   progress: number;
   targetLabel?: string;
+  targetSubLabel?: string;
 }
 
 const trendIcons = {
@@ -38,6 +39,7 @@ export function KpiCard({
   status,
   progress,
   targetLabel,
+  targetSubLabel,
 }: KpiCardProps) {
   const TrendIcon = trendIcons[trend];
 
@@ -72,9 +74,14 @@ export function KpiCard({
         </div>
 
         <div className={styles.targetRow}>
-          <span className={styles.targetLabel}>
-            {targetLabel ?? `Цель: ${target} ${unit}`}
-          </span>
+          <div className={styles.targetStack}>
+            <span className={styles.targetLabel}>
+              {targetLabel ?? `Цель: ${target} ${unit}`}
+            </span>
+            {targetSubLabel && (
+              <span className={styles.targetSubLabel}>{targetSubLabel}</span>
+            )}
+          </div>
         </div>
 
         <div className={styles.progressWrapper}>

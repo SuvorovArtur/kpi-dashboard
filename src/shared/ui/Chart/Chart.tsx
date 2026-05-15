@@ -128,7 +128,8 @@ export function Chart({
           angle={ChartComponent === BarChart ? -30 : 0}
           textAnchor={ChartComponent === BarChart ? 'end' : 'middle'}
           height={ChartComponent === BarChart ? 80 : 30}
-          interval={0}
+          interval={ChartComponent === BarChart ? 0 : 'preserveStartEnd'}
+          minTickGap={ChartComponent === BarChart ? 0 : 24}
         />
         <YAxis
           tick={{ fontSize: 12, fill: 'var(--color-text-secondary)' }}

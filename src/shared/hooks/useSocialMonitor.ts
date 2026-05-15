@@ -176,13 +176,14 @@ export function useSocialMonitor() {
   }, [fetchData]);
 
   const createUserbotDraft = useCallback(async (payload: {
-    label: string; sessionName: string; apiId: number; apiHash: string; phone: string;
+    label: string; sessionName: string; phone: string;
+    apiId?: number | null; apiHash?: string | null;
   }) => {
     const { error } = await supabase.from('tg_userbot_drafts').insert({
       label: payload.label,
       session_name: payload.sessionName,
-      api_id: payload.apiId,
-      api_hash: payload.apiHash,
+      api_id: payload.apiId ?? null,
+      api_hash: payload.apiHash ?? null,
       phone: payload.phone,
       status: 'pending',
     });
@@ -194,6 +195,56 @@ export function useSocialMonitor() {
     const { error } = await supabase.from('tg_userbot_drafts').delete().eq('id', id);
     await fetchData();
     if (error) throw error;
+  }, [fetchData]);
+
+  const authStart = useCallback(async (draftId: number) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.access_token) throw new Error('Не авторизован');
+    const r = await fetch('/api/max-auth/auth/start', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({ draft_id: draftId }),
+    });
+    const body = await r.json();
+    if (!r.ok) throw new Error(body.error || `HTTP ${r.status}`);
+    return body as { status: 'code_sent' };
+  }, []);
+
+  const authSubmitCode = useCallback(async (draftId: number, code: string) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.access_token) throw new Error('Не авторизован');
+    const r = await fetch('/api/max-auth/auth/code', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({ draft_id: draftId, code }),
+    });
+    const body = await r.json();
+    if (!r.ok) throw new Error(body.error || `HTTP ${r.status}`);
+    await fetchData();
+    return body as { status: 'done' | 'needs_password'; label?: string };
+  }, [fetchData]);
+
+  const authSubmitPassword = useCallback(async (draftId: number, password: string) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.access_token) throw new Error('Не авторизован');
+    const r = await fetch('/api/max-auth/auth/password', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({ draft_id: draftId, password }),
+    });
+    const body = await r.json();
+    if (!r.ok) throw new Error(body.error || `HTTP ${r.status}`);
+    await fetchData();
+    return body as { status: 'done'; label?: string };
   }, [fetchData]);
 
   const removeChat = useCallback(async (chatId: number) => {
@@ -311,5 +362,5 @@ export function useSocialMonitor() {
     }));
   }, []);
 
-  return { chats, userbots, userbotDrafts, messages, issues, isLoading, chatCounts, analysisStatus, refetch: fetchData, updateIssueStatus, addChat, removeChat, updateChatId, fetchChatStats, fetchIssueMessages, fetchChannelNews, fetchChannelStats, setChatUserbot, saveUserbot, deleteUserbot, createUserbotDraft, deleteUserbotDraft };
+  return { chats, userbots, userbotDrafts, messages, issues, isLoading, chatCounts, analysisStatus, refetch: fetchData, updateIssueStatus, addChat, removeChat, updateChatId, fetchChatStats, fetchIssueMessages, fetchChannelNews, fetchChannelStats, setChatUserbot, saveUserbot, deleteUserbot, createUserbotDraft, deleteUserbotDraft, authStart, authSubmitCode, authSubmitPassword };
 }

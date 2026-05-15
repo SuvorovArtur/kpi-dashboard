@@ -16,6 +16,21 @@ interface UseAppealsResult {
   refetch: () => void;
 }
 
+// Hard upper bound for a single chunk fetch. If Supabase / Cloudflare hangs,
+// we abort the request, surface an error, and stop hammering — users see a
+// clear failure state instead of an infinite skeleton.
+const REQUEST_TIMEOUT_MS = 30_000;
+
+function withTimeout<T>(p: PromiseLike<T>, ms: number, label: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const t = setTimeout(() => reject(new Error(`${label}: timeout after ${ms / 1000}s`)), ms);
+    Promise.resolve(p).then(
+      v => { clearTimeout(t); resolve(v); },
+      e => { clearTimeout(t); reject(e); },
+    );
+  });
+}
+
 export function useAppeals(params: UseAppealsParams = {}): UseAppealsResult {
   const [data, setData] = useState<Appeal[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -35,7 +50,7 @@ export function useAppeals(params: UseAppealsParams = {}): UseAppealsResult {
         if (params.dateTo) query = query.lte('date', params.dateTo);
         query = query.order('date', { ascending: false }).range(offset, offset + CHUNK - 1);
 
-        const { data: rows, error: err } = await query;
+        const { data: rows, error: err } = await withTimeout(query, REQUEST_TIMEOUT_MS, 'appeals chunk');
         if (err) throw err;
         const chunk = (rows ?? []) as Appeal[];
         acc.push(...chunk);

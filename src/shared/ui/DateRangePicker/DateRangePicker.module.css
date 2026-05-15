@@ -1,4 +1,11 @@
 .wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.presets {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -35,4 +42,52 @@
 .presetBtnActive:hover {
   background: var(--color-teal);
   color: #fff;
+}
+
+.nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.navBtn {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.navBtn:hover:not(:disabled) {
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+}
+
+.navBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.navLabel {
+  min-width: 110px;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  padding: 0 6px;
+  white-space: nowrap;
 }

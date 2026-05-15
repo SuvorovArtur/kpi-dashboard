@@ -171,6 +171,23 @@
   border-color: var(--sem-danger);
 }
 
+.actionMax {
+  color: var(--brand-primary);
+  border-color: var(--brand-primary);
+  background: var(--brand-primary-faint, transparent);
+}
+.actionMax:hover:not(:disabled) {
+  background: var(--brand-primary);
+  color: var(--text-on-brand);
+  border-color: var(--brand-primary);
+}
+.actionMax:disabled {
+  opacity: 0.6;
+  color: var(--sem-success, var(--brand-primary));
+  border-color: var(--sem-success, var(--brand-primary));
+  background: transparent;
+}
+
 .incidentRow {
   cursor: pointer;
 }
@@ -441,6 +458,22 @@
   background: var(--sem-danger-soft);
   color: var(--sem-danger);
   border-color: var(--sem-danger);
+}
+
+.detailActionMax {
+  color: var(--brand-primary);
+  border-color: var(--brand-primary);
+}
+.detailActionMax:hover:not(:disabled) {
+  background: var(--brand-primary);
+  color: var(--text-on-brand);
+  border-color: var(--brand-primary);
+}
+.detailActionMax:disabled {
+  opacity: 0.7;
+  color: var(--sem-success, var(--brand-primary));
+  border-color: var(--sem-success, var(--brand-primary));
+  background: transparent;
 }
 
 .detailFooterInfo {

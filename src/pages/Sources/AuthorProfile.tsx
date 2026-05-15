@@ -143,17 +143,39 @@ export function AuthorProfile() {
       const { data, error: fnErr } = await supabase.functions.invoke('analyze-author', {
         body: { chat_id: chatId, author, batch_size: 100 },
       });
-      if (fnErr) throw fnErr;
+      if (fnErr) {
+        // supabase-js wraps non-2xx into a generic "Edge Function returned a
+        // non-2xx status code" — pull the real body out of fnErr.context.
+        let detail = fnErr.message;
+        const ctx = (fnErr as unknown as { context?: Response }).context;
+        if (ctx && typeof ctx.json === 'function') {
+          try {
+            const body = await ctx.json();
+            if (body?.error) detail = body.error;
+          } catch { /* not JSON, keep original */ }
+        }
+        throw new Error(detail);
+      }
       await loadAll();
-      const resp = data as { reused?: boolean; incremental?: boolean; batch_processed?: number; total_processed_count?: number } | null;
+      const resp = data as {
+        reused?: boolean;
+        incremental?: boolean;
+        batch_processed?: number;
+        total_processed_count?: number;
+      } | null;
       if (resp?.reused) {
         alert('Новых сообщений с прошлого анализа не было — профиль не изменился.');
       } else if (resp?.incremental) {
         alert(`Профиль обновлён. Учтено новых сообщений: ${resp.batch_processed}. Всего в профиле: ${resp.total_processed_count}.`);
       }
     } catch (e) {
-      const err = e instanceof Error ? e.message : String(e);
-      alert(`Анализ не удался: ${err}`);
+      const raw = e instanceof Error ? e.message : String(e);
+      // Translate the most common backend message into something operator-friendly.
+      const friendly = /Not enough messages.*>=\s*(\d+)/i.exec(raw);
+      const text = friendly
+        ? `Слишком мало сообщений автора в этом чате (нужно минимум ${friendly[1]}). Подождите, пока он напишет ещё, или выберите чат, где он активнее.`
+        : raw;
+      alert(`Анализ не удался: ${text}`);
     } finally {
       setAnalyzing(false);
     }

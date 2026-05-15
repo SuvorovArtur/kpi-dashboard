@@ -538,9 +538,12 @@ export function SourceDetail({ source }: { source: SourceRow }) {
   );
 }
 
+interface DailyMessageRow { day: string; messages: number }
+
 export function Sources() {
   const navigate = useNavigate();
   const [rows, setRows] = useState<SourceRow[]>([]);
+  const [daily, setDaily] = useState<DailyMessageRow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -549,17 +552,21 @@ export function Sources() {
     (async () => {
       setIsLoading(true);
       setError(null);
-      const { data, error: err } = await supabase
-        .from('tg_sources_overview')
-        .select('*')
-        .order('is_active', { ascending: false })
-        .order('last_activity_at', { ascending: false, nullsFirst: false });
+      const [overviewRes, dailyRes] = await Promise.all([
+        supabase
+          .from('tg_sources_overview')
+          .select('*')
+          .order('is_active', { ascending: false })
+          .order('last_activity_at', { ascending: false, nullsFirst: false }),
+        supabase.rpc('tg_chats_daily_messages', { p_days: 30 }),
+      ]);
       if (cancelled) return;
-      if (err) {
-        setError(err.message);
+      if (overviewRes.error) {
+        setError(overviewRes.error.message);
       } else {
-        setRows((data || []) as SourceRow[]);
+        setRows((overviewRes.data || []) as SourceRow[]);
       }
+      setDaily((dailyRes.data || []) as DailyMessageRow[]);
       setIsLoading(false);
     })();
     return () => { cancelled = true; };
@@ -567,6 +574,23 @@ export function Sources() {
 
   const chats = useMemo(() => rows.filter(r => r.type === 'chat'), [rows]);
   const channels = useMemo(() => rows.filter(r => r.type === 'channel'), [rows]);
+
+  const dailyChart = useMemo(
+    () => daily.map(d => ({
+      day: new Date(d.day).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' }),
+      value: d.messages,
+    })),
+    [daily],
+  );
+  const dailyStats = useMemo(() => {
+    const total = daily.reduce((s, d) => s + d.messages, 0);
+    if (daily.length < 2) return { total, deltaPct: null as number | null, currHalf: total, prevHalf: 0 };
+    const half = Math.floor(daily.length / 2);
+    const prevHalf = daily.slice(0, half).reduce((s, d) => s + d.messages, 0);
+    const currHalf = daily.slice(half).reduce((s, d) => s + d.messages, 0);
+    const deltaPct = prevHalf === 0 ? null : ((currHalf - prevHalf) / prevHalf) * 100;
+    return { total, deltaPct, currHalf, prevHalf };
+  }, [daily]);
 
   const kpis = useMemo(() => {
     const active = rows.filter(r => r.is_active).length;
@@ -621,6 +645,35 @@ export function Sources() {
               <div className={styles.kpiSub}>за 7 дней</div>
             </Card>
           </div>
+
+          {dailyChart.length > 0 && (
+            <section className={styles.section}>
+              <div className={styles.sectionHead}>
+                <Activity size={16} />
+                <span>Сообщений в день — все чаты</span>
+                <Pill>{formatNumber(dailyStats.total)} за 30 дней</Pill>
+                {dailyStats.deltaPct !== null && (
+                  <span
+                    className={styles.dailyDelta}
+                    data-trend={dailyStats.deltaPct >= 0 ? 'up' : 'down'}
+                  >
+                    {dailyStats.deltaPct >= 0 ? '▲' : '▼'} {Math.abs(dailyStats.deltaPct).toFixed(0)}%
+                    <span className={styles.dailyDeltaHint}>посл. 15 vs пред. 15 дней</span>
+                  </span>
+                )}
+              </div>
+              <Card className={styles.dailyChartCard}>
+                <Chart
+                  type="area"
+                  data={dailyChart}
+                  xKey="day"
+                  yKey="value"
+                  color="var(--accent-primary)"
+                  height={240}
+                />
+              </Card>
+            </section>
+          )}
 
           {chats.length > 0 && (
             <section className={styles.section}>

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Bot, Clock, Check, EyeOff, Play, CheckCircle2, Copy, ExternalLink, MapPin } from 'lucide-react';
+import { Bot, Clock, Check, EyeOff, Play, CheckCircle2, Copy, ExternalLink, MapPin, Send } from 'lucide-react';
 import { Card, Header, EmptyState, Pill, ScoreCircle, Skeleton, KpiCard, Badge, SlideOver } from '../../shared/ui';
 import { supabase } from '../../shared/lib/supabase';
 import { copyToClipboard } from '../../shared/utils/kpi-helpers';
@@ -88,6 +88,9 @@ interface Incident {
   resolved_at: string | null;
   resolved_by: string | null;
   resolution_note: string | null;
+  force_to_max: boolean;
+  force_to_max_at: string | null;
+  max_task_status: 'new' | 'in_work' | 'done' | 'skipped' | null;
 }
 
 type StatusFilter = 'active' | 'resolved' | 'dismissed' | 'stale' | 'all';
@@ -188,6 +191,22 @@ export function Octobot() {
 
     if (error) {
       // rollback
+      setError(error.message);
+      await reload();
+    }
+    setBusyId(null);
+  }, [reload]);
+
+  // Force-forward an incident to MAX bypassing priority/geocode/Mytishi filters.
+  // The max-bot polls octobot_incidents every 30s and picks up force_to_max=true rows.
+  const sendToMax = useCallback(async (id: number) => {
+    setBusyId(id);
+    setIncidents(prev => prev.map(i => i.id === id ? { ...i, force_to_max: true, force_to_max_at: new Date().toISOString() } : i));
+    const { error } = await supabase
+      .from('octobot_incidents')
+      .update({ force_to_max: true, force_to_max_at: new Date().toISOString() })
+      .eq('id', id);
+    if (error) {
       setError(error.message);
       await reload();
     }
@@ -308,6 +327,7 @@ export function Octobot() {
                 incident={i}
                 busy={busyId === i.id}
                 onTransition={(s) => updateStatus(i.id, s, null)}
+                onSendToMax={() => sendToMax(i.id)}
                 onOpen={() => setSelectedId(i.id)}
               />
             ))}
@@ -327,6 +347,7 @@ export function Octobot() {
               updateStatus(selectedId, s, null);
               // Leave panel open so the new status/badge is visible
             }}
+            onSendToMax={() => sendToMax(selectedId)}
             busy={busyId === selectedId}
           />
         )}
@@ -339,10 +360,12 @@ interface RowProps {
   incident: Incident;
   busy: boolean;
   onTransition: (next: IncidentStatus) => void;
+  onSendToMax: () => void;
   onOpen: () => void;
 }
 
-function IncidentRow({ incident: i, busy, onTransition, onOpen }: RowProps) {
+function IncidentRow({ incident: i, busy, onTransition, onSendToMax, onOpen }: RowProps) {
+  const maxSent = i.max_task_status != null || i.force_to_max;
   const dimmed = i.status === 'dismissed' || i.status === 'stale';
   const badge = STATUS_BADGE[i.status];
 
@@ -394,6 +417,16 @@ function IncidentRow({ incident: i, busy, onTransition, onOpen }: RowProps) {
       {/* Actions — only when actionable. stopPropagation so click doesn't open panel. */}
       {ACTIVE_STATUSES.includes(i.status) && (
         <div className={styles.incidentActions} onClick={(e) => e.stopPropagation()}>
+          <button
+            type="button"
+            className={`${styles.actionBtn} ${styles.actionMax}`}
+            disabled={busy || maxSent}
+            onClick={onSendToMax}
+            title={maxSent ? 'Уже отправлено в MAX' : 'Форсировать отправку в MAX-чат команды (вне очереди)'}
+          >
+            <Send size={13} />
+            <span>{maxSent ? 'В МАКС ✓' : 'В МАКС'}</span>
+          </button>
           <button
             type="button"
             className={styles.actionBtn}
@@ -458,10 +491,12 @@ function IncidentDetail({
   incident: i,
   busy,
   onTransition,
+  onSendToMax,
 }: {
   incident: Incident | null;
   busy: boolean;
   onTransition: (next: IncidentStatus) => void;
+  onSendToMax: () => void;
 }) {
   const [confirmations, setConfirmations] = useState<Confirmation[]>([]);
   const [messages, setMessages] = useState<RawMessageRef[]>([]);
@@ -498,6 +533,7 @@ function IncidentDetail({
 
   if (!i) return null;
   const badge = STATUS_BADGE[i.status];
+  const maxSent = i.max_task_status != null || i.force_to_max;
 
   return (
     <div className={styles.detail}>
@@ -629,6 +665,15 @@ function IncidentDetail({
       <div className={styles.detailFooter}>
         {ACTIVE_STATUSES.includes(i.status) ? (
           <>
+            <button
+              type="button"
+              className={`${styles.detailActionBtn} ${styles.detailActionMax}`}
+              disabled={busy || maxSent}
+              onClick={onSendToMax}
+              title={maxSent ? 'Уже отправлено в MAX' : 'Форсировать отправку в MAX-чат команды (вне очереди)'}
+            >
+              <Send size={14} /> {maxSent ? 'В МАКС ✓' : 'В МАКС'}
+            </button>
             <button
               type="button"
               className={styles.detailActionBtn}
