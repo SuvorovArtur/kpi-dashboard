@@ -1,15 +1,17 @@
 // analyze-author — Supabase Edge Function (incremental mode).
 //
-// First run: takes up to BATCH_SIZE most recent messages, calls Grok, stores
+// First run: takes up to BATCH_SIZE most recent messages, calls the LLM, stores
 //   the structured profile AND a compact textual "profile_snapshot" that
 //   summarises style / themes / etc.
 // Subsequent runs: passes the previous profile_snapshot + only NEW messages
-//   (date > last_processed_message_date) to Grok. Grok updates the profile
+//   (date > last_processed_message_date) to the LLM. The LLM updates the profile
 //   and returns a fresh snapshot. This way the analysis accumulates memory
 //   instead of re-analysing the same 100 messages each time.
 //
 // Secrets:
-//   XAI_API_KEY                 — xAI / Grok API key
+//   DEEPSEEK_API_KEY            — DeepSeek API key (was XAI_API_KEY for Grok-4
+//                                 until 2026-05-12; xAI balance ran out and
+//                                 DeepSeek is materially cheaper)
 // Provided by Supabase runtime:
 //   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
 
@@ -21,14 +23,19 @@ interface ReqBody {
   batch_size?: number; // how many new messages to take at most per run (default 100)
 }
 
-const XAI_URL = "https://api.x.ai/v1/chat/completions";
-const GROK_MODEL = Deno.env.get("OCTOBOT_GROK_MODEL") || "grok-4";
+const DEEPSEEK_URL = "https://api.deepseek.com/chat/completions";
+const DEEPSEEK_MODEL = Deno.env.get("OCTOBOT_DEEPSEEK_MODEL") || "deepseek-chat";
 const DEFAULT_BATCH = 100;
 const MIN_MESSAGES = 3;
 
 const SYSTEM_PROMPT =
   "Ты — аналитик гражданских сообщений из Telegram-чатов. " +
-  "Составляешь профиль участника и возвращаешь строго один JSON-объект без markdown.";
+  "Составляешь профиль участника и возвращаешь строго один JSON-объект без markdown. " +
+  "ВСЕ текстовые поля ответа (bio, profile_snapshot, элементы topics_of_interest, " +
+  "frequent_locations, notable_traits) пиши ТОЛЬКО по-русски, без английских слов и " +
+  "транслитерации. Даже если исходные сообщения содержат английские вкрапления — в ответе " +
+  "используй русский язык и русские термины (например, 'критика местной власти', а не " +
+  "'local government criticism').";
 
 const AXES_SPEC = `
 Пять осей — целые числа 0..100. Шкалы:
@@ -61,6 +68,7 @@ function firstRunPrompt(author: string, block: string) {
 sentiment_score: -1 крайне негативный, 0 нейтральный, +1 крайне позитивный.
 ${AXES_SPEC}
 bio — деловым языком, без оценочных ярлыков.
+ЯЗЫК ОТВЕТА: только русский. Все строковые значения и элементы массивов — по-русски.
 
 СООБЩЕНИЯ (${block.split("\n").length} шт., от свежих к старым):
 ${block}`;
@@ -106,18 +114,33 @@ ${newMessagesBlock}
 ${AXES_SPEC}
 
 Если новые сообщения не противоречат предыдущему отпечатку — уточняй и сохраняй преемственность.
-Если меняется тон или появляются новые темы — отрази это в обновлении.`;
+Если меняется тон или появляются новые темы — отрази это в обновлении.
+ЯЗЫК ОТВЕТА: только русский. Все строковые значения и элементы массивов — по-русски.`;
 }
 
-async function callGrok(
+async function resolveApiKey(db: ReturnType<typeof createClient>): Promise<string> {
+  const envKey = Deno.env.get("DEEPSEEK_API_KEY");
+  if (envKey) return envKey;
+  // Fallback: pull from app_settings (writable via SQL, no dashboard required).
+  const { data } = await db
+    .from("app_settings")
+    .select("value")
+    .eq("key", "deepseek_api_key")
+    .maybeSingle();
+  const v = (data?.value || "").trim();
+  if (!v) throw new Error("DEEPSEEK_API_KEY not set (neither env var nor app_settings.deepseek_api_key)");
+  return v;
+}
+
+async function callClassifier(
+  db: ReturnType<typeof createClient>,
   author: string,
   messages: string[],
   previousSnapshot: string | null,
   previousBio: string | null,
   totalBefore: number,
 ): Promise<Record<string, unknown>> {
-  const apiKey = Deno.env.get("XAI_API_KEY");
-  if (!apiKey) throw new Error("XAI_API_KEY secret is not set");
+  const apiKey = await resolveApiKey(db);
 
   const block = messages
     .map((m, i) => `${i + 1}. ${m.replace(/\s+/g, " ").trim().slice(0, 500)}`)
@@ -127,14 +150,14 @@ async function callGrok(
     ? incrementalPrompt(author, previousSnapshot, previousBio, block, totalBefore)
     : firstRunPrompt(author, block);
 
-  const r = await fetch(XAI_URL, {
+  const r = await fetch(DEEPSEEK_URL, {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${apiKey}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: GROK_MODEL,
+      model: DEEPSEEK_MODEL,
       temperature: 0.2,
       response_format: { type: "json_object" },
       messages: [
@@ -145,7 +168,7 @@ async function callGrok(
   });
   if (!r.ok) {
     const body = await r.text();
-    throw new Error(`Grok ${r.status}: ${body.slice(0, 300)}`);
+    throw new Error(`DeepSeek ${r.status}: ${body.slice(0, 300)}`);
   }
   const data = await r.json();
   const content = data?.choices?.[0]?.message?.content ?? "";
@@ -229,8 +252,8 @@ Deno.serve(async (req) => {
       );
     }
 
-    // 4. Call Grok
-    const analysis = await callGrok(body.author, texts, previousSnapshot, previousBio, totalBefore);
+    // 4. Call LLM classifier
+    const analysis = await callClassifier(db, body.author, texts, previousSnapshot, previousBio, totalBefore);
 
     // 5. Compute new watermark
     const newLastDate = rows.length > 0 ? rows[0].date : afterDate;

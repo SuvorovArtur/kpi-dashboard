@@ -5,8 +5,8 @@ Pipeline for each inbound message:
   2. OpenAI text-embedding-3-small → vector(1536).
   3. pgvector search: top-k open incidents within window.
   4. If sim >= THRESHOLD_DUPLICATE → register confirmation (no LLM call).
-  5. If sim in [CANDIDATE, DUPLICATE) → Grok disambiguates (match vs new).
-  6. Else → Grok classifies with empty open_incidents.
+  5. If sim in [CANDIDATE, DUPLICATE) → classifier disambiguates (match vs new).
+  6. Else → classifier classifies with empty open_incidents.
      - noise  → log, skip
      - match  → register confirmation
      - new_incident → INSERT, embed normalized string, escalate if needed
@@ -14,6 +14,7 @@ Pipeline for each inbound message:
 Spec: /01 - PROJECTS/Авто-модератор чатов/Авто-модератор чатов — спецификация.md
 """
 import asyncio
+import hashlib
 import json
 import os
 import re
@@ -39,17 +40,111 @@ OPEN_WINDOW_DAYS    = int(os.getenv("OCTOBOT_OPEN_WINDOW_DAYS", "7"))
 MIN_TEXT_LEN        = int(os.getenv("OCTOBOT_MIN_TEXT_LEN", "10"))
 
 EMBED_MODEL         = os.getenv("OCTOBOT_EMBED_MODEL", "text-embedding-3-small")
-GROK_MODEL          = os.getenv("OCTOBOT_GROK_MODEL", "grok-4")  # fallback: grok-beta
+DEEPSEEK_MODEL      = os.getenv("OCTOBOT_DEEPSEEK_MODEL", "deepseek-chat")
 OPENAI_API_KEY      = os.getenv("OPENAI_API_KEY", "")
-XAI_API_KEY         = os.getenv("XAI_API_KEY", "")
+DEEPSEEK_API_KEY    = os.getenv("DEEPSEEK_API_KEY", "")
+
+# Triage mode: shadow → log only; active → skip full classify when triage
+# says noise with high confidence. Default active (calibrated 2026-05-12).
+TRIAGE_MODE         = os.getenv("OCTOBOT_TRIAGE_MODE", "active")  # shadow | active | off
+TRIAGE_NOISE_CONF   = float(os.getenv("OCTOBOT_TRIAGE_NOISE_CONF", "0.85"))
+TRIAGE_QA_SAMPLE    = float(os.getenv("OCTOBOT_TRIAGE_QA_SAMPLE", "0.05"))  # 5% to classify in active
 
 OPENAI_URL          = "https://api.openai.com/v1/embeddings"
-XAI_URL             = "https://api.x.ai/v1/chat/completions"
+DEEPSEEK_URL        = "https://api.deepseek.com/chat/completions"
 
 TRIVIAL_PATTERNS = re.compile(
     r"^\s*(\+\d*|ok|ок|da|да|no|нет|\W+|[а-яa-z]{1,3})\s*$",
     re.IGNORECASE,
 )
+
+# ------------------------------------------------------------------
+# T0 regex pre-filter — kills obvious noise before any LLM/embed call.
+# Logs verdict="noise"/category="prefilter". Bypassed when an emergency
+# keyword appears in the text — better waste a classifier call than miss a fire.
+# ------------------------------------------------------------------
+
+EMERGENCY_RE = re.compile(
+    r"\b(пожар\w*|гори[тм]|горел[аи]?|дым\w*|задымлен\w*|"
+    r"потоп\w*|затопил\w*|затопля\w*|залива\w*|залил\w*|прорыв\w*|"
+    r"газ|газа|газом|газе|утечк\w*|"
+    r"разбой\w*|нападени\w*|грабеж\w*|ограбил\w*|напал[аи]?|"
+    r"труп\w*|тел[оа]|погиб\w*|мерт\w*|убит\w*|"
+    r"помогите|спасите|скорую|скорая|"
+    r"авари\w*|дтп|"
+    r"избил\w*|избива\w*|стрел\w+|"
+    r"кров[ьи]|"
+    r"света\s+нет\w*|без\s+света|"
+    r"воды\s+нет\w*|без\s+воды|"
+    r"тепла\s+нет\w*|без\s+тепла)\b",
+    re.IGNORECASE | re.UNICODE,
+)
+
+URL_ONLY_RE = re.compile(r"^\s*(https?://\S+\s*)+$", re.IGNORECASE)
+ONLY_NONWORD_RE = re.compile(r"^[\W\s_]+$", re.UNICODE)  # emoji + punct only
+MENTION_ONLY_RE = re.compile(r"^\s*@\w+(\s+@\w+)*\s*$")
+DIGITS_ONLY_RE = re.compile(r"^[\d\s\.\,\-\+\(\)]+$")
+
+GREETING_RE = re.compile(
+    r"^(привет(ствую|ики)?!*|здравствуйте?|здарова|здаров|"
+    r"добр(ый|ое)\s+(день|вечер|утро)|с\s+добрым\s+утром|"
+    r"hello|hi|hey|good\s+(morning|day|evening|night))"
+    r"[\s!\.\,\?\)\(\]]*$",
+    re.IGNORECASE | re.UNICODE,
+)
+THANKS_RE = re.compile(
+    r"^(больш(ое|ущее)\s+|огромн(ое|ейшее)\s+)?"
+    r"(спасибо\w*|спасибки|благодарю|благодарность|"
+    r"пасиб[оа]?|пасиба|спс|сёнкс|сенкс|"
+    r"thanks?|thx|ty)"
+    r"(\s+(больш(ое|ущее)|огромн(ое|ейшее)|вам|всем|тебе|пребольшое|"
+    r"сердечное|за\s+\w+))*"
+    r"\W*$",
+    re.IGNORECASE | re.UNICODE,
+)
+ACK_RE = re.compile(
+    r"^(ок|окей|ok|okay|good|"
+    r"хорошо|ладно|пон+ятно|ясно|"
+    r"да|нет|yes|no|yeah|yep|nope|"
+    r"норм|нормально|"
+    r"плюс|минус|"
+    r"\+1?|\-1?)"
+    r"[\s!\.\,\?\)\(\]]*$",
+    re.IGNORECASE | re.UNICODE,
+)
+
+PREFILTER_SHORT_THRESHOLD = 30  # chars; longer = inspect more cautiously
+
+
+def is_obvious_noise(text: str) -> bool:
+    """Pure-regex pre-filter: True if text is clearly conversational noise.
+
+    Emergency keywords (fire/flood/gas/etc) always bypass — better to spend
+    a classifier call on a false positive than to silently drop an actual incident.
+    """
+    if not text:
+        return False
+    s = text.strip()
+    if not s:
+        return False
+    if EMERGENCY_RE.search(s):
+        return False
+    # Always-noise (regardless of length): URL-only, mention-only, only-emoji/punct,
+    # only-digits — these never describe a city issue on their own.
+    if URL_ONLY_RE.match(s):
+        return True
+    if MENTION_ONLY_RE.match(s):
+        return True
+    if ONLY_NONWORD_RE.match(s):
+        return True
+    if DIGITS_ONLY_RE.match(s):
+        return True
+    # Short conversational filler — only kill if the entire message is a
+    # greeting / thanks / acknowledgment.
+    if len(s) < PREFILTER_SHORT_THRESHOLD:
+        if GREETING_RE.match(s) or THANKS_RE.match(s) or ACK_RE.match(s):
+            return True
+    return False
 
 # Topic families: one infrastructure failure (boiler/grid outage) surfaces as
 # multiple symptom topics — heat, water, electricity. For locality-level dedup
@@ -72,15 +167,15 @@ def topic_family_members(topic: str) -> list[str]:
 
 
 # ==============================================================================
-# Grok classification prompt (from spec section 6)
+# Classifier prompt (from spec section 6). Driven by DeepSeek-chat.
 # ==============================================================================
 
-GROK_SYSTEM = (
+CLASSIFIER_SYSTEM = (
     "Ты — классификатор сообщений из городского чата. Возвращаешь строго один "
     "JSON-объект без markdown. Никаких обёрток, комментариев или пояснений."
 )
 
-GROK_PROMPT_TEMPLATE = """\
+CLASSIFIER_PROMPT_TEMPLATE = """\
 # РОЛЬ
 Классифицируешь ОДНО сообщение из городского чата и решаешь, описывает ли оно
 новую проблему или повторяет одну из уже известных.
@@ -89,9 +184,9 @@ GROK_PROMPT_TEMPLATE = """\
 1. Категория: complaint | request | suggestion | gratitude | discussion | spam | flood | toxic.
    Если НЕ complaint/request/suggestion → verdict="noise".
 2. Для complaint/request/suggestion извлечь:
-   topic: дороги | ЖКХ-вода | ЖКХ-тепло | ЖКХ-электро | мусор | благоустройство |
-          освещение | транспорт | животные | безопасность | парки | школы |
-          медицина | прочее
+   topic: дороги | ЖКХ-вода | ЖКХ-тепло | ЖКХ-электро | мусор | экология |
+          благоустройство | освещение | транспорт | животные | безопасность |
+          парки | школы | медицина | прочее
    address: нормализованный адрес (улица + дом) или null
    locality_hint: ЖК / микрорайон / деревня / улица без дома, если упомянуто (иначе null).
                   Пример: "ЖК Скандинавский", "д. Бородино", "мкр. Сходня".
@@ -203,7 +298,7 @@ def _get_http() -> httpx.AsyncClient:
 
 
 def _get_http_slow() -> httpx.AsyncClient:
-    """Longer-timeout client for Grok classification calls (can take 30-60s)."""
+    """Longer-timeout client for classifier classification calls (can take 30-60s)."""
     global _http_slow
     if _http_slow is None:
         _http_slow = httpx.AsyncClient(timeout=httpx.Timeout(90.0, connect=15.0))
@@ -212,14 +307,19 @@ def _get_http_slow() -> httpx.AsyncClient:
 
 async def _retry_post(client: httpx.AsyncClient, url: str, *, headers: dict, json_body: dict,
                        max_attempts: int = 3, label: str = "http") -> httpx.Response:
-    """Post with retries on timeout or 5xx, exponential backoff."""
+    """Post with retries on timeout, 5xx, and 429 (rate limit). Exponential backoff.
+
+    429 added after the May 4-12 incident where xAI started rate-limiting and
+    a single 429 burned the whole message. With retry the temporary spike is
+    absorbed and only a sustained quota exhaustion bubbles up as an error.
+    """
     last_exc: Exception | None = None
     for attempt in range(1, max_attempts + 1):
         try:
             r = await client.post(url, headers=headers, json=json_body)
-            if r.status_code < 500:
+            if r.status_code < 500 and r.status_code != 429:
                 return r
-            # 5xx → retry
+            # 5xx or 429 → retry
             last_exc = RuntimeError(f"{label} {r.status_code}: {r.text[:160]}")
         except (httpx.ReadTimeout, httpx.ConnectTimeout, httpx.RemoteProtocolError) as e:
             last_exc = e
@@ -246,10 +346,12 @@ async def openai_embed(text: str) -> list[float]:
     return r.json()["data"][0]["embedding"]
 
 
-async def grok_classify(msg: IncomingMessage, open_incidents: list[Similar]) -> dict[str, Any]:
-    """Call Grok with the classifier prompt. Returns the parsed JSON verdict."""
-    if not XAI_API_KEY:
-        raise RuntimeError("XAI_API_KEY not set")
+async def classify(msg: IncomingMessage, open_incidents: list[Similar]) -> dict[str, Any]:
+    """Run the full classifier prompt and return the parsed JSON verdict.
+    Backed by DeepSeek-chat (was Grok-4, swapped on 2026-05-12 — DeepSeek is
+    cheaper and the xAI balance had run out)."""
+    if not DEEPSEEK_API_KEY:
+        raise RuntimeError("DEEPSEEK_API_KEY not set")
     input_payload = {
         "message": {
             "id": str(msg.message_id),
@@ -271,26 +373,95 @@ async def grok_classify(msg: IncomingMessage, open_incidents: list[Similar]) -> 
             for i in open_incidents
         ],
     }
-    prompt = GROK_PROMPT_TEMPLATE.format(input_json=json.dumps(input_payload, ensure_ascii=False, indent=2))
+    prompt = CLASSIFIER_PROMPT_TEMPLATE.format(input_json=json.dumps(input_payload, ensure_ascii=False, indent=2))
 
     r = await _retry_post(
         _get_http_slow(),
-        XAI_URL,
-        headers={"Authorization": f"Bearer {XAI_API_KEY}", "Content-Type": "application/json"},
+        DEEPSEEK_URL,
+        headers={"Authorization": f"Bearer {DEEPSEEK_API_KEY}", "Content-Type": "application/json"},
         json_body={
-            "model": GROK_MODEL,
+            "model": DEEPSEEK_MODEL,
             "messages": [
-                {"role": "system", "content": GROK_SYSTEM},
+                {"role": "system", "content": CLASSIFIER_SYSTEM},
                 {"role": "user", "content": prompt},
             ],
             "temperature": 0.1,
             "response_format": {"type": "json_object"},
         },
-        label="grok",
+        label="deepseek-classify",
     )
     r.raise_for_status()
     content = r.json()["choices"][0]["message"]["content"]
     # Tolerate occasional stray markdown fences
+    content = content.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
+    return json.loads(content)
+
+
+# ==============================================================================
+# DeepSeek lightweight triage — pre-filters obvious noise to skip classifier.
+# Cost ~$0.0001/call vs the full classifier prompt (~$0.0003-0.001/call) —
+# still 3-10× cheaper to short-circuit obvious noise with a tiny prompt.
+# Returns: {"verdict": "noise"|"appeal", "confidence": 0..1, "reason": "..."}.
+# ==============================================================================
+
+DEEPSEEK_TRIAGE_SYSTEM = (
+    "Ты — фильтр городских жалоб. Получаешь ОДНО сообщение из чата. "
+    "Возвращаешь строго JSON-объект без markdown."
+)
+
+DEEPSEEK_TRIAGE_PROMPT = """\
+Классифицируй сообщение как `noise` или `appeal`.
+
+NOISE — это:
+• благодарности, поздравления, добрые пожелания
+• офтоп, обмен мнениями, шутки, эмоции БЕЗ конкретной проблемы
+• реклама, спам, флуд
+• общие вопросы вне темы города ("кто знает где купить…")
+• фотоотчёты "у нас красиво" без жалобы
+
+APPEAL — любая жалоба/заявка/требование решить городскую проблему:
+• ЖКХ (вода, тепло, газ, электричество, мусор)
+• ЧС/безопасность (пожар, ДТП, аварии, нападения, разбой)
+• благоустройство, дороги, освещение
+• транспорт, пробки
+• экология, шум, загрязнение
+• любое сообщение со словами "у нас нет", "не работает", "сломалось", "помогите", "что делать", "куда обращаться", "когда починят"
+
+При сомнении → "appeal" (дальше classifier разберётся).
+
+Формат ответа (только JSON):
+{{"verdict": "noise" | "appeal", "confidence": 0.0-1.0, "reason": "<кратко на русском>"}}
+
+# СООБЩЕНИЕ:
+{text}
+"""
+
+
+async def deepseek_triage(text: str) -> dict[str, Any]:
+    """Cheap noise/appeal classifier. Returns dict with verdict/confidence/reason.
+    Raises on API failure — caller is responsible for fallback."""
+    if not DEEPSEEK_API_KEY:
+        raise RuntimeError("DEEPSEEK_API_KEY not set")
+    prompt = DEEPSEEK_TRIAGE_PROMPT.format(text=text[:1500])
+    r = await _retry_post(
+        _get_http(),
+        DEEPSEEK_URL,
+        headers={"Authorization": f"Bearer {DEEPSEEK_API_KEY}", "Content-Type": "application/json"},
+        json_body={
+            "model": DEEPSEEK_MODEL,
+            "messages": [
+                {"role": "system", "content": DEEPSEEK_TRIAGE_SYSTEM},
+                {"role": "user", "content": prompt},
+            ],
+            "temperature": 0.0,
+            "max_tokens": 120,
+            "response_format": {"type": "json_object"},
+        },
+        max_attempts=2,
+        label="deepseek-triage",
+    )
+    r.raise_for_status()
+    content = r.json()["choices"][0]["message"]["content"]
     content = content.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
     return json.loads(content)
 
@@ -301,6 +472,58 @@ async def grok_classify(msg: IncomingMessage, open_incidents: list[Similar]) -> 
 
 def _db():
     return db.get_client()
+
+
+# ------------------------------------------------------------------
+# Text cache: hash(normalized text) -> last verdict.
+# Caches only `noise` classifier verdicts. Repeated identical noise (e.g. "Спасибо
+# большое за быстрый ответ!") then skips embedding+classifier entirely.
+# ------------------------------------------------------------------
+
+CACHE_MIN_LEN = 15
+CACHE_MAX_LEN = 500
+_CACHE_NORM_WS = re.compile(r"\s+")
+
+
+def _normalize_for_cache(text: str) -> str:
+    s = text.strip().lower()
+    return _CACHE_NORM_WS.sub(" ", s)
+
+
+def _text_hash(text: str) -> str:
+    return hashlib.sha256(_normalize_for_cache(text).encode("utf-8")).hexdigest()
+
+
+def _cache_lookup_sync(text_hash: str) -> dict | None:
+    res = _db().table("octobot_text_cache").select(
+        "text_hash, verdict, category, hits"
+    ).eq("text_hash", text_hash).limit(1).execute()
+    return res.data[0] if res.data else None
+
+
+def _cache_record_sync(text_hash: str, verdict: str, category: str | None,
+                        raw: dict, sample: str) -> None:
+    """Atomic insert-or-bump-hits via Postgres function."""
+    try:
+        _db().rpc(
+            "octobot_text_cache_record",
+            {
+                "p_hash": text_hash,
+                "p_verdict": verdict,
+                "p_category": category,
+                "p_raw": raw,
+                "p_sample": (sample or "")[:200],
+            },
+        ).execute()
+    except Exception as e:
+        print(f"[octobot] cache record error: {e}")
+
+
+def _cache_hit_sync(text_hash: str) -> None:
+    try:
+        _db().rpc("octobot_text_cache_hit", {"p_hash": text_hash}).execute()
+    except Exception as e:
+        print(f"[octobot] cache hit bump error: {e}")
 
 
 def find_similar_sync(embedding: list[float], top_k: int = 3, window_days: int = OPEN_WINDOW_DAYS) -> list[Similar]:
@@ -339,8 +562,9 @@ def find_locality_match_sync(
 
 
 def log_message_sync(msg: IncomingMessage, verdict: str, incident_id: int | None = None,
-                     category: str | None = None, cost_usd: float = 0.0) -> None:
-    _db().table("octobot_messages").upsert({
+                     category: str | None = None, cost_usd: float = 0.0,
+                     triage: dict | None = None) -> None:
+    payload: dict[str, Any] = {
         "source": msg.source,
         "chat_id": msg.chat_id,
         "message_id": msg.message_id,
@@ -353,9 +577,21 @@ def log_message_sync(msg: IncomingMessage, verdict: str, incident_id: int | None
         "category": category,
         "processing_cost_usd": round(cost_usd, 6),
         "embedding_model": EMBED_MODEL,
-        "classifier_model": GROK_MODEL,
+        "classifier_model": DEEPSEEK_MODEL,  # was GROK_MODEL until 2026-05-12
         "sent_at": msg.sent_at.isoformat() if msg.sent_at else None,
-    }, on_conflict="source,chat_id,message_id").execute()
+    }
+    if triage:
+        payload.update({
+            "triage_model": triage.get("model"),
+            "triage_verdict": triage.get("verdict"),
+            "triage_confidence": triage.get("confidence"),
+            "triage_latency_ms": triage.get("latency_ms"),
+            "triage_cost_usd": triage.get("cost_usd"),
+            "triage_raw": triage.get("raw"),
+        })
+    _db().table("octobot_messages").upsert(
+        payload, on_conflict="source,chat_id,message_id"
+    ).execute()
 
 
 def add_confirmation_sync(incident_id: int, msg: IncomingMessage, similarity: float, matched_by: str) -> None:
@@ -417,14 +653,75 @@ async def process_message(msg: IncomingMessage) -> str:
     Returns the verdict string: 'noise' | 'match' | 'new_incident' | 'error' | 'skipped'.
     Idempotent per (source, chat_id, message_id) via UPSERT on octobot_messages.
     """
+    triage_meta: dict | None = None  # populated by deepseek_triage when reachable
+
+    def _log(verdict: str, incident_id: int | None = None,
+             category: str | None = None, cost: float = 0.0) -> None:
+        log_message_sync(msg, verdict, incident_id, category, cost, triage_meta)
+
     if is_trivial(msg.text):
-        await asyncio.to_thread(log_message_sync, msg, "noise", None, "trivial", 0.0)
+        await asyncio.to_thread(_log, "noise", None, "trivial", 0.0)
+        return "noise"
+
+    if is_obvious_noise(msg.text):
+        await asyncio.to_thread(_log, "noise", None, "prefilter", 0.0)
+        return "noise"
+
+    # T1 cache lookup: same text already classified as noise → skip embed+classifier.
+    cache_hash: str | None = None
+    if CACHE_MIN_LEN <= len(msg.text.strip()) <= CACHE_MAX_LEN:
+        cache_hash = _text_hash(msg.text)
+        cached = await asyncio.to_thread(_cache_lookup_sync, cache_hash)
+        if cached and cached["verdict"] == "noise":
+            await asyncio.to_thread(_cache_hit_sync, cache_hash)
+            await asyncio.to_thread(
+                _log, "noise", None,
+                f"cache_{cached.get('category') or 'noise'}", 0.0,
+            )
+            return "noise"
+
+    # T2 DeepSeek triage — cheap noise/appeal pre-classifier.
+    # Shadow mode: log result, don't change pipeline. Active mode: skip classifier on
+    # confident noise (with a small QA sample still going to classifier).
+    skip_to_noise = False
+    if TRIAGE_MODE != "off" and DEEPSEEK_API_KEY:
+        try:
+            t0 = datetime.now(timezone.utc)
+            triage_raw = await deepseek_triage(msg.text)
+            latency_ms = int((datetime.now(timezone.utc) - t0).total_seconds() * 1000)
+            triage_meta = {
+                "model": DEEPSEEK_MODEL,
+                "verdict": triage_raw.get("verdict"),
+                "confidence": float(triage_raw.get("confidence", 0.0) or 0.0),
+                "latency_ms": latency_ms,
+                "cost_usd": 0.0001,
+                "raw": triage_raw,
+            }
+            if (TRIAGE_MODE == "active"
+                    and triage_meta["verdict"] == "noise"
+                    and triage_meta["confidence"] >= TRIAGE_NOISE_CONF):
+                # 5% QA sample: still go to classifier for periodic accuracy check.
+                import random  # local import; std lib
+                if random.random() >= TRIAGE_QA_SAMPLE:
+                    skip_to_noise = True
+        except Exception as e:
+            print(f"[octobot] deepseek triage error: {type(e).__name__}: {e}")
+
+    if skip_to_noise:
+        await asyncio.to_thread(_log, "noise", None, "deepseek_noise", triage_meta["cost_usd"])
+        if cache_hash:
+            await asyncio.to_thread(
+                _cache_record_sync, cache_hash, "noise", "deepseek_noise",
+                triage_meta["raw"] or {}, msg.text,
+            )
         return "noise"
 
     try:
         # 1. Embed inbound message
         embedding = await openai_embed(msg.text)
         cost_embed = 0.00002  # text-embedding-3-small ~ $0.02 per 1M tokens
+        if triage_meta:
+            cost_embed += triage_meta.get("cost_usd", 0.0)
 
         # 2. Top-k similar open incidents
         similar = await asyncio.to_thread(find_similar_sync, embedding, 3, OPEN_WINDOW_DAYS)
@@ -433,43 +730,45 @@ async def process_message(msg: IncomingMessage) -> str:
         # 3. Confident duplicate → register and return
         if top and top.sim >= THRESHOLD_DUPLICATE:
             await asyncio.to_thread(add_confirmation_sync, top.id, msg, top.sim, "embedding")
-            await asyncio.to_thread(log_message_sync, msg, "match", top.id, None, cost_embed)
+            await asyncio.to_thread(_log, "match", top.id, None, cost_embed)
             return "match"
 
-        # 4. Gray zone → Grok disambiguates
+        # 4. Gray zone → classifier disambiguates
         if top and top.sim >= THRESHOLD_CANDIDATE:
-            verdict = await grok_classify(msg, similar)
-            cost_grok = 0.0005  # rough estimate per call
+            verdict = await classify(msg, similar)
+            cost_classify = 0.0001  # DeepSeek-chat — see DEEPSEEK_MODEL
             if verdict.get("verdict") == "match":
                 inc_id = int(verdict.get("incident_id", top.id))
                 conf = float(verdict.get("match_confidence", top.sim))
-                await asyncio.to_thread(add_confirmation_sync, inc_id, msg, conf, "grok")
-                await asyncio.to_thread(log_message_sync, msg, "match", inc_id, None, cost_embed + cost_grok)
+                await asyncio.to_thread(add_confirmation_sync, inc_id, msg, conf, "classifier")
+                await asyncio.to_thread(_log, "match", inc_id, None, cost_embed + cost_classify)
                 return "match"
             # fall through to new-incident path with the gray-zone classification
 
-        # 5. Grok classifies as new_incident or noise (no open-incidents context)
+        # 5. Classifier returns new_incident or noise (no open-incidents context)
         if not top or top.sim < THRESHOLD_CANDIDATE:
-            verdict = await grok_classify(msg, [])
-            cost_grok = 0.0005
-        cost = cost_embed + cost_grok
+            verdict = await classify(msg, [])
+            cost_classify = 0.0001
+        cost = cost_embed + cost_classify
 
         if verdict.get("verdict") == "noise":
             category = verdict.get("category")
-            await asyncio.to_thread(log_message_sync, msg, "noise", None, category, cost)
+            await asyncio.to_thread(_log, "noise", None, category, cost)
+            if cache_hash:
+                await asyncio.to_thread(
+                    _cache_record_sync, cache_hash, "noise", category, verdict, msg.text
+                )
             return "noise"
 
         if verdict.get("verdict") != "new_incident":
-            await asyncio.to_thread(log_message_sync, msg, "error", None, "unexpected_verdict", cost)
+            await asyncio.to_thread(_log, "error", None, "unexpected_verdict", cost)
             return "error"
 
         # 5a. Low-signal filter: log-only information queries, low-priority suggestions,
         # and "thank you" type messages should be recorded but NOT surface as incidents.
         # Operators only want to act on real problems/requests (priority ≥ 4).
         if verdict.get("escalate_to") == "log_only" or int(verdict.get("priority", 0)) <= 3:
-            await asyncio.to_thread(
-                log_message_sync, msg, "log_only", None, verdict.get("category"), cost
-            )
+            await asyncio.to_thread(_log, "log_only", None, verdict.get("category"), cost)
             print(f"[octobot] LOG-ONLY skip: priority={verdict.get('priority')} "
                   f"category={verdict.get('category')} topic={verdict.get('topic')}")
             return "log_only"
@@ -494,33 +793,28 @@ async def process_message(msg: IncomingMessage) -> str:
                 await asyncio.to_thread(
                     add_confirmation_sync, top_loc.id, msg, float(top_loc.locality_sim), "locality_match"
                 )
-                await asyncio.to_thread(
-                    log_message_sync, msg, "match", top_loc.id, verdict.get("category"), cost
-                )
+                await asyncio.to_thread(_log, "match", top_loc.id, verdict.get("category"), cost)
                 print(f"[octobot] LOCALITY match: incident {top_loc.id} "
                       f"(topic={verdict['topic']}, locality='{locality}', "
                       f"sim={top_loc.locality_sim:.2f})")
                 return "match"
 
         inc_embedding = await openai_embed(normalized)
-        cost += cost_embed
+        cost += 0.00002  # second embedding
 
         # 6b. Post-verdict dedup check — normalized(new) ↔ normalized(existing).
-        # First pass compared RAW inbound text to NORMALIZED incidents (different "styles"),
-        # which loses signal when the raw post is long/emotional. This second pass catches
-        # duplicates that slipped through, filtered to same topic for safety.
         postcheck = await asyncio.to_thread(find_similar_sync, inc_embedding, 5, OPEN_WINDOW_DAYS)
         same_topic = [s for s in postcheck if s.topic == verdict["topic"]]
         if same_topic and same_topic[0].sim >= THRESHOLD_POSTCHECK:
             top_match = same_topic[0]
             await asyncio.to_thread(add_confirmation_sync, top_match.id, msg, top_match.sim, "post_dedup")
-            await asyncio.to_thread(log_message_sync, msg, "match", top_match.id, verdict.get("category"), cost)
+            await asyncio.to_thread(_log, "match", top_match.id, verdict.get("category"), cost)
             print(f"[octobot] POST-DEDUP match: incident {top_match.id} "
                   f"(sim={top_match.sim:.3f}, topic={verdict['topic']})")
             return "match"
 
         inc_id = await asyncio.to_thread(insert_incident_sync, verdict, inc_embedding, normalized, msg)
-        await asyncio.to_thread(log_message_sync, msg, "new_incident", inc_id, verdict.get("category"), cost)
+        await asyncio.to_thread(_log, "new_incident", inc_id, verdict.get("category"), cost)
 
         print(f"[octobot] NEW incident {inc_id}: {verdict['topic']} · "
               f"{verdict.get('address') or locality or '—'} · priority {verdict['priority']} · {verdict['escalate_to']}")
@@ -529,7 +823,7 @@ async def process_message(msg: IncomingMessage) -> str:
     except Exception as e:
         traceback.print_exc()
         try:
-            await asyncio.to_thread(log_message_sync, msg, "error", None, type(e).__name__, 0.0)
+            await asyncio.to_thread(_log, "error", None, type(e).__name__, 0.0)
         except Exception:
             pass
         return "error"

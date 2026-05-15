@@ -31,20 +31,29 @@ import httpx
 from supabase import create_client, Client
 
 MAX_API = "https://platform-api.max.ru"
-XAI_URL = "https://api.x.ai/v1/chat/completions"
+DEEPSEEK_URL = "https://api.deepseek.com/chat/completions"
 MAX_BOT_TOKEN = os.getenv("MAX_BOT_TOKEN", "").strip()
 MAX_TEAM_CHAT_ID = int(os.getenv("MAX_TEAM_CHAT_ID", "0"))
 MAX_STAROSTY_CHAT_ID = int(os.getenv("MAX_STAROSTY_CHAT_ID", "0"))  # 0 = monitoring disabled
 BOT_USER_ID = int(os.getenv("BOT_USER_ID", "0"))  # own user_id — to ignore self-messages
 SUPABASE_URL = os.getenv("SUPABASE_URL", "").strip()
 SUPABASE_KEY = os.getenv("SUPABASE_KEY", "").strip()
-XAI_API_KEY = os.getenv("XAI_API_KEY", "").strip()
-GROK_MODEL = os.getenv("OCTOBOT_GROK_MODEL", "grok-4")
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "").strip()
+DEEPSEEK_MODEL = os.getenv("OCTOBOT_DEEPSEEK_MODEL", "deepseek-chat")
 DEADLINE_DAYS = int(os.getenv("DEADLINE_DAYS", "3"))
 DIGEST_INTERVAL = int(os.getenv("DIGEST_INTERVAL", str(6 * 3600)))
 POLL_INCIDENTS_INTERVAL = int(os.getenv("POLL_INCIDENTS_INTERVAL", "30"))
 MIN_PRIORITY = int(os.getenv("MIN_PRIORITY", "7"))
 MIN_STAROSTY_LEN = int(os.getenv("MIN_STAROSTY_LEN", "20"))
+# Comma-separated MAX user_ids that are allowed to assign tasks to other members.
+# Anyone not in this list self-assigns on «В работу» — same behavior as before.
+MAX_ADMIN_USER_IDS: set[int] = set()
+_raw_admins = os.getenv("MAX_ADMIN_USER_IDS", "").strip()
+if _raw_admins:
+    for _tok in _raw_admins.split(","):
+        _tok = _tok.strip()
+        if _tok.lstrip("-").isdigit():
+            MAX_ADMIN_USER_IDS.add(int(_tok))
 
 if not MAX_BOT_TOKEN or not MAX_TEAM_CHAT_ID or not SUPABASE_URL or not SUPABASE_KEY:
     print("[max-bot] FATAL: MAX_BOT_TOKEN / MAX_TEAM_CHAT_ID / SUPABASE_URL / SUPABASE_KEY must be set")
@@ -119,6 +128,132 @@ def _inline_kb(task_id: int, status: str) -> list[list[dict[str, Any]]]:
     return []  # done / skipped — no more buttons
 
 
+def _assign_picker_kb(task_id: int, members: list[dict[str, Any]]) -> list[list[dict[str, Any]]]:
+    """Keyboard shown to an admin who clicked «В работу»: pick a team member.
+    Members packed 2-per-row; trailing cancel button restores the default keyboard."""
+    rows: list[list[dict[str, Any]]] = []
+    row: list[dict[str, Any]] = []
+    for m in members:
+        name = (m.get("display_name") or f"id{m['user_id']}")[:30]
+        row.append({
+            "type": "callback",
+            "text": f"👤 {name}",
+            "payload": f"assign:{task_id}:{m['user_id']}",
+        })
+        if len(row) == 2:
+            rows.append(row); row = []
+    if row:
+        rows.append(row)
+    rows.append([{
+        "type": "callback",
+        "text": "↩ Отмена",
+        "payload": f"cancel_assign:{task_id}",
+    }])
+    return rows
+
+
+def _is_admin(user_id: int | None) -> bool:
+    """Admin = user_id listed in MAX_ADMIN_USER_IDS env OR has role='admin' in DB."""
+    if user_id is None:
+        return False
+    if user_id in MAX_ADMIN_USER_IDS:
+        return True
+    try:
+        res = db.table("max_team_members").select("role").eq("user_id", user_id).limit(1).execute()
+        return bool(res.data) and (res.data[0].get("role") == "admin")
+    except Exception as e:
+        print(f"[max-bot] _is_admin db error: {e}")
+        return False
+
+
+def _upsert_member(user_id: int | None, display_name: str | None, promote_to_admin: bool = False):
+    """Harvest a member into the roster. Never downgrades an existing admin. Refreshes
+    last_seen_at/display_name on every callback so the picker list stays current."""
+    if not user_id:
+        return
+    now_iso = datetime.now(tz=timezone.utc).isoformat()
+    try:
+        existing = db.table("max_team_members").select("role").eq("user_id", user_id).limit(1).execute()
+        if existing.data:
+            patch: dict[str, Any] = {"last_seen_at": now_iso, "is_active": True}
+            if display_name:
+                patch["display_name"] = display_name
+            if promote_to_admin and existing.data[0].get("role") != "admin":
+                patch["role"] = "admin"
+            db.table("max_team_members").update(patch).eq("user_id", user_id).execute()
+        else:
+            db.table("max_team_members").insert({
+                "user_id": user_id,
+                "display_name": display_name,
+                "role": "admin" if promote_to_admin else "member",
+                "is_active": True,
+                "first_seen_at": now_iso,
+                "last_seen_at": now_iso,
+            }).execute()
+    except Exception as e:
+        print(f"[max-bot] _upsert_member({user_id}) error: {e}")
+
+
+def _fetch_active_members(limit: int = 20) -> list[dict[str, Any]]:
+    """Active roster for the assignee-picker keyboard, most recent first."""
+    try:
+        res = db.table("max_team_members") \
+            .select("user_id, display_name, role") \
+            .eq("is_active", True) \
+            .order("last_seen_at", desc=True) \
+            .limit(limit).execute()
+        return res.data or []
+    except Exception as e:
+        print(f"[max-bot] _fetch_active_members error: {e}")
+        return []
+
+
+def _bootstrap_admins():
+    """On startup, make sure MAX_ADMIN_USER_IDS entries exist with role=admin."""
+    for uid in MAX_ADMIN_USER_IDS:
+        _upsert_member(uid, None, promote_to_admin=True)
+
+
+async def refresh_team_roster(client: httpx.AsyncClient):
+    """Pull the full member list from MAX API and upsert into max_team_members.
+    Bots are skipped. Chat owners/admins are auto-promoted to role='admin'."""
+    seen = 0
+    try:
+        # MAX pages results — walk until empty or hard cap.
+        marker: int | None = None
+        for _ in range(20):  # safety cap: 20 pages × 100 = 2000 members
+            params: dict[str, Any] = {"count": 100}
+            if marker is not None:
+                params["marker"] = marker
+            r = await client.get(
+                f"{MAX_API}/chats/{MAX_TEAM_CHAT_ID}/members",
+                params=params, headers=_headers(), timeout=30.0,
+            )
+            if r.status_code >= 400:
+                print(f"[max-bot] members fetch {r.status_code}: {r.text[:200]}")
+                return
+            body = r.json() or {}
+            members = body.get("members") or []
+            for m in members:
+                if m.get("is_bot"):
+                    continue
+                uid = m.get("user_id")
+                if not uid:
+                    continue
+                name = (m.get("name") or
+                        " ".join(s for s in [m.get("first_name"), m.get("last_name")] if s) or
+                        f"id{uid}")
+                promote = bool(m.get("is_admin") or m.get("is_owner"))
+                _upsert_member(uid, name.strip(), promote_to_admin=promote)
+                seen += 1
+            marker = body.get("marker")
+            if not marker or not members:
+                break
+        print(f"[max-bot] roster refresh: {seen} team member(s) upserted from MAX API")
+    except Exception as e:
+        print(f"[max-bot] refresh_team_roster error: {type(e).__name__}: {e}")
+
+
 async def max_send_message(client: httpx.AsyncClient, text: str, buttons: list[list[dict[str, Any]]]) -> dict[str, Any] | None:
     body: dict[str, Any] = {"text": text, "format": "markdown", "notify": True}
     if buttons:
@@ -134,6 +269,27 @@ async def max_send_message(client: httpx.AsyncClient, text: str, buttons: list[l
         print(f"[max-bot] send_message {r.status_code}: {r.text[:300]}")
         return None
     return r.json()
+
+
+async def max_send_dm(client: httpx.AsyncClient, user_id: int, text: str) -> bool:
+    """Try to send a direct message to a MAX user. Returns True on HTTP 2xx.
+    Silently returns False if the bot doesn't have permission to DM this user —
+    the team-chat notification stays the primary channel."""
+    try:
+        r = await client.post(
+            f"{MAX_API}/messages",
+            params={"user_id": user_id},
+            headers=_headers(),
+            json={"text": text, "format": "markdown", "notify": True},
+            timeout=15.0,
+        )
+        if r.status_code >= 400:
+            print(f"[max-bot] DM to {user_id} failed {r.status_code}: {r.text[:200]}")
+            return False
+        return True
+    except Exception as e:
+        print(f"[max-bot] DM to {user_id} error: {type(e).__name__}: {e}")
+        return False
 
 
 async def max_answer_callback(client: httpx.AsyncClient, callback_id: str, notification: str | None, new_text: str | None, buttons: list[list[dict[str, Any]]]):
@@ -271,7 +427,7 @@ def _is_mytishi_incident(inc: dict[str, Any], names: list[str]) -> bool:
 
 
 # ---------------------------------------------------------------------------
-# Starosty chat classifier (Grok mini-prompt)
+# Starosty chat classifier (DeepSeek mini-prompt)
 # ---------------------------------------------------------------------------
 
 CLASSIFIER_SYSTEM = (
@@ -306,15 +462,16 @@ CLASSIFIER_PROMPT = """\
 """
 
 
-async def grok_classify_starosty(client: httpx.AsyncClient, text: str, author: str) -> dict[str, Any]:
-    if not XAI_API_KEY:
-        return {"verdict": "noise", "reason": "XAI_API_KEY not set"}
+async def classify_starosty(client: httpx.AsyncClient, text: str, author: str) -> dict[str, Any]:
+    """Classify a starosty-chat message via DeepSeek-chat (was Grok-4 until 2026-05-12)."""
+    if not DEEPSEEK_API_KEY:
+        return {"verdict": "noise", "reason": "DEEPSEEK_API_KEY not set"}
     prompt = CLASSIFIER_PROMPT.format(author=author or "—", text=text[:2000])
     r = await client.post(
-        XAI_URL,
-        headers={"Authorization": f"Bearer {XAI_API_KEY}", "Content-Type": "application/json"},
+        DEEPSEEK_URL,
+        headers={"Authorization": f"Bearer {DEEPSEEK_API_KEY}", "Content-Type": "application/json"},
         json={
-            "model": GROK_MODEL,
+            "model": DEEPSEEK_MODEL,
             "temperature": 0.1,
             "response_format": {"type": "json_object"},
             "messages": [
@@ -325,14 +482,14 @@ async def grok_classify_starosty(client: httpx.AsyncClient, text: str, author: s
         timeout=60.0,
     )
     if r.status_code >= 400:
-        print(f"[max-bot] grok {r.status_code}: {r.text[:300]}")
-        return {"verdict": "noise", "reason": f"grok-{r.status_code}"}
+        print(f"[max-bot] deepseek {r.status_code}: {r.text[:300]}")
+        return {"verdict": "noise", "reason": f"deepseek-{r.status_code}"}
     data = r.json()
     content = (data.get("choices") or [{}])[0].get("message", {}).get("content", "")
     try:
         return json.loads(content)
     except Exception as e:
-        print(f"[max-bot] grok parse error: {e}; content={content[:200]}")
+        print(f"[max-bot] deepseek parse error: {e}; content={content[:200]}")
         return {"verdict": "noise", "reason": "parse-error"}
 
 
@@ -380,7 +537,7 @@ async def handle_message_created(client: httpx.AsyncClient, upd: dict[str, Any])
     }).execute()
     msg_row_id = saved.data[0]["id"] if saved.data else None
 
-    verdict = await grok_classify_starosty(client, text, sender_name)
+    verdict = await classify_starosty(client, text, sender_name)
     v = verdict.get("verdict")
 
     now_iso = datetime.now(tz=timezone.utc).isoformat()
@@ -419,22 +576,27 @@ async def forward_new_incidents(client: httpx.AsyncClient):
     Rules:
       - For source_platform='tg': require priority>=MIN_PRIORITY AND locality matches Mytishi.
       - For source_platform='max': forward all (these already come from a Mytishi chat
-        and were pre-classified as appeals by grok_classify_starosty).
+        and were pre-classified as appeals by classify_starosty).
     """
     names = _mytishi_settlements()
 
     incidents = db.table("octobot_incidents") \
-        .select("id, topic, address, summary, priority, locality, first_author, created_at, source_chat_id, source_message_id, source_message_mid, source_platform") \
-        .or_(f"priority.gte.{MIN_PRIORITY},source_platform.eq.max") \
+        .select("id, topic, address, summary, priority, locality, first_author, created_at, source_chat_id, source_message_id, source_message_mid, source_platform, in_mytishi, is_city, rural_override, geocoded_at, force_to_max") \
+        .or_(f"priority.gte.{MIN_PRIORITY},source_platform.eq.max,force_to_max.eq.true") \
         .order("priority", desc=True).order("created_at", desc=True) \
         .limit(50).execute()
 
     if not incidents.data:
         return
 
-    existing = db.table("max_tasks").select("incident_id") \
+    # Pull status per prior task so we can distinguish "already in MAX" (new/in_work)
+    # from "terminated long ago" (skipped/done) — the latter can be reopened via
+    # force_to_max, the former must be left alone.
+    existing = db.table("max_tasks").select("id, incident_id, status") \
         .in_("incident_id", [i["id"] for i in incidents.data]).execute()
-    already = {r["incident_id"] for r in (existing.data or [])}
+    prior_by_inc: dict[int, list[dict[str, Any]]] = {}
+    for r in (existing.data or []):
+        prior_by_inc.setdefault(r["incident_id"], []).append(r)
 
     chat_ids = {i.get("source_chat_id") for i in incidents.data if i.get("source_chat_id") and i.get("source_platform") == "tg"}
     chats_map: dict[int, str | None] = {}
@@ -442,12 +604,43 @@ async def forward_new_incidents(client: httpx.AsyncClient):
         chats_res = db.table("tg_chats").select("chat_id, username").in_("chat_id", list(chat_ids)).execute()
         chats_map = {c["chat_id"]: c.get("username") for c in (chats_res.data or [])}
 
+    # Topics that bypass the "city vs rural" gate — user is responsible for these
+    # even within the city proper.
+    CITY_BYPASS_TOPICS = {"животные", "экология", "мусор", "парки"}
+    ACTIVE_STATES = {"new", "in_work"}
+
     for inc in incidents.data:
-        if inc["id"] in already:
+        forced = bool(inc.get("force_to_max"))
+        prior = prior_by_inc.get(inc["id"], [])
+        has_active = any(r["status"] in ACTIVE_STATES for r in prior)
+        if has_active:
+            # Already in the team chat — don't re-send even when forced.
             continue
+        if prior and not forced:
+            # Terminal prior (skipped/done) and user didn't re-request → leave alone.
+            continue
+        if prior and forced:
+            # Forced re-send: drop the terminal rows (CASCADE removes max_task_events).
+            for r in prior:
+                try:
+                    db.table("max_tasks").delete().eq("id", r["id"]).execute()
+                except Exception as e:
+                    print(f"[max-bot] failed to drop old task #{r['id']} for inc #{inc['id']}: {e}")
+            print(f"[max-bot] reopening forced incident #{inc['id']} (dropped {len(prior)} prior task row(s))")
+
         platform = inc.get("source_platform") or "tg"
-        if platform == "tg" and not _is_mytishi_incident(inc, names):
-            continue
+        if platform == "tg" and not forced:
+            # Wait for geocoder; never forward anything outside Mytishi.
+            if inc.get("geocoded_at") is None:
+                continue
+            if inc.get("in_mytishi") is not True:
+                continue
+            # In-округ: skip anything that's in the city proper, unless either
+            #   a) rural_override pattern matched (named ЖК on rural territory), or
+            #   b) topic is in the city-bypass whitelist (ecology / stray animals).
+            if inc.get("is_city") is True and not inc.get("rural_override"):
+                if (inc.get("topic") or "").lower().strip() not in CITY_BYPASS_TOPICS:
+                    continue
 
         deadline = datetime.now(tz=timezone.utc) + timedelta(days=DEADLINE_DAYS)
         row = db.table("max_tasks").insert({
@@ -489,13 +682,25 @@ async def handle_callback(client: httpx.AsyncClient, upd: dict[str, Any]):
     uname = user.get("name") or user.get("first_name") or (f"id{uid}" if uid else "—")
     print(f"[max-bot] callback: payload={payload!r} user_id={uid} name={uname!r}")
 
+    # Harvest clicker into the team roster so admins get a picker with real names.
+    _upsert_member(uid, uname if uname != f"id{uid}" else None)
+
     if ":" not in payload:
         return
-    action, task_id_s = payload.split(":", 1)
+    # Payloads may have 2 parts (accept:<tid>, close:<tid>, skip:<tid>, cancel_assign:<tid>)
+    # or 3 parts (assign:<tid>:<target_uid>). Parse uniformly.
+    parts = payload.split(":")
+    action = parts[0]
     try:
-        task_id = int(task_id_s)
-    except ValueError:
+        task_id = int(parts[1])
+    except (IndexError, ValueError):
         return
+    target_uid: int | None = None
+    if action == "assign" and len(parts) >= 3:
+        try:
+            target_uid = int(parts[2])
+        except ValueError:
+            target_uid = None
 
     task, inc = _fetch_task_with_incident(task_id)
     if not task or not inc:
@@ -510,6 +715,17 @@ async def handle_callback(client: httpx.AsyncClient, upd: dict[str, Any]):
             await max_answer_callback(client, callback_id,
                 f"Уже {cur_status}. Принял: {task.get('assignee_display_name') or '—'}", None, [])
             return
+        # Admin branch: open an assignee picker instead of self-assigning.
+        if _is_admin(uid):
+            members = [m for m in _fetch_active_members() if m.get("user_id") != BOT_USER_ID]
+            if members:
+                await max_answer_callback(
+                    client, callback_id, "Выберите исполнителя",
+                    _rebuild_message_text(inc, task), _assign_picker_kb(task_id, members),
+                )
+                print(f"[max-bot] Task #{task_id} picker opened by admin {uname} ({len(members)} members)")
+                return
+            # Fall through to self-assign if roster is empty — don't block the admin.
         upd_row = {"status": "in_work", "assignee_max_user_id": uid, "assignee_display_name": uname, "accepted_at": now_iso}
         db.table("max_tasks").update(upd_row).eq("id", task_id).execute()
         task.update(upd_row)
@@ -517,6 +733,64 @@ async def handle_callback(client: httpx.AsyncClient, upd: dict[str, Any]):
         new_text = _rebuild_message_text(inc, task)
         await max_answer_callback(client, callback_id, "Принято в работу", new_text, _inline_kb(task_id, "in_work"))
         print(f"[max-bot] Task #{task_id} accepted by {uname} (user_id={uid})")
+        return
+
+    if action == "assign":
+        # Admin-only: assign to a specific roster member.
+        if not _is_admin(uid):
+            await max_answer_callback(client, callback_id, "Только для администратора", None, [])
+            return
+        if cur_status != "new":
+            await max_answer_callback(client, callback_id,
+                f"Уже {cur_status}. Принял: {task.get('assignee_display_name') or '—'}", None, [])
+            return
+        if not target_uid:
+            await max_answer_callback(client, callback_id, "Неверный payload assign", None, [])
+            return
+        tgt = db.table("max_team_members").select("display_name").eq("user_id", target_uid).limit(1).execute()
+        tgt_name = (tgt.data[0].get("display_name") if tgt.data else None) or f"id{target_uid}"
+        upd_row = {
+            "status": "in_work",
+            "assignee_max_user_id": target_uid,
+            "assignee_display_name": tgt_name,
+            "accepted_at": now_iso,
+        }
+        db.table("max_tasks").update(upd_row).eq("id", task_id).execute()
+        task.update(upd_row)
+        _insert_event(task_id, uid, uname, "assigned", {"target_user_id": target_uid, "target_name": tgt_name})
+        new_text = _rebuild_message_text(inc, task)
+        await max_answer_callback(
+            client, callback_id, f"Назначено: {tgt_name}", new_text, _inline_kb(task_id, "in_work"),
+        )
+
+        # Notify assignee — team chat post + best-effort DM.
+        topic = inc.get("topic") or "—"
+        locality = inc.get("locality") or inc.get("address") or "—"
+        deadline_txt = datetime.fromisoformat(task["deadline_at"].replace("Z", "+00:00")) \
+            .astimezone().strftime("%d.%m %H:%M")
+        notify_text = (
+            f"🔔 *{tgt_name}*, тебе назначен инцидент #{inc['id']}\n"
+            f"🏷 {topic}\n"
+            f"📍 {locality}\n"
+            f"⏰ до {deadline_txt}\n"
+            f"Назначил: {uname}"
+        )
+        try:
+            await max_send_message(client, notify_text, [])
+        except Exception as e:
+            print(f"[max-bot] assign notify (team) error: {type(e).__name__}: {e}")
+        await max_send_dm(client, target_uid, notify_text)
+
+        print(f"[max-bot] Task #{task_id} assigned by admin {uname} → {tgt_name} ({target_uid})")
+        return
+
+    if action == "cancel_assign":
+        # Close the picker — restore the original «new» keyboard.
+        if cur_status != "new":
+            await max_answer_callback(client, callback_id, f"Уже {cur_status}", None, [])
+            return
+        new_text = _rebuild_message_text(inc, task)
+        await max_answer_callback(client, callback_id, "Отменено", new_text, _inline_kb(task_id, "new"))
         return
 
     if action == "close":
@@ -643,13 +917,21 @@ async def main():
     print("  MAX Team Bot — Octobot → MAX forwarder")
     print("=" * 50)
     print(f"[max-bot] team chat: {MAX_TEAM_CHAT_ID}, min priority: {MIN_PRIORITY}, deadline: {DEADLINE_DAYS}d, digest: {DIGEST_INTERVAL}s")
+    print(f"[max-bot] admins from env: {sorted(MAX_ADMIN_USER_IDS) or 'none (assignment picker disabled until set)'}")
+    _bootstrap_admins()
+
+    roster_refresh_interval = int(os.getenv("ROSTER_REFRESH_INTERVAL", "3600"))
 
     async with httpx.AsyncClient() as client:
+        # Prime the roster once at startup so «В работу» picker is populated immediately.
+        await refresh_team_roster(client)
+
         marker: int | None = None
         loop = asyncio.get_event_loop()
         last_incident_poll = 0.0
         # Don't fire digest on startup — wait a full interval
         last_digest = loop.time()
+        last_roster_refresh = loop.time()
 
         while True:
             # Incident polling
@@ -669,12 +951,26 @@ async def main():
                 except Exception as e:
                     print(f"[max-bot] digest error: {type(e).__name__}: {e}")
 
+            # Periodic roster refresh so new joiners show up in the picker.
+            if now_s - last_roster_refresh >= roster_refresh_interval:
+                last_roster_refresh = now_s
+                await refresh_team_roster(client)
+
             # Long-poll MAX updates (returns within 60s)
             try:
                 res = await fetch_updates(client, marker)
                 marker = res.get("marker") or marker
                 for upd in res.get("updates", []):
                     ut = upd.get("update_type")
+                    # DEBUG: log every update's type + chat to diagnose privacy-mode.
+                    try:
+                        msg = upd.get("message") or {}
+                        cid = ((msg.get("recipient") or {}).get("chat_id")
+                               or (msg.get("recipient") or {}).get("user_id"))
+                        txt = ((msg.get("body") or {}).get("text") or "")[:60]
+                        print(f"[max-bot] update: type={ut} chat={cid} text={txt!r}")
+                    except Exception:
+                        pass
                     if ut == "message_callback":
                         try:
                             await handle_callback(client, upd)
