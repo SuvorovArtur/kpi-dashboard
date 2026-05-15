@@ -100,13 +100,18 @@ current_userbot_id: int | None = None
 
 
 def load_chats():
-    """Load monitored chats from Supabase."""
+    """Load monitored chats from Supabase — only those attached to THIS userbot,
+    plus chats that aren't yet attached to any userbot (legacy/unclaimed)."""
     global monitored_chat_ids
-    chats = db.get_active_chats()
+    all_chats = db.get_active_chats()
+    if current_userbot_id:
+        chats = [c for c in all_chats if c.get('userbot_id') in (None, current_userbot_id)]
+    else:
+        chats = all_chats
     monitored_chat_ids = {c['chat_id'] for c in chats}
-    print(f"[bot] Monitoring {len(monitored_chat_ids)} chats: {monitored_chat_ids}")
+    print(f"[bot] Monitoring {len(monitored_chat_ids)} chats (of {len(all_chats)} active in DB)")
 
-    # Tag chats that still have no userbot_id as ours.
+    # Tag still-untagged ones as ours.
     if current_userbot_id:
         try:
             db.claim_untagged_chats(current_userbot_id, list(monitored_chat_ids))
@@ -265,6 +270,8 @@ async def auto_join_public_channels():
     CHANNEL_INVALID on get_chat and never emits UpdateNewChannelMessage.
     """
     chats = db.get_active_chats()
+    if current_userbot_id:
+        chats = [c for c in chats if c.get('userbot_id') in (None, current_userbot_id)]
     pending = [c for c in chats if c.get('type') == 'channel' and c.get('username')]
     if not pending:
         return
@@ -285,6 +292,8 @@ async def auto_join_public_channels():
 async def update_chat_participants():
     """Fetch participant/subscriber counts from Telegram and update DB."""
     chats = db.get_active_chats()
+    if current_userbot_id:
+        chats = [c for c in chats if c.get('userbot_id') in (None, current_userbot_id)]
     print(f"[bot] Updating participants for {len(chats)} chats...")
     for chat_info in chats:
         try:

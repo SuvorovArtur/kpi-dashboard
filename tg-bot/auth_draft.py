@@ -26,7 +26,7 @@ ETC_DIR = "/etc/tg-bot"
 WORKDIR = "/opt/tg-bot"
 
 # Shared env bits (Supabase creds) read from existing /opt/tg-bot/.env.
-SHARED_ENV_KEYS = ("SUPABASE_URL", "SUPABASE_KEY", "DEEPSEEK_API_KEY", "XAI_API_KEY")
+SHARED_ENV_KEYS = ("SUPABASE_URL", "SUPABASE_KEY", "DEEPSEEK_API_KEY", "TG_API_ID", "TG_API_HASH")
 
 
 def _load_shared_env() -> dict[str, str]:
@@ -113,11 +113,21 @@ def main() -> int:
         return 0
 
     session_name = d["session_name"]
-    api_id = int(d["api_id"])
-    api_hash = d["api_hash"]
     phone = d["phone"]
+    draft_api_id = d.get("api_id")
+    draft_api_hash = d.get("api_hash")
 
-    print(f"[auth_draft] Draft #{draft_id}: label={d['label']!r}, session={session_name!r}, phone={phone}")
+    # Fallback: if the draft doesn't carry its own api_id/api_hash, reuse the
+    # shared device creds from /opt/tg-bot/.env. Telegram's api_id/api_hash
+    # identifies the *app*, not the user — one pair can authorize many accounts.
+    shared = _load_shared_env()
+    api_id = int(draft_api_id) if draft_api_id else int(shared.get("TG_API_ID") or 0)
+    api_hash = draft_api_hash or shared.get("TG_API_HASH") or ""
+    if not api_id or not api_hash:
+        print("[auth_draft] FATAL: no api_id/api_hash (draft has none and /opt/tg-bot/.env is missing TG_API_ID/TG_API_HASH).")
+        return 1
+
+    print(f"[auth_draft] Draft #{draft_id}: label={d['label']!r}, session={session_name!r}, phone={phone}, api_id={'draft' if draft_api_id else 'shared'}")
 
     try:
         asyncio.run(_run_auth(session_name, api_id, api_hash, phone))
