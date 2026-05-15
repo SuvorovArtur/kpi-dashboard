@@ -1,0 +1,151 @@
+# Контейнерная площадка — первый объект онтологии (MVP v0.1)
+#
+# Источник истины. Меняешь YAML — запускаешь tools/ontology_gen.py — оно
+# вырабатывает SQL-миграцию (полу-авто: пишет diff в текстовый отчёт, дальше
+# ты сам решаешь применять) и TypeScript-типы.
+#
+# Принципы:
+#   - SQL-имена на английском, label_ru для UI и доки
+#   - settlement — свободный ввод (operator entry), пока без FK в mytishi_settlements
+#   - PostGIS включён, geometry(Point, 4326) + GiST для поиска ближайшей
+#   - Все мутации — через RPC actions, никаких прямых UPDATE
+#   - Триггер AFTER на ontology.kp пишет в ontology.events (event sourcing)
+
+version: 0.2.0
+object: kp
+schema: ontology
+table: kp
+label_ru: Контейнерная площадка
+label_ru_plural: Контейнерные площадки
+
+properties:
+  id:
+    type: uuid
+    primary_key: true
+    default: gen_random_uuid()
+    nullable: false
+  seq:
+    type: bigserial
+    unique: true
+    nullable: false
+    comment: Внутренняя последовательность для генерации номера
+  number:
+    type: text
+    generated: "'МЫТ-КП-' || lpad(seq::text, 4, '0')"
+    comment: Человекочитаемый номер. Автогенерируется из seq.
+    label_ru: Номер
+  settlement:
+    type: text
+    nullable: false
+    label_ru: Населённый пункт
+    comment: Свободный ввод (д. Беляниново, мкр. Пироговский и т.п.)
+  geom:
+    type: geometry
+    subtype: Point
+    srid: 4326
+    nullable: false
+    label_ru: Координаты
+    index: gist
+    comment: Главное поле для автопривязки жалоб (PostGIS)
+  registry_number:
+    type: text
+    nullable: true
+    label_ru: Реестровый номер РО
+    comment: Уникален в БД, но валидация без блокировки на старте
+  holder:
+    type: text
+    nullable: true
+    label_ru: Балансодержатель
+    comment: УК / администрация / частник
+  has_br_camera:
+    type: boolean
+    nullable: false
+    default: "false"
+    label_ru: Камера БР
+    comment: Подключена ли камера системы «Безопасный регион»
+  photos:
+    type: "text[]"
+    nullable: false
+    default: "'{}'::text[]"
+    label_ru: Фото
+    comment: Массив публичных URL из Storage bucket kp-photos
+  created_at:
+    type: timestamptz
+    default: now()
+    nullable: false
+  updated_at:
+    type: timestamptz
+    default: now()
+    nullable: false
+
+indexes:
+  - { name: idx_kp_settlement, columns: [settlement] }
+  - { name: idx_kp_registry,   columns: [registry_number], where: "registry_number IS NOT NULL" }
+
+actions:
+  create:
+    label_ru: Создать
+    kind: rpc
+    name: ontology_kp_create
+    roles: [editor, admin]
+    args: [settlement, lat, lng, registry_number]
+    returns: kp
+  move:
+    label_ru: Изменить координаты
+    kind: rpc
+    name: ontology_kp_move
+    roles: [editor, admin]
+    args: [id, lat, lng]
+  rename_settlement:
+    label_ru: Изменить населённый пункт
+    kind: rpc
+    name: ontology_kp_rename_settlement
+    roles: [editor, admin]
+    args: [id, settlement]
+  set_registry:
+    label_ru: Указать реестровый номер
+    kind: rpc
+    name: ontology_kp_set_registry
+    roles: [editor, admin]
+    args: [id, registry_number]
+  set_holder:
+    label_ru: Указать балансодержателя
+    kind: rpc
+    name: ontology_kp_set_holder
+    roles: [editor, admin]
+    args: [id, holder]
+  set_br_camera:
+    label_ru: Отметить камеру БР
+    kind: rpc
+    name: ontology_kp_set_br_camera
+    roles: [editor, admin]
+    args: [id, has_br_camera]
+  add_photo:
+    label_ru: Добавить фото
+    kind: rpc
+    name: ontology_kp_add_photo
+    roles: [editor, admin]
+    args: [id, url]
+  remove_photo:
+    label_ru: Удалить фото
+    kind: rpc
+    name: ontology_kp_remove_photo
+    roles: [editor, admin]
+    args: [id, url]
+  delete:
+    label_ru: Удалить
+    kind: rpc
+    name: ontology_kp_delete
+    roles: [admin]
+    args: [id]
+
+rls:
+  enable: true
+  policies:
+    - { name: read_all_authenticated, op: SELECT, roles: [authenticated], using: "true" }
+    # Прямой INSERT/UPDATE/DELETE запрещён — всё через SECURITY DEFINER RPC.
+
+events:
+  enable: true
+  table: ontology.events
+  trigger: ontology_kp_event_trigger

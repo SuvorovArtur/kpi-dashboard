@@ -27,6 +27,8 @@ function AppLayout() {
       { key: 'sources', label: 'Источники', icon: 'Radio', path: '/sources' },
       { key: 'userbots', label: 'Userbots', icon: 'Bot', path: '/userbots' },
       { key: 'map', label: 'Карта', icon: 'Map', path: '/map' },
+      { key: 'kp', label: 'КП', icon: 'Trash2', path: '/kp' },
+      { key: 'settlements', label: 'Нас. пункты', icon: 'Map', path: '/settlements' },
       { key: 'settings', label: 'Настройки', icon: 'Settings', path: '/settings' },
     ];
     return items;

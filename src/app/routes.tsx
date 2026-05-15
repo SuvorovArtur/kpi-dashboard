@@ -15,6 +15,8 @@ const Sources = lazy(() => import('../pages/Sources/Sources'));
 const SourceDetailPage = lazy(() => import('../pages/Sources/SourceDetailPage'));
 const AuthorProfile = lazy(() => import('../pages/Sources/AuthorProfile'));
 const Userbots = lazy(() => import('../pages/Userbots/Userbots'));
+const KP = lazy(() => import('../pages/KP/KP'));
+const Settlements = lazy(() => import('../pages/Settlements/Settlements'));
 
 const PageLoader = () => (
   <div style={{ padding: 32 }}>
@@ -35,6 +37,8 @@ export function AppRoutes() {
         <Route path="/attendance" element={<Attendance />} />
         <Route path="/social" element={<SocialMonitor />} />
         <Route path="/map" element={<HeatMap />} />
+        <Route path="/kp" element={<KP />} />
+        <Route path="/settlements" element={<Settlements />} />
         <Route path="/octobot" element={<Octobot />} />
         <Route path="/sources" element={<Sources />} />
         <Route path="/sources/:id" element={<SourceDetailPage />} />
